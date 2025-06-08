@@ -131,4 +131,60 @@ Start the server and verify the superuser can log in.
 
 Go to `http://localhost:8000/admin` and log in.
 
-## Do stuff
+## Inventory Application
+
+### Initial customization
+
+The default project layout uses a single file for models, views, and tests.  I tend to favor a folder for each so
+individual models, views, and tests can be in their own files.
+
+* Remove the individual files for `models.py`, `views.py`, and `tests.py`
+* Create folders with the names, `models`, `views`, and `tests`
+* Drop an empty `__init__.py` into each of those folders.
+  * Using PyCharm's right-click menu `New` -> `Python Package` will automatically create the `__init__.py` files.
+
+### Models
+
+
+Source - where the products are purchased
+  * Name
+  * Active - on/off for if this source should appear in option lists like 'new order' or such.
+  * customer number - pretty sure we only have one customer number per source
+  * contact - details for the customer service contact - name/email/phone
+
+Source Item - the products purchased from the source
+  * source-specific item code
+  * pack/quantity options
+    * split pack is when something comes in a 6pk but we can get a single.  Usually at a higher price.
+    * Individual size options might be discontinued if a brand changes how they do things.  We'd need to preserve the old but not allow new orders.
+    * Maybe have an active list and an inactive list.  These values would be copied to line items so moving a value wouldn't break anything.
+  * discontinued - on/off for if this should appear in option lists.
+    * Is it worth it to have a date when the item was discontinued?
+  * Item - Link to generic item
+
+Item - Generic item - not associated with any specific source or brand
+  * Source Item Search - Ties Source Item to Item by search criteria.
+    * A json object which can handle multiple distinct criteria.
+      * "fuji apple", "gala apple", "red delicious apple"
+      * Exclusions: "chocolate milk" but exclude "milk chocolate chip"
+    * This search would be used to offer suggestions for products on a newly-created order.
+      * Possibly do the searches after the order is created on a follow-up page.
+      * Limit searches to line items which don't already have a set item.
+    * Used as a backup for when new Source Items are added so we don't end up with "Beef Brisket", "Brisket", "Sugar", "Granulated Sugar", "White Sugar"
+  * Category - split to a discrete model so we have consistency?
+    * Or would it simple enough to have a set list of strings somewhere and not allow free-form entry?
+
+Category - simple object to limit choices for category names.
+
+Order - order-level details for a specific order from a source
+  * date delivered - I sometimes know when an order is placed but not always.
+  * purchase order text - some random text assigned to a specific order.  Not used anymore
+
+Order Line Item - items on the order
+  * Source Item - created at time of order if one doesn't exist
+  * Quantity ordered
+  * Quantity delivered - might have some on back order
+  * Remote stock - will be delivered later by fedex/ups/usps
+  * prices - extended, pack, $/lb, tax, etc
+  * pack/unit sizes
+
