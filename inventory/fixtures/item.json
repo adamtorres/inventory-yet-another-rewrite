@@ -1,0 +1,62 @@
+[
+{
+  "model": "inventory.item",
+  "pk": 1,
+  "fields": {
+    "name": "Butter",
+    "source_item_search_criteria": "",
+    "description": "Brick of butter",
+    "category": 34
+  }
+},
+{
+  "model": "inventory.item",
+  "pk": 2,
+  "fields": {
+    "name": "All Purpose Flour",
+    "source_item_search_criteria": "",
+    "description": "Bag of flour",
+    "category": 44
+  }
+},
+{
+  "model": "inventory.item",
+  "pk": 3,
+  "fields": {
+    "name": "Sugar (Granulated)",
+    "source_item_search_criteria": "",
+    "description": "Bag of sugar",
+    "category": 44
+  }
+},
+{
+  "model": "inventory.item",
+  "pk": 4,
+  "fields": {
+    "name": "Sugar (Powdered)",
+    "source_item_search_criteria": "",
+    "description": "Bag of powdered sugar",
+    "category": 44
+  }
+},
+{
+  "model": "inventory.item",
+  "pk": 5,
+  "fields": {
+    "name": "Sugar (Light Brown)",
+    "source_item_search_criteria": "",
+    "description": "Bag of light brown sugar",
+    "category": 44
+  }
+},
+{
+  "model": "inventory.item",
+  "pk": 6,
+  "fields": {
+    "name": "Eggs",
+    "source_item_search_criteria": "",
+    "description": "Why are eggs included in dairy?",
+    "category": 34
+  }
+}
+]

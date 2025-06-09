@@ -1,0 +1,82 @@
+[
+{
+  "model": "inventory.source",
+  "pk": 12,
+  "fields": {
+    "name": "Sysco",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 13,
+  "fields": {
+    "name": "USFoods",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 14,
+  "fields": {
+    "name": "Shamrock",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 15,
+  "fields": {
+    "name": "Broulim's",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 16,
+  "fields": {
+    "name": "Costco",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 17,
+  "fields": {
+    "name": "Family Dollar",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 18,
+  "fields": {
+    "name": "Donated",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 19,
+  "fields": {
+    "name": "Whole Foods",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 20,
+  "fields": {
+    "name": "RSM",
+    "active": true
+  }
+},
+{
+  "model": "inventory.source",
+  "pk": 21,
+  "fields": {
+    "name": "Walmart",
+    "active": true
+  }
+}
+]

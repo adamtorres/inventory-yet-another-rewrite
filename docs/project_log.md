@@ -218,3 +218,32 @@ Clean up the test data.
 ```
 ./manage.py shell_plus -c  'inv_models.Category.objects.all().delete()'
 ```
+
+Same process for Source.  The create line is using double quotes as "Broulim's" has a single quote and there didn't
+appear to be an easy way to escape single quotes within a single quoted string.
+
+```
+./manage.py shell_plus -c  "[inv_models.Source.objects.create(name=n) for n in [\"Sysco\", \"USFoods\", \"Shamrock\", \"Broulim's\", \"Costco\", \"Family Dollar\", \"Donated\", \"Whole Foods\", \"RSM\", \"Walmart\"]]"
+./manage.py dumpdata --indent 2 --output inventory/fixtures/source.json inventory.source
+./manage.py shell_plus -c  'inv_models.Source.objects.all().delete()'
+```
+
+Manually load the test data into the database.  This is useful for building new test data objects which depend on other
+objects.
+
+```
+./manage.py loaddata --app inventory category source
+```
+
+Creating Item objects is a little more involved since they need the Category instance.
+
+```
+>>> dairy = Category.objects.get(name="Dairy")
+>>> dry = Category.objects.get(name="Dry")
+>>> inv_models.Item.objects.create(name="Butter", source_item_search_criteria="", description="Brick of butter", category=dairy)
+>>> inv_models.Item.objects.create(name="Eggs", source_item_search_criteria="", description="Why are eggs included in dairy?", category=dairy)
+>>> inv_models.Item.objects.create(name="All Purpose Flour", source_item_search_criteria="", description="Bag of flour", category=dry)
+>>> inv_models.Item.objects.create(name="Sugar (Granulated)", source_item_search_criteria="", description="Bag of sugar", category=dry)
+>>> inv_models.Item.objects.create(name="Sugar (Powdered)", source_item_search_criteria="", description="Bag of powdered sugar", category=dry)
+>>> inv_models.Item.objects.create(name="Sugar (Light Brown)", source_item_search_criteria="", description="Bag of light brown sugar", category=dry)
+```

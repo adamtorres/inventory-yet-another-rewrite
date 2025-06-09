@@ -7,3 +7,6 @@ class Item(models.Model):
         help_text="overly complicated JSON object used to suggest this item for new source items.")
     description = models.TextField(help_text="General description of the item and how it'd likely be used.")
     category = models.ForeignKey("inventory.Category", on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return f"({self.category.name}) {self.name}"
