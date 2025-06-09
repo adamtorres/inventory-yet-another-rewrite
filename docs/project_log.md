@@ -188,3 +188,33 @@ Order Line Item - items on the order
   * prices - extended, pack, $/lb, tax, etc
   * pack/unit sizes
 
+### Test data
+
+This assumes there is no data in the database for the inventory app.  Fixtures will be created from data created by
+these instructions for use in tests.  If there is preexisting data, some tests will fail.  Also, if there is preexisting
+data, it won't be there for long as some steps here will delete all data in the tables.
+
+From the root of the project folder, create a `fixtures` folder within the `inventory` folder.
+
+```
+mkdir inventory/fixtures
+```
+
+Use a one-liner to create a pile of Category objects to use in tests.  These will be removed later and only exist in a
+fixture.
+
+```
+./manage.py shell_plus -c  '[inv_models.Category.objects.create(name=n) for n in ["Dairy", "Beef", "Pork", "Chicken", "Drink", "Flavor", "Fruit", "Veggie", "Sauce", "Dessert", "Dry"]]'
+```
+
+Dump the test data to a json file.
+
+```
+./manage.py dumpdata --indent 2 --output inventory/fixtures/category.json inventory.category
+```
+
+Clean up the test data.
+
+```
+./manage.py shell_plus -c  'inv_models.Category.objects.all().delete()'
+```

@@ -1,0 +1,79 @@
+[
+{
+  "model": "inventory.category",
+  "pk": 34,
+  "fields": {
+    "name": "Dairy"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 35,
+  "fields": {
+    "name": "Beef"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 36,
+  "fields": {
+    "name": "Pork"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 37,
+  "fields": {
+    "name": "Chicken"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 38,
+  "fields": {
+    "name": "Drink"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 39,
+  "fields": {
+    "name": "Flavor"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 40,
+  "fields": {
+    "name": "Fruit"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 41,
+  "fields": {
+    "name": "Veggie"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 42,
+  "fields": {
+    "name": "Sauce"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 43,
+  "fields": {
+    "name": "Dessert"
+  }
+},
+{
+  "model": "inventory.category",
+  "pk": 44,
+  "fields": {
+    "name": "Dry"
+  }
+}
+]
