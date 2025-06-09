@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'inventory.apps.InventoryConfig',
 ]
 
@@ -122,3 +123,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SHELL_PLUS_IMPORTS = [
+    # 'from some_app import some_module as renamed_module',
+    # 'import some_app',
+    'from inventory import models as inv_models',
+]
+SHELL_PLUS_PYGMENTS_ENABLED = True
+SHELL_PLUS_PRINT_SQL_TRUNCATE = 0
