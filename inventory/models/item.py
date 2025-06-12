@@ -10,4 +10,4 @@ class Item(models.Model):
     category = models.ForeignKey("inventory.Category", on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return f"({self.category.name}) {self.name}"
+        return self.name

@@ -28,6 +28,10 @@ class SourceItemDetailView(generic.DetailView):
 class SourceItemListView(generic.ListView):
     model = inv_models.SourceItem
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.order_by().order_by(
+            "source__name", "item__category__name", "common_name", "expanded_name", "cryptic_name")
 
 class SourceItemUpdateView(generic.UpdateView):
     model = inv_models.SourceItem

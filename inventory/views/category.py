@@ -24,6 +24,7 @@ class CategoryDetailView(generic.DetailView):
 
 class CategoryListView(generic.ListView):
     model = inv_models.Category
+    ordering = ["name"]
 
 
 class CategoryUpdateView(generic.UpdateView):

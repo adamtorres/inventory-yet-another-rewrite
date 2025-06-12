@@ -24,6 +24,7 @@ class SourceDetailView(generic.DetailView):
 
 class SourceListView(generic.ListView):
     model = inv_models.Source
+    ordering = ["name"]
 
 
 class SourceUpdateView(generic.UpdateView):

@@ -26,6 +26,10 @@ class ItemDetailView(generic.DetailView):
 class ItemListView(generic.ListView):
     model = inv_models.Item
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.order_by().order_by("category__name", "name")
+
 
 class ItemUpdateView(generic.UpdateView):
     model = inv_models.Item
