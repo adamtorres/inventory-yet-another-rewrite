@@ -12,4 +12,10 @@ urlpatterns = [
     urls.path("category/<int:pk>/delete", i_views.CategoryDeleteView.as_view(), name="category_delete"),
     urls.path("category/<int:pk>/edit", i_views.CategoryUpdateView.as_view(), name="category_update"),
     urls.path("category/new", i_views.CategoryCreateView.as_view(), name="category_create"),
+
+    urls.path("sources/", i_views.SourceListView.as_view(), name="source_list"),
+    urls.path("source/<int:pk>", i_views.SourceDetailView.as_view(), name="source_detail"),
+    urls.path("source/<int:pk>/delete", i_views.SourceDeleteView.as_view(), name="source_delete"),
+    urls.path("source/<int:pk>/edit", i_views.SourceUpdateView.as_view(), name="source_update"),
+    urls.path("source/new", i_views.SourceCreateView.as_view(), name="source_create"),
 ]
