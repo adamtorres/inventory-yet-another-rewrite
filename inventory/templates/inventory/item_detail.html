@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Item{% endblock %}
+
+{% block content %}
+<div>Name: {{ object.name }}</div>
+<div>Description: {{ object.description }}</div>
+<div>Category: {{ object.category }}</div>
+<ul>
+    <li><a href="{% url "inventory:item_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "inventory:item_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "inventory:item_list" %}">Item List</a></li>
+</ul>
+{% endblock %}

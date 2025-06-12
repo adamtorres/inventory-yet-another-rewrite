@@ -13,9 +13,17 @@ urlpatterns = [
     urls.path("category/<int:pk>/edit", i_views.CategoryUpdateView.as_view(), name="category_update"),
     urls.path("category/new", i_views.CategoryCreateView.as_view(), name="category_create"),
 
+    urls.path("items/", i_views.ItemListView.as_view(), name="item_list"),
+    urls.path("item/<int:pk>", i_views.ItemDetailView.as_view(), name="item_detail"),
+    urls.path("item/<int:pk>/delete", i_views.ItemDeleteView.as_view(), name="item_delete"),
+    urls.path("item/<int:pk>/edit", i_views.ItemUpdateView.as_view(), name="item_update"),
+    urls.path("item/new", i_views.ItemCreateView.as_view(), name="item_create"),
+
     urls.path("sources/", i_views.SourceListView.as_view(), name="source_list"),
     urls.path("source/<int:pk>", i_views.SourceDetailView.as_view(), name="source_detail"),
     urls.path("source/<int:pk>/delete", i_views.SourceDeleteView.as_view(), name="source_delete"),
     urls.path("source/<int:pk>/edit", i_views.SourceUpdateView.as_view(), name="source_update"),
     urls.path("source/new", i_views.SourceCreateView.as_view(), name="source_create"),
+
+    urls.path("", i_views.InventoryHomepageView.as_view(), name="homepage"),
 ]

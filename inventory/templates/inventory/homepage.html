@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Home{% endblock %}
+
+{% block content %}
+<ul>
+<li><a href="{% url "inventory:category_list" %}">Categories</a></li>
+<li><a href="{% url "inventory:source_list" %}">Sources</a></li>
+<li><a href="{% url "inventory:item_list" %}">Items</a></li>
+</ul>
+{% endblock %}

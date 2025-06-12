@@ -1,2 +1,10 @@
+from django.views import generic
+
+
 from .category import CategoryUpdateView, CategoryListView, CategoryDetailView, CategoryDeleteView, CategoryCreateView
+from .item import ItemUpdateView, ItemListView, ItemDetailView, ItemDeleteView, ItemCreateView
 from .source import SourceUpdateView, SourceListView, SourceDetailView, SourceDeleteView, SourceCreateView
+
+
+class InventoryHomepageView(generic.TemplateView):
+    template_name = "inventory/homepage.html"

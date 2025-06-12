@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Item List{% endblock %}
+
+{% block content %}
+<ul>
+{% for item in item_list %}
+    <li><a href="{% url "inventory:item_detail" pk=item.pk %}">{{ item.name }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "inventory:item_create" %}">New Item</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}
