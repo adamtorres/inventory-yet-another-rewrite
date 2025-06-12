@@ -1,1 +1,1 @@
-from .category import CategoryListView
+from .category import CategoryUpdateView, CategoryListView, CategoryDetailView, CategoryDeleteView, CategoryCreateView

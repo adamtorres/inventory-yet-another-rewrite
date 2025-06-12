@@ -6,7 +6,10 @@
 {% block content %}
 <ul>
 {% for category in category_list %}
-    <li>{{ category.name }}</li>
+    <li><a href="{% url "inventory:category_detail" pk=category.pk %}">{{ category.name }}</a></li>
 {% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "inventory:category_create" %}">New Category</a></li>
 </ul>
 {% endblock %}
