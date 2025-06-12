@@ -14,6 +14,7 @@
 <div>item: {{ object.item }}</div>
 <div>brand: {{ object.brand }}</div>
 <div>source category: {{ object.source_category }}</div>
+<div>category: {{ object.item.category }}</div>
 <ul>
     <li><a href="{% url "inventory:sourceitem_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "inventory:sourceitem_delete" pk=object.pk %}">Delete</a></li>
