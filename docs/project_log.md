@@ -263,4 +263,10 @@ At this point, an Order object should be created and saved.
 ##### The line items
 
 * Allow add/change/remove for line items on the order.
-* 
+
+# Ideas
+
+## Dynamically add supporting items
+
+When adding an invoice, it would be handy to be able to add a SourceItem, Item, or Category without having to reload the
+page.  A possibility might be [Django Unicorn](https://www.django-unicorn.com/docs/)
