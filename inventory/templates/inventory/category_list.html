@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Category List{% endblock %}
+
+{% block content %}
+<ul>
+{% for category in category_list %}
+    <li>{{ category.name }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

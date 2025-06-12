@@ -145,7 +145,6 @@ individual models, views, and tests can be in their own files.
 
 ### Models
 
-
 Source - where the products are purchased
   * Name
   * Active - on/off for if this source should appear in option lists like 'new order' or such.
@@ -247,3 +246,21 @@ Creating Item objects is a little more involved since they need the Category ins
 >>> inv_models.Item.objects.create(name="Sugar (Powdered)", source_item_search_criteria="", description="Bag of powdered sugar", category=dry)
 >>> inv_models.Item.objects.create(name="Sugar (Light Brown)", source_item_search_criteria="", description="Bag of light brown sugar", category=dry)
 ```
+
+### Entering data
+
+#### Entering an invoice/order
+
+##### The order-level data
+
+* Go to the 'Enter invoice' page.
+* Find the source in the control.
+  * If the source doesn't exist, should be able to open a popup to quickly add it.
+* Enter the date, invoice/order numbers, and any other order-level data.
+
+At this point, an Order object should be created and saved.
+
+##### The line items
+
+* Allow add/change/remove for line items on the order.
+* 
