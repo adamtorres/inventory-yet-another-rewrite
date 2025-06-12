@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Source Item List{% endblock %}
+
+{% block content %}
+<ul>
+{% for sourceitem in sourceitem_list %}
+    <li><a style="{% if sourceitem.discontinued %}text-decoration: line-through{% endif %}" href="{% url "inventory:sourceitem_detail" pk=sourceitem.pk %}">{{ sourceitem.cryptic_name }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "inventory:sourceitem_create" %}">New Source Item</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}

@@ -6,4 +6,4 @@ class Source(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"name={self.name!r}"
+        return self.name

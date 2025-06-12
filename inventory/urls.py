@@ -25,5 +25,11 @@ urlpatterns = [
     urls.path("source/<int:pk>/edit", i_views.SourceUpdateView.as_view(), name="source_update"),
     urls.path("source/new", i_views.SourceCreateView.as_view(), name="source_create"),
 
+    urls.path("source_items/", i_views.SourceItemListView.as_view(), name="sourceitem_list"),
+    urls.path("source_item/<int:pk>", i_views.SourceItemDetailView.as_view(), name="sourceitem_detail"),
+    urls.path("source_item/<int:pk>/delete", i_views.SourceItemDeleteView.as_view(), name="sourceitem_delete"),
+    urls.path("source_item/<int:pk>/edit", i_views.SourceItemUpdateView.as_view(), name="sourceitem_update"),
+    urls.path("source_item/new", i_views.SourceItemCreateView.as_view(), name="sourceitem_create"),
+
     urls.path("", i_views.InventoryHomepageView.as_view(), name="homepage"),
 ]

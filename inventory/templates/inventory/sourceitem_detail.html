@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Source Item{% endblock %}
+
+{% block content %}
+<div>Source: {{ object.source }}</div>
+<div>Status: {% if object.discontinued %}Discontinued{% else %}Should be available{% endif %}</div>
+<div>item number: {{ object.item_number }}</div>
+<div>extra number: {{ object.extra_number }}</div>
+<div>cryptic name: {{ object.cryptic_name }}</div>
+<div>expanded name: {{ object.expanded_name }}</div>
+<div>common name: {{ object.common_name }}</div>
+<div>item: {{ object.item }}</div>
+<div>brand: {{ object.brand }}</div>
+<div>source category: {{ object.source_category }}</div>
+<ul>
+    <li><a href="{% url "inventory:sourceitem_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "inventory:sourceitem_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "inventory:sourceitem_list" %}">Source Item List</a></li>
+</ul>
+{% endblock %}
