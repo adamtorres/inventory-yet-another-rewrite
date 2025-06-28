@@ -15,6 +15,11 @@
 <div>brand: {{ object.brand }}</div>
 <div>source category: {{ object.source_category }}</div>
 <div>category: {{ object.item.category }}</div>
+<div>unit size: {{ object.unit_size }}</div>
+<div>subunit size: {{ object.subunit_size }}</div>
+<div>active: {{ object.active }}</div>
+<div>quantity: {{ object.quantity }}</div>
+<div>allow split pack: {{ object.allow_split_pack }}</div>
 <ul>
     <li><a href="{% url "inventory:sourceitem_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "inventory:sourceitem_delete" pk=object.pk %}">Delete</a></li>

@@ -7,6 +7,14 @@
 <div>Name: {{ object.name }}</div>
 <div>Description: {{ object.description }}</div>
 <div>Category: {{ object.category }}</div>
+<div>
+Source Items:
+<ul>
+    {% for si in source_items %}
+        <li><a href="{% url "inventory:sourceitem_detail" pk=si.pk %}">{{ si }}</a></li>
+    {% endfor %}
+</ul>
+</div>
 <ul>
     <li><a href="{% url "inventory:item_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "inventory:item_delete" pk=object.pk %}">Delete</a></li>

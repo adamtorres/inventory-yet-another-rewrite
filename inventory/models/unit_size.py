@@ -15,4 +15,7 @@ class UnitSize(models.Model):
         ordering = ["unit", "amount"]
 
     def __str__(self):
-        return f"{self.amount} {self.unit}"
+        _unit = "pk" if self.unit == "subunit" else f" {self.unit}"
+        if self.amount:
+            return f"{self.amount}{_unit}"
+        return _unit.strip()

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Unit Size{% endblock %}
+
+{% block content %}
+Unit Size: {{ object.amount }} {{ object.unit }}
+<ul>
+    <li><a href="{% url "inventory:unitsize_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "inventory:unitsize_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "inventory:unitsize_list" %}">Unit Size List</a></li>
+</ul>
+{% endblock %}

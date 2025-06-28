@@ -6,7 +6,7 @@ from .item import ItemUpdateView, ItemListView, ItemDetailView, ItemDeleteView, 
 from .source import SourceUpdateView, SourceListView, SourceDetailView, SourceDeleteView, SourceCreateView
 from .source_item import (
     SourceItemUpdateView, SourceItemListView, SourceItemDetailView, SourceItemDeleteView, SourceItemCreateView)
-
+from .unit_size import UnitSizeUpdateView, UnitSizeListView, UnitSizeDetailView, UnitSizeDeleteView, UnitSizeCreateView
 
 class InventoryHomepageView(generic.TemplateView):
     template_name = "inventory/homepage.html"

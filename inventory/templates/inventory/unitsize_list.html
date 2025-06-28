@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Unit Size List{% endblock %}
+
+{% block content %}
+<ul>
+{% for unitsize in unitsize_list %}
+    <li><a href="{% url "inventory:unitsize_detail" pk=unitsize.pk %}">{{ unitsize.amount }} {{ unitsize.unit }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "inventory:unitsize_create" %}">New Unit Size</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}

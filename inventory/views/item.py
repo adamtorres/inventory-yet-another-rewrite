@@ -22,6 +22,11 @@ class ItemDeleteView(generic.DeleteView):
 class ItemDetailView(generic.DetailView):
     queryset = inv_models.Item.objects.all()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["source_items"] = self.object.sourceitem_set.all()
+        return context
+
 
 class ItemListView(generic.ListView):
     model = inv_models.Item

@@ -9,6 +9,11 @@ class SourceItem(models.Model):
     brand = models.CharField(max_length=255)
     source_category = models.CharField(max_length=255, help_text="probably won't agree with Item.category")
     unit_size = models.ForeignKey("inventory.UnitSize", on_delete=models.CASCADE, null=True)
+    subunit_size = models.ForeignKey(
+        "inventory.UnitSize", on_delete=models.CASCADE, null=True, blank=True, help_text=(
+            "For when the box contains packs of multiple units.  Like a box with 8 packs of 6 pudding cups."),
+        related_name="bob", related_query_name="bob"
+    )
     active = models.BooleanField(
         default=True, help_text="Products sometimes change their packaging.  This option allows the unit size to remain"
                                 " tied to the source item but no longer selectable.")
@@ -38,4 +43,8 @@ class SourceItem(models.Model):
         help_text="Some sources have a second identifying number/code.")
 
     def __str__(self):
-        return self.common_name or self.expanded_name or self.cryptic_name
+        name = self.common_name or self.expanded_name or self.cryptic_name
+        subunit_size = ""
+        if self.unit_size and self.unit_size.unit == "subunit":
+            subunit_size = f" {self.subunit_size}"
+        return f"{self.source} {name} {self.quantity}x {self.unit_size}{subunit_size}"
