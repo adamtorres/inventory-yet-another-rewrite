@@ -113,8 +113,11 @@ Running migrations:
 
 Creating a user with a very basic password as this is just a practice app and I don't want to remember a 20 character
 mess.
-```
+```shell
 $ ./manage.py createsuperuser --username adam --email adam@example.com --skip-checks
+```
+The output of the `createsuperuser` command with user input.
+```
 Password: 
 Password (again): 
 This password is too short. It must contain at least 8 characters.
@@ -195,20 +198,20 @@ data, it won't be there for long as some steps here will delete all data in the 
 
 From the root of the project folder, create a `fixtures` folder within the `inventory` folder.
 
-```
+```shell
 mkdir inventory/fixtures
 ```
 
 Use a one-liner to create a pile of Category objects to use in tests.  These will be removed later and only exist in a
-fixture.
+fixture.  The `inv_models` module is loaded via settings so we don't have to manually do the import every time.
 
-```
+```shell
 ./manage.py shell_plus -c  '[inv_models.Category.objects.create(name=n) for n in ["Dairy", "Beef", "Pork", "Chicken", "Drink", "Flavor", "Fruit", "Veggie", "Sauce", "Dessert", "Dry"]]'
 ```
 
 Dump the test data to a json file.
 
-```
+```shell
 ./manage.py dumpdata --indent 2 --output inventory/fixtures/category.json inventory.category
 ```
 
@@ -227,11 +230,39 @@ appear to be an easy way to escape single quotes within a single quoted string.
 ./manage.py shell_plus -c  'inv_models.Source.objects.all().delete()'
 ```
 
+And once again with the process for UnitSize but this time via shell_plus.
+```shell
+./manage.py shell_plus
+```
+
+Left out the preceding `>>>` to make copy/paste easier.
+
+```python
+inv_models.UnitSize.objects.create(unit="#10 can", amount=0)
+inv_models.UnitSize.objects.create(unit="floz", amount=15.5)
+inv_models.UnitSize.objects.create(unit="gallon", amount=1)
+inv_models.UnitSize.objects.create(unit="pound", amount=50)
+inv_models.UnitSize.objects.create(unit="pound", amount=25)
+inv_models.UnitSize.objects.create(unit="pound", amount=10)
+inv_models.UnitSize.objects.create(unit="oz", amount=16)
+inv_models.UnitSize.objects.create(unit="oz", amount=18)
+inv_models.UnitSize.objects.create(unit="ct", amount=113)
+inv_models.UnitSize.objects.create(unit="dz", amount=30)
+inv_models.UnitSize.objects.create(unit="dz", amount=15)
+inv_models.UnitSize.objects.create(unit="pound", amount=1)
+```
+
+And dumping the data is the same as for previous models.
+
+```shell
+./manage.py dumpdata --indent 2 --output inventory/fixtures/unitsize.json inventory.unitsize
+```
+
 Manually load the test data into the database.  This is useful for building new test data objects which depend on other
 objects.
 
 ```
-./manage.py loaddata --app inventory category source
+./manage.py loaddata --app inventory category source unitsize
 ```
 
 Creating Item objects is a little more involved since they need the Category instance.
