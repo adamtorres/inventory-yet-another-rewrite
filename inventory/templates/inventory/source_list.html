@@ -6,7 +6,7 @@
 {% block content %}
 <ul>
 {% for source in source_list %}
-    <li><a style="{% if not source.active %}text-decoration: line-through{% endif %}" href="{% url "inventory:source_detail" pk=source.pk %}">{{ source.name }}</a></li>
+    <li><a style="{% if not source.active %}text-decoration: line-through{% endif %}" href="{% url "inventory:source_detail" pk=source.pk %}">{{ source.name }} - {{ source.customer_number }}</a></li>
 {% endfor %}
 </ul>
 <ul>

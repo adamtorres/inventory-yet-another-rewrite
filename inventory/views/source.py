@@ -6,7 +6,7 @@ from inventory import models as inv_models
 
 class SourceCreateView(generic.CreateView):
     model = inv_models.Source
-    fields = ["name"]
+    fields = ["name", "customer_number"]
 
     def get_success_url(self):
         return urls.reverse("inventory:source_detail", args=(self.object.id,))
@@ -24,12 +24,12 @@ class SourceDetailView(generic.DetailView):
 
 class SourceListView(generic.ListView):
     model = inv_models.Source
-    ordering = ["name"]
+    ordering = ["name", "customer_number"]
 
 
 class SourceUpdateView(generic.UpdateView):
     model = inv_models.Source
-    fields = ["name", "active"]
+    fields = ["name", "active", "customer_number"]
 
     def get_success_url(self):
         return urls.reverse("inventory:source_detail", args=(self.object.id,))

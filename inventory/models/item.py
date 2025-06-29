@@ -8,8 +8,6 @@ class Item(models.Model):
         blank=True)
     description = models.TextField(help_text="General description of the item and how it'd likely be used.")
     category = models.ForeignKey("inventory.Category", on_delete=models.DO_NOTHING)
-    # Why is this here? I might've had an idea at some point and half added it but ended up in a different direction.
-    unit_size = models.ForeignKey("inventory.UnitSize", on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
         return self.name

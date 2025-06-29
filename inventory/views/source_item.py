@@ -7,7 +7,7 @@ from inventory import models as inv_models
 class SourceItemCreateView(generic.CreateView):
     model = inv_models.SourceItem
     fields = [
-        "source", "discontinued", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
+        "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
         "item", "brand", "source_category", "unit_size", "subunit_size", "active", "quantity", "allow_split_pack"]
 
     def get_success_url(self):
@@ -36,7 +36,7 @@ class SourceItemListView(generic.ListView):
 class SourceItemUpdateView(generic.UpdateView):
     model = inv_models.SourceItem
     fields = [
-        "source", "discontinued", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
+        "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
         "item", "brand", "source_category", "unit_size", "subunit_size", "active", "quantity", "allow_split_pack"]
 
     def get_success_url(self):

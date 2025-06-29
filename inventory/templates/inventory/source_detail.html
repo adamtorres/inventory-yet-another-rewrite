@@ -5,6 +5,7 @@
 
 {% block content %}
 <div>Name: {{ object.name }}</div>
+<div>Customer Number: {{ object.customer_number }}</div>
 <div>Status: Is{% if not object.active %} not{% endif %} active</div>
 <ul>
     <li><a href="{% url "inventory:source_update" pk=object.pk %}">Edit</a></li>

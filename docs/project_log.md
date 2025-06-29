@@ -153,18 +153,31 @@ Source - where the products are purchased
   * Active - on/off for if this source should appear in option lists like 'new order' or such.
   * customer number - pretty sure we only have one customer number per source
   * contact - details for the customer service contact - name/email/phone
+    * Do we care about the history?  Should there be a separate table holding contact info so the most recent is current
+      but we maintain the previous contacts?
+
+UnitSize - defines the size of the SourceItem.  Also used as subunit - packs within a container.
+  * unit - the type of unit.  floz, pound, count, etc
+  * amount - how many of the unit is there.
 
 Source Item - the products purchased from the source
-  * source-specific item code
-  * pack/quantity options
-    * split pack is when something comes in a 6pk but we can get a single.  Usually at a higher price.
-    * Individual size options might be discontinued if a brand changes how they do things.  We'd need to preserve the old but not allow new orders.
-    * Maybe have an active list and an inactive list.  These values would be copied to line items so moving a value wouldn't break anything.
-  * discontinued - on/off for if this should appear in option lists.
-    * Is it worth it to have a date when the item was discontinued?
   * Item - Link to generic item
+  * brand - just a text label to set the brand.  Not too important.
+  * source category - each supplier puts items in odd places.
+  * unit size - Uses UnitSize for this.  
+  * subunit size - For when there are packs of a thing.  "unit size" could be "8 subunit" and subunit would be "3 oz" for a box with 8 packs of pudding cups.
+  * active - is this item still available at the unit/subunit size?
+    * Individual size options might be discontinued if a brand changes how they do things.  We'd need to preserve the old but not allow new orders.
+    * Is it worth it to have a date when the item was discontinued?
+  * quantity - how many of the unit or subunit are there?
+  * allow split pack - split pack is when something comes in a 6pk but we can get a single.  Usually at a higher price.
+  * cryptic name - the name as it appears on the invoice.  Most places horribly abbreviate names
+  * expanded name - the cryptic name but with all abbreviations spelled out.  Any unknown abbreviations are left as-is until known.
+  * common name - the name we tend to use for the product.  We'd say "whipped cream" even if the item is "whipped topping".
+  * source-specific item code(s) - most vendors have one code.  Some have two.
 
 Item - Generic item - not associated with any specific source or brand
+  * name - a generic non-branded name
   * Source Item Search - Ties Source Item to Item by search criteria.
     * A json object which can handle multiple distinct criteria.
       * "fuji apple", "gala apple", "red delicious apple"
@@ -173,8 +186,9 @@ Item - Generic item - not associated with any specific source or brand
       * Possibly do the searches after the order is created on a follow-up page.
       * Limit searches to line items which don't already have a set item.
     * Used as a backup for when new Source Items are added so we don't end up with "Beef Brisket", "Brisket", "Sugar", "Granulated Sugar", "White Sugar"
-  * Category - split to a discrete model so we have consistency?
-    * Or would it simple enough to have a set list of strings somewhere and not allow free-form entry?
+  * description - general description of the item
+  * Category - This is our category.  We could have a "cheese" category instead of lumping it into "dairy".
+    * This is a discrete model to help prevent typos
 
 Category - simple object to limit choices for category names.
 

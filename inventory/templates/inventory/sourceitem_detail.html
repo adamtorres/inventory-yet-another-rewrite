@@ -5,7 +5,7 @@
 
 {% block content %}
 <div>Source: {{ object.source }}</div>
-<div>Status: {% if object.discontinued %}Discontinued{% else %}Should be available{% endif %}</div>
+<div>Status: {% if not object.active %}Discontinued{% else %}Should be available{% endif %}</div>
 <div>item number: {{ object.item_number }}</div>
 <div>extra number: {{ object.extra_number }}</div>
 <div>cryptic name: {{ object.cryptic_name }}</div>
@@ -17,7 +17,6 @@
 <div>category: {{ object.item.category }}</div>
 <div>unit size: {{ object.unit_size }}</div>
 <div>subunit size: {{ object.subunit_size }}</div>
-<div>active: {{ object.active }}</div>
 <div>quantity: {{ object.quantity }}</div>
 <div>allow split pack: {{ object.allow_split_pack }}</div>
 <ul>
