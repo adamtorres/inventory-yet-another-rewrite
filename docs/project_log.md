@@ -197,12 +197,15 @@ Order - order-level details for a specific order from a source
   * purchase order text - some random text assigned to a specific order.  Not used anymore
 
 Order Line Item - items on the order
+  * Order - the link to the order-level information
   * Source Item - created at time of order if one doesn't exist
   * Quantity ordered
   * Quantity delivered - might have some on back order
-  * Remote stock - will be delivered later by fedex/ups/usps
+  * Remote stock - will be delivered later by fedex/ups/usps.  Not backorder.  Tiny difference.
+  * expect backorder delivery - Sysco will sometimes be out of something we ordered but send a substitute.  In that 
+    case, we will not get the originally ordered item.
   * prices - extended, pack, $/lb, tax, etc
-  * pack/unit sizes
+  * weights - some vendors include individual weights.  Some don't.
 
 ### Test data
 
