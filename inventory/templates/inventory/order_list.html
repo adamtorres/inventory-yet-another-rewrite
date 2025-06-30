@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Order List{% endblock %}
+
+{% block content %}
+<ul>
+{% for order in order_list %}
+    <li><a href="{% url "inventory:order_detail" pk=order.pk %}">{{ order }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "inventory:order_create" %}">New Order</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}

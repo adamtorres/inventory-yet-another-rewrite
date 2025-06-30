@@ -19,6 +19,25 @@ urlpatterns = [
     urls.path("item/<int:pk>/edit", i_views.ItemUpdateView.as_view(), name="item_update"),
     urls.path("item/new", i_views.ItemCreateView.as_view(), name="item_create"),
 
+    urls.path("orders/", i_views.OrderListView.as_view(), name="order_list"),
+    urls.path("order/<int:pk>", i_views.OrderDetailView.as_view(), name="order_detail"),
+    urls.path("order/<int:pk>/delete", i_views.OrderDeleteView.as_view(), name="order_delete"),
+    urls.path("order/<int:pk>/edit", i_views.OrderUpdateView.as_view(), name="order_update"),
+    urls.path("order/new", i_views.OrderCreateView.as_view(), name="order_create"),
+
+    urls.path(
+        "order/<int:order_pk>/lineitem/<int:pk>", i_views.OrderLineItemDetailView.as_view(),
+        name="orderlineitem_detail"),
+    urls.path(
+        "order/<int:order_pk>/lineitem/<int:pk>/delete", i_views.OrderLineItemDeleteView.as_view(),
+        name="orderlineitem_delete"),
+    urls.path(
+        "order/<int:order_pk>/lineitem/<int:pk>/edit", i_views.OrderLineItemUpdateView.as_view(),
+        name="orderlineitem_update"),
+    urls.path(
+        "order/<int:order_pk>/lineitem/new", i_views.OrderLineItemCreateView.as_view(),
+        name="orderlineitem_create"),
+
     urls.path("sources/", i_views.SourceListView.as_view(), name="source_list"),
     urls.path("source/<int:pk>", i_views.SourceDetailView.as_view(), name="source_detail"),
     urls.path("source/<int:pk>/delete", i_views.SourceDeleteView.as_view(), name="source_delete"),

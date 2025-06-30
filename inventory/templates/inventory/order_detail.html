@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Order{% endblock %}
+
+{% block content %}
+<div>source: {{ object.source }}</div>
+<div>delivered date: {{ object.delivered_date }}</div>
+<div>order number: {{ object.order_number }}</div>
+<div>po text: {{ object.po_text }}</div>
+<div>notes: {{ object.notes }}</div>
+<div>
+items:
+<ul>
+    {% for item in order.orderlineitem_set.all %}
+        <li><a href="{% url "inventory:orderlineitem_detail" order_pk=object.pk pk=item.pk %}">{{ item }}</a></li>
+    {% endfor %}
+</ul>
+</div>
+<ul>
+    <li><a href="{% url "inventory:orderlineitem_create" order_pk=object.pk %}">Add line item</a></li>
+    <li><a href="{% url "inventory:order_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "inventory:order_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "inventory:order_list" %}">Order List</a></li>
+</ul>
+{% endblock %}

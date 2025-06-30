@@ -3,7 +3,6 @@ from django.db import models
 
 class OrderLineItem(models.Model):
     order = models.ForeignKey("inventory.Order", on_delete=models.CASCADE)
-    # get to Item via source_item.item
     source_item = models.ForeignKey("inventory.SourceItem", on_delete=models.DO_NOTHING)
 
     line_item_number = models.IntegerField(default=0, help_text="the ordering on the invoice")
@@ -16,13 +15,12 @@ class OrderLineItem(models.Model):
 
     per_pack_price = models.DecimalField(max_digits=9, decimal_places=4)
     extended_price = models.DecimalField(max_digits=9, decimal_places=4)
-    tax = models.DecimalField(max_digits=9, decimal_places=4)
-    per_weight_price = models.DecimalField(max_digits=9, decimal_places=4)
+    tax = models.DecimalField(max_digits=9, decimal_places=4, default=0)
+    per_weight_price = models.DecimalField(max_digits=9, decimal_places=4, blank=True, null=True)
 
-    per_pack_weights = models.JSONField(default=list)
+    per_pack_weights = models.JSONField(default=list, blank=True, null=True)
     # pg_fields.ArrayField(models.DecimalField(max_digits=8, decimal_places=4), default=list)
-    total_weight = models.DecimalField(max_digits=9, decimal_places=4)
-
+    total_weight = models.DecimalField(max_digits=9, decimal_places=4, blank=True, null=True)
     notes = models.TextField(blank=True, default="", help_text="Anything remarkable about this specific item?")
     damaged = models.BooleanField(default=False, help_text="Item damaged but not necessarily sent back.")
     rejected = models.BooleanField(default=False, help_text="Item sent back because of damage, incorrect, etc.")

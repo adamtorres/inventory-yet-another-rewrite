@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Delete Order Line Item{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to delete "{{ object.line_item_number }} - {{ object.quantity_delivered }} - {{ object.source_item }}"?</p>
+    <input type="submit" value="Confirm">
+</form>
+<a href="{% url "inventory:orderlineitem_detail" order_pk=order_pk pk=object.id %}">Cancel</a>
+{% endblock %}
