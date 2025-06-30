@@ -22,6 +22,8 @@ class OrderLineItemCreateView(generic.CreateView):
         return context
 
     def get_success_url(self):
+        if "save_and_add_another" in self.request.POST:
+            return urls.reverse("inventory:orderlineitem_create", args=(self.object.order.pk,))
         return urls.reverse("inventory:orderlineitem_detail", args=(self.object.order.pk, self.object.id,))
 
 
@@ -58,4 +60,4 @@ class OrderLineItemUpdateView(generic.UpdateView):
         return context
 
     def get_success_url(self):
-        return urls.reverse("inventory:orderlineitem_detail", args=(self.object.id,))
+        return urls.reverse("inventory:orderlineitem_detail", args=(self.object.order.pk, self.object.id,))
