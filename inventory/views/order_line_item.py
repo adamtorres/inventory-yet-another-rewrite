@@ -65,7 +65,7 @@ class OrderLineItemUpdateView(generic.UpdateView):
 
 class OrderLineItemFormsetView(generic.detail.SingleObjectMixin, generic.FormView):
     model = inv_models.Order
-    template_name = "inventory/order_line_item_formset.html"
+    template_name = "inventory/order_line_item_formset_div.html"
     object = None
     pk_url_kwarg = "order_pk"
 

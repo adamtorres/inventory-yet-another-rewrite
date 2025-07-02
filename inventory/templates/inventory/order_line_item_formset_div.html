@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : New Order with items{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.management_form }}
+    {{ form.non_form_errors }}
+    {% for hidden_field in form.hidden_fields %}
+        {{ hidden_field.errors }}
+    {% endfor %}
+    <div id="formset-div">
+        <div class="formset-div-head">
+            <div class="formset-div-row">
+                <div class="formset-div-cell">{{ form.empty_form.DELETE.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.line_item_number.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.source_item.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.quantity_ordered.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.quantity_delivered.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.remote_stock.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.expect_backorder_delivery.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.per_pack_price.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.extended_price.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.tax.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.per_weight_price.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.per_pack_weights.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.total_weight.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.notes.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.damaged.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.rejected.label }}</div>
+                <div class="formset-div-cell">{{ form.empty_form.rejected_reason.label }}</div>
+            </div>
+        </div>
+        <div class="formset-div-body">
+        <div class='form-div-row' id='empty-form' style="display:none;">
+            {{ form.empty_form.as_div }}
+        </div>
+        {% for line_item_form in form.forms %}
+            {{ line_item_form.as_div }}
+        {% endfor %}
+        </div>
+    </div>
+    <input type="submit" value="Save">
+</form>
+<div>
+    <a href="{% url "inventory:order_list" %}">Back to orders</a>
+</div>
+{% endblock %}

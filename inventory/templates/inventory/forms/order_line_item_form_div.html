@@ -1,0 +1,88 @@
+{# Used by urls.reverse("orderlineitem_formset") #}
+{#   which uses for line_item_form in form.forms; line_item_form.as_div #}
+{#   form.as_div does NOT use this for each inline form. #}
+{# which points to OrderLineItemFormsetView #}
+{# which uses OrderLineItemFormset #}
+{# which uses OrderLineItemForm #}
+{# which uses this file. #}
+{% if form.instance.id %}
+  <!-- existing item -->
+{% else %}
+  <!-- new item -->
+{% endif %}
+<div class="formset-div-row">
+    <div class="formset-div-cell">
+        {{ form.DELETE.errors }}
+        {{ form.DELETE }}
+        <span id="hidden-fields-{{ form.instance.id }}">
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+        </span>
+    </div>
+    <div class="formset-div-cell">
+        {{ form.line_item_number.errors }}
+        {{ form.line_item_number }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.source_item.errors }}
+        {{ form.source_item }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.quantity_ordered.errors }}
+        {{ form.quantity_ordered }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.quantity_delivered.errors }}
+        {{ form.quantity_delivered }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.remote_stock.errors }}
+        {{ form.remote_stock }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.expect_backorder_delivery.errors }}
+        {{ form.expect_backorder_delivery }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.per_pack_price.errors }}
+        {{ form.per_pack_price }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.extended_price.errors }}
+        {{ form.extended_price }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.tax.errors }}
+        {{ form.tax }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.per_weight_price.errors }}
+        {{ form.per_weight_price }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.per_pack_weights.errors }}
+        {{ form.per_pack_weights }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.total_weight.errors }}
+        {{ form.total_weight }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.notes.errors }}
+        {{ form.notes }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.damaged.errors }}
+        {{ form.damaged }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.rejected.errors }}
+        {{ form.rejected }}
+    </div>
+    <div class="formset-div-cell">
+        {{ form.rejected_reason.errors }}
+        {{ form.rejected_reason }}
+    </div>
+</div>
