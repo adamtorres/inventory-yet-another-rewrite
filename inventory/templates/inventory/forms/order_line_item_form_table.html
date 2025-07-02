@@ -1,0 +1,86 @@
+{# Used by urls.reverse("orderlineitem_formset") #}
+{#   which uses for line_item_form in form.forms; line_item_form.as_table #}
+{#   form.as_table does NOT use this for each inline form. #}
+{# which points to OrderLineItemFormsetView #}
+{# which uses OrderLineItemFormset #}
+{# which uses OrderLineItemForm #}
+{# which uses this file. #}
+{% if form.instance.id %}
+  <!-- existing item -->
+{% else %}
+  <!-- new item -->
+{% endif %}
+    <td class="delete_col">
+        {{ form.DELETE.errors }}
+        {{ form.DELETE }}
+        <span id="hidden-fields-{{ form.instance.id }}">
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+        </span>
+    </td>
+    <td class="line_item_number_col">
+        {{ form.line_item_number.errors }}
+        {{ form.line_item_number }}
+    </td>
+    <td class="source_item_col">
+        {{ form.source_item.errors }}
+        {{ form.source_item }}
+    </td>
+    <td class="quantity_ordered_col">
+        {{ form.quantity_ordered.errors }}
+        {{ form.quantity_ordered }}
+    </td>
+    <td class="quantity_delivered_col">
+        {{ form.quantity_delivered.errors }}
+        {{ form.quantity_delivered }}
+    </td>
+    <td class="remote_stock_col">
+        {{ form.remote_stock.errors }}
+        {{ form.remote_stock }}
+    </td>
+    <td class="expect_backorder_delivery_col">
+        {{ form.expect_backorder_delivery.errors }}
+        {{ form.expect_backorder_delivery }}
+    </td>
+    <td class="per_pack_price_col">
+        {{ form.per_pack_price.errors }}
+        {{ form.per_pack_price }}
+    </td>
+    <td class="extended_price_col">
+        {{ form.extended_price.errors }}
+        {{ form.extended_price }}
+    </td>
+    <td class="tax_col">
+        {{ form.tax.errors }}
+        {{ form.tax }}
+    </td>
+    <td class="per_weight_price_col">
+        {{ form.per_weight_price.errors }}
+        {{ form.per_weight_price }}
+    </td>
+    <td class="per_pack_weights_col">
+        {{ form.per_pack_weights.errors }}
+        {{ form.per_pack_weights }}
+    </td>
+    <td class="total_weight_col">
+        {{ form.total_weight.errors }}
+        {{ form.total_weight }}
+    </td>
+    <td class="notes_col">
+        {{ form.notes.errors }}
+        {{ form.notes }}
+    </td>
+    <td class="damaged_col">
+        {{ form.damaged.errors }}
+        {{ form.damaged }}
+    </td>
+    <td class="rejected_col">
+        {{ form.rejected.errors }}
+        {{ form.rejected }}
+    </td>
+    <td class="rejected_reason_col">
+        {{ form.rejected_reason.errors }}
+        {{ form.rejected_reason }}
+    </td>

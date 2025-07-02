@@ -1,0 +1,49 @@
+import decimal
+import logging
+from email.policy import default
+
+from django import forms
+
+from inventory import models as inv_models
+
+
+class OrderLineItemForm(forms.ModelForm):
+    template_name_table = "inventory/forms/order_line_item_form_table.html"
+    source_item = forms.ModelChoiceField(inv_models.SourceItem.objects.all())
+    line_item_number = forms.IntegerField()
+    quantity_ordered = forms.IntegerField()
+    quantity_delivered = forms.IntegerField()
+    remote_stock = forms.BooleanField(required=False)
+    expect_backorder_delivery = forms.BooleanField(required=False)
+    per_pack_price = forms.DecimalField(max_digits=10, decimal_places=4, required=False)
+    extended_price = forms.DecimalField(max_digits=10, decimal_places=4, required=False)
+    tax = forms.DecimalField(max_digits=10, decimal_places=4, required=False)
+    per_weight_price = forms.DecimalField(max_digits=10, decimal_places=4, required=False)
+    per_pack_weights = forms.JSONField(required=False)
+    total_weight = forms.DecimalField(max_digits=10, decimal_places=4, required=False)
+    notes = forms.CharField(required=False)
+    damaged = forms.BooleanField(required=False)
+    rejected = forms.BooleanField(required=False)
+    rejected_reason = forms.CharField(required=False)
+
+    class Meta:
+        model = inv_models.OrderLineItem
+        fields = [
+            "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
+            "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price",
+            "per_pack_weights", "total_weight", "notes", "damaged", "rejected", "rejected_reason",
+        ]
+
+    # def clean_material_cost_per_pack(self):
+    #     return self.cleaned_data['material_cost_per_pack'] or 0.0
+
+    def save(self, commit=True):
+        # use self.cleaned_data['quantity']
+        # set self.instance.quantity
+        return super().save(commit=commit)
+
+
+OrderLineItemFormset = forms.inlineformset_factory(
+    inv_models.Order, inv_models.OrderLineItem, OrderLineItemForm,
+    extra=3, can_delete=True,
+)

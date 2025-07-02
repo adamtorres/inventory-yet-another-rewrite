@@ -37,6 +37,9 @@ urlpatterns = [
     urls.path(
         "order/<int:order_pk>/lineitem/new", i_views.OrderLineItemCreateView.as_view(),
         name="orderlineitem_create"),
+    urls.path(
+        "order/<int:order_pk>/lineitems", i_views.OrderLineItemFormsetView.as_view(),
+        name="orderlineitem_formset"),
 
     urls.path("sources/", i_views.SourceListView.as_view(), name="source_list"),
     urls.path("source/<int:pk>", i_views.SourceDetailView.as_view(), name="source_detail"),

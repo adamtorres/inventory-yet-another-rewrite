@@ -1,7 +1,7 @@
-from django import urls
+from django import http, urls
 from django.views import generic
 
-from inventory import models as inv_models
+from inventory import forms as inv_forms, models as inv_models
 
 
 class OrderLineItemCreateView(generic.CreateView):
@@ -61,3 +61,31 @@ class OrderLineItemUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return urls.reverse("inventory:orderlineitem_detail", args=(self.object.order.pk, self.object.id,))
+
+
+class OrderLineItemFormsetView(generic.detail.SingleObjectMixin, generic.FormView):
+    model = inv_models.Order
+    template_name = "inventory/order_line_item_formset.html"
+    object = None
+    pk_url_kwarg = "order_pk"
+
+    def form_valid(self, form):
+        form.save()
+        # TODO: messages.add_message(blah)
+        # self.object.calculate_totals()
+        return http.HttpResponseRedirect(self.get_success_url())
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        # The base get_form does not pass the instance kwarg.
+        return inv_forms.OrderLineItemFormset(**self.get_form_kwargs(), instance=self.object)
+
+    def get_success_url(self):
+        return urls.reverse("inventory:order_detail", args=(self.object.id,))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
