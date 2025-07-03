@@ -3,3 +3,4 @@ Django
 sqlparse
 
 django-extensions
+Werkzeug

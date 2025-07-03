@@ -11,11 +11,52 @@
 <div>notes: {{ object.notes }}</div>
 <div>
 items:
-<ul>
+<table>
+<thead>
+<tr>
+    <th>Item</th>
+    <th>#</th>
+    <th>quantity</th>
+    <th style="display: none;">remote stock</th>
+    <th style="display: none;">expect backorder</th>
+    <th>per pack $</th>
+    <th>extended $</th>
+    <th>$ per weight</th>
+    <th>pack weights</th>
+    <th>total weight</th>
+    <th>notes</th>
+    <th style="display: none;">damaged</th>
+    <th style="display: none;">rejected</th>
+    <th style="display: none;">rejected reason</th>
+</tr>
+</thead>
+<tbody>
     {% for item in order.orderlineitem_set.all %}
-        <li><a href="{% url "inventory:orderlineitem_detail" order_pk=object.pk pk=item.pk %}">{{ item }}</a></li>
+        <tr>
+            <td><a href="{% url "inventory:orderlineitem_detail" order_pk=object.pk pk=item.pk %}">{{ item.source_item }}</a></td>
+            <td>{{ item.line_item_number }}</td>
+            <td>
+                {% if item.quantity_ordered == item.quantity_delivered %}
+                    {{ item.quantity_delivered }}
+                {% else %}
+                    {{ item.quantity_delivered }} of {{ item.quantity_ordered }}
+                {% endif %}
+            </td>
+            <td style="display: none;">{{ item.remote_stock }}</td>
+            <td style="display: none;">{{ item.expect_backorder_delivery }}</td>
+            <td>{{ item.per_pack_price }}</td>
+            <td>{{ item.extended_price }}</td>
+            <td>{{ item.per_weight_price }}</td>
+            <td>{{ item.per_pack_weights }}</td>
+            <td>{{ item.total_weight }}</td>
+            <td>{{ item.notes }}</td>
+            <td style="display: none;">{{ item.damaged }}</td>
+            <td style="display: none;">{{ item.rejected }}</td>
+            <td style="display: none;">{{ item.rejected_reason }}</td>
+        </tr>
     {% endfor %}
-</ul>
+</tbody>
+</table>
 </div>
 <ul>
     <li><a href="{% url "inventory:orderlineitem_formset" order_pk=object.pk %}">Edit line items</a></li>

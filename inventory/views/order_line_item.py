@@ -64,6 +64,8 @@ class OrderLineItemUpdateView(generic.UpdateView):
 
 
 class OrderLineItemFormsetView(generic.detail.SingleObjectMixin, generic.FormView):
+    # TODO: https://django-autocomplete-light.readthedocs.io/en/master/tutorial.html
+    # Or, scrap.forms.widgets.autocomplete to avoid a dependency and possibly allow more customization.
     model = inv_models.Order
     template_name = "inventory/order_line_item_formset_div.html"
     object = None

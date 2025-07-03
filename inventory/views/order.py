@@ -18,7 +18,7 @@ class OrderDeleteView(generic.DeleteView):
         return urls.reverse("inventory:order_list")
 
 class OrderDetailView(generic.DetailView):
-    queryset = inv_models.Order.objects.all()
+    queryset = inv_models.Order.objects.prefetch_related('orderlineitem_set').all()
 
 
 class OrderListView(generic.ListView):
