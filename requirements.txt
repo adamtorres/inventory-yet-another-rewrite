@@ -1,6 +1,20 @@
+####
+# Added by PyCharm when using the "New Project" and picking Django.
+# asgi instead of wsgi?
 asgiref
+# The main web framework
 Django
+# Interprets SQL and is likely used by Django's RunSQL migration steps.
 sqlparse
 
+####
+# Added by me over time
+
+# Provides runserver_plus and shell_plus
 django-extensions
+
+# Used by runserver_plus
 Werkzeug
+
+# Mostly for APIView.
+djangorestframework

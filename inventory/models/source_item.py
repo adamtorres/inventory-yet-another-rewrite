@@ -33,6 +33,7 @@ class SourceItem(models.Model):
         null=False, blank=True, default="")
 
     # Note: Some sources reuse codes.  Not frequently, but it has happened.
+    # TODO: How to handle changing codes?  Duplicate SourceItem?
     item_number = models.CharField(
         max_length=255, null=False, blank=True, default="",
         help_text="The main number/code used to identify this product at this source for this unit size.")

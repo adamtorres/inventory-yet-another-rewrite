@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'inventory.apps.InventoryConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,8 @@ SHELL_PLUS_IMPORTS = [
 ]
 SHELL_PLUS_PYGMENTS_ENABLED = True
 SHELL_PLUS_PRINT_SQL_TRUNCATE = 0
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
