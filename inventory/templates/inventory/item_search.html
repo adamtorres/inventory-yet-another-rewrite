@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Item Search{% endblock %}
+
+{% block content %}
+<form id="search_form">
+<div>
+<label for="search_name">Name:</label>
+<input type="text" id="search_name" data-search-field="name" placeholder="name">
+</div>
+<div>
+<label for="search_name2">Second Name:</label>
+<input type="text" id="search_name2" data-search-field="name" placeholder="name">
+</div>
+<div>
+<label for="search_exclude_name">Exclude Name:</label>
+<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name">
+</div>
+<div>
+<label for="search_exclude_name2">Second Exclude Name:</label>
+<input type="text" id="search_exclude_name2" data-search-field="-name" placeholder="exclude name">
+</div>
+</form>
+
+
+<div id="results_in_table">
+<hr />
+Results in a table
+<table style="display: none;">
+<tbody>
+    <tr id="search_no_result_template_tablerow">
+        <td colspan="*">No results</td>
+    </tr>
+    <tr id="search_result_template_tablerow">
+        <td data-field="id">__id__</td>
+        <td data-field="name">__name__</td>
+        <td data-field="description">__description__</td>
+        <td data-field="category">__category__</td>
+    </tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+    <tr>
+        <th>id</th>
+    </tr>
+</thead>
+<tbody id="search_results_table">
+</tbody>
+</table>
+</div>
+
+
+<hr />
+<ul>
+<li><a href="{% url "inventory:item_create" %}">New Item</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+
+{% endblock %}
+{% block body_scripts %}
+<script src="{% static "js/search.js" %}"></script>
+<script>
+srch_url = "{% url "inventory:api_item_search" %}";
+active_result_styles = ["arbitrary_style_name"];
+result_style_ids = {
+    "arbitrary_style_name": {
+        "container": "results_in_table",
+        "results": "search_results_table",
+        "template": "search_result_template_tablerow",
+        "no_results_template": "search_no_result_template_tablerow",
+    },
+}
+</script>
+{% endblock %}

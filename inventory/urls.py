@@ -21,6 +21,7 @@ urlpatterns = [
     urls.path("item/<int:pk>/delete", i_views.ItemDeleteView.as_view(), name="item_delete"),
     urls.path("item/<int:pk>/edit", i_views.ItemUpdateView.as_view(), name="item_update"),
     urls.path("item/new", i_views.ItemCreateView.as_view(), name="item_create"),
+    urls.path("item/search", i_views.ItemSearchView.as_view(), name="item_search"),
 
     urls.path("orders/", i_views.OrderListView.as_view(), name="order_list"),
     urls.path("order/<int:pk>", i_views.OrderDetailView.as_view(), name="order_detail"),
