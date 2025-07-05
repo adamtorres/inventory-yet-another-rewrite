@@ -26,6 +26,29 @@
 <input type="text" id="search_code" data-search-field="code" placeholder="code">
 </div>
 </form>
+<ul>
+<li id="srch_result_template" style="display: none;">
+    <span data-field="id">__id__</span>
+    <span data-field="source">__source__</span>
+    <span data-field="item_category">__item_category__</span>
+    <span data-field="item_description">__item_description__</span>
+    <span data-field="item_name">__item_name__</span>
+    <span data-field="brand">__brand__</span>
+    <span data-field="source_category">__source_category__</span>
+    <span data-field="unit_size_unit">__unit_size_unit__</span>
+    <span data-field="unit_size_amount">__unit_size_amount__</span>
+    <span data-field="subunit_size_unit">__subunit_size_unit__</span>
+    <span data-field="subunit_size_amount">__subunit_size_amount__</span>
+    <span data-field="active">__active__</span>
+    <span data-field="quantity">__quantity__</span>
+    <span data-field="allow_split_pack">__allow_split_pack__</span>
+    <span data-field="cryptic_name">__cryptic_name__</span>
+    <span data-field="expanded_name">__expanded_name__</span>
+    <span data-field="common_name">__common_name__</span>
+    <span data-field="item_number">__item_number__</span>
+    <span data-field="extra_number">__extra_number__</span>
+</li>
+</ul>
 <ul id="search_results">
 
 </ul>
@@ -41,10 +64,18 @@ let srch_keypress_timer;
 let srch_url = "{% url "inventory:api_sourceitem_search" %}";
 let srch_results_element_id = "search_results";
 let srch_results_element = null;
+let srch_result_element_template_id = "srch_result_template";
+let srch_result_element_template = null;
 function srch_get_result_element() {
+    // The root of the container element for search results.
     return document.getElementById(srch_results_element_id);
 }
+function srch_get_result_element_template() {
+    // The root of the template used for individual search results.
+    return document.getElementById(srch_result_element_template_id);
+}
 function srch_remove_all_results() {
+    // Clear any existing search results in preparation for either "No results" or new elements.
     while( srch_results_element.firstChild ){
         srch_results_element.removeChild( srch_results_element.firstChild );
     }
@@ -53,20 +84,25 @@ function srch_no_results() {
     srch_remove_all_results();
     let li = document.createElement("li");
     li.appendChild(document.createTextNode("No results"));
-    li.setAttribute("id", "some value");
     srch_results_element.appendChild(li);
 }
-function srch_add_result(item_to_add) {
-    let li = document.createElement("li");
-    let div = document.createElement("div");
-    let unit_size = `${item_to_add.unit_size_amount} ${item_to_add.unit_size_unit}`;
-    if ((+item_to_add.quantity) > 1) {
-        unit_size = `${item_to_add.quantity}ct ${unit_size}`;
+function srch_populate_results(data) {
+    if (data.length === 0) {
+        srch_no_results();
+        return;
     }
-    div.innerText = `${item_to_add.item_name}, ${item_to_add.cryptic_name}, ${unit_size}, `;
-    li.appendChild(div);
-    li.setAttribute("data-id", item_to_add.id);
-    srch_results_element.appendChild(li);
+    srch_remove_all_results();
+    for (const item of data) {
+        srch_add_result(item);
+    }
+}
+function srch_add_result(item_to_add) {
+    let new_result = srch_result_element_template.cloneNode(true);
+    for (const element of new_result.querySelectorAll("[data-field]")) {
+        element.innerHTML = item_to_add[element.dataset.field];
+    }
+    srch_results_element.appendChild(new_result);
+    new_result.style.display = "block";
 }
 function srch_get_search_elements() {
     const form = document.getElementById("search_form");
@@ -107,15 +143,7 @@ function srch_timer_elapsed_func(caller_obj) {
     xhttp.onload = function() {
         let data = JSON.parse(this.responseText);
         {#srch_results_element.innerHTML = this.responseText;#}
-        if (data.length === 0) {
-            srch_no_results();
-            return;
-        }
-        srch_remove_all_results();
-        for (const item of data) {
-            srch_add_result(item);
-        }
-
+        srch_populate_results(data);
     }
     xhttp.open("GET", srch_url + "?" + query_string, true);
     xhttp.send();
@@ -123,6 +151,7 @@ function srch_timer_elapsed_func(caller_obj) {
 (function() {
     // onload based on https://stackoverflow.com/a/9899701
     srch_results_element = srch_get_result_element();
+    srch_result_element_template = srch_get_result_element_template();
     srch_no_results();
 })();
 </script>
