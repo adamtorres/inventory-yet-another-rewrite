@@ -47,6 +47,7 @@ class TestSourceItemSearch(TestCase):
 
 
     def test_get_search_terms_from_request(self):
+        # Testing the search term dict built from the query string.
         # This is dependent on the order of list items.  If the query string in the request changes, this might break.
         search_terms = self.apple_view.get_search_terms_from_request(self.apple_request)
         self.assertEqual(self.apple_search_terms, search_terms)
@@ -66,9 +67,10 @@ class TestSourceItemSearch(TestCase):
         return q
 
     def test_build_search_filter(self):
+        # Checking the Q objects returned that are built from the search term dict.
         include_q_objects, exclude_q_objects = self.apple_view.build_search_filter(self.apple_search_terms)
         name_field_names = ["item__name", "cryptic_name", "expanded_name", "common_name"]
-        unit_field_names = ["unit_size__unit", "unit_size__amount", "subunit_size__unit", "subunit_size__amount"]
+        unit_field_names = ["unit_size__amount", "unit_size__unit", "subunit_size__amount", "subunit_size__unit"]
 
         # inclusions
         apple = self.q_up(name_field_names, "apple", "|")
@@ -82,9 +84,24 @@ class TestSourceItemSearch(TestCase):
         juice = self.q_up(name_field_names, "juice", "|")
         unit_counts_number_ten_can = self.q_up(unit_field_names, "#10", "|")
 
-        expected_q_objects = (apple & (gala | fuji | red_delicious)) & (unit_counts_one_thirteen | unit_counts_eighty)
-        expected_excluded_q_objects = juice & unit_counts_number_ten_can
+        expected_q_objects = (apple & (gala | fuji | red_delicious))
+        expected_q_objects &= unit_counts_eighty | unit_counts_one_thirteen
 
-        # TODO: These are failing.  The 80/113 seems to not want to be in the same order.  No idea why juice/#10 fails.
-        self.assertEqual(expected_q_objects, include_q_objects)
-        self.assertEqual(expected_excluded_q_objects, exclude_q_objects)
+        expected_excluded_q_objects = models.Q()
+        expected_excluded_q_objects &= juice
+        expected_excluded_q_objects &= unit_counts_number_ten_can
+        tests = [(expected_q_objects, include_q_objects), (expected_excluded_q_objects, exclude_q_objects)]
+        for exp, act in tests:
+            with self.subTest(expected=exp, actual=act):
+                self.assertEqual(exp, act)
+
+    # def test_sql(self):
+    #     # Not testing the SQL as it looks like it would change depending on the specific backend.
+    #     search_terms = self.apple_view.get_search_terms_from_request(self.apple_request)
+    #     include_q, exclude_q = self.apple_view.build_search_filter(search_terms)
+    #     qs = self.apple_view.get_queryset().filter(include_q).exclude(exclude_q)
+    #
+    #     with CaptureQueriesContext(connection) as ctx:
+    #         list(qs)
+    #         captured_sql = ctx.captured_queries[0]["sql"]
+    #         print(f"{captured_sql}")

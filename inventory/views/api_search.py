@@ -75,8 +75,6 @@ class APISearchView(views.APIView):
             # TODO: skip if a Q is empty?  Doesn't seem to do anything to the generated SQL.
             include_q &= st_q["&"] & st_q["|"]
             exclude_q &= st_q["-"]
-        logger.debug(f"include_q = {include_q!r}")
-        logger.debug(f"exclude_q = {exclude_q!r}")
         return include_q, exclude_q
 
     def get_queryset(self):
