@@ -93,6 +93,10 @@ class APISearchView(views.APIView):
             return response.Response(self.serializer(self.get_queryset().none(), many=True).data)
         include_q, exclude_q = self.build_search_filter(search_terms)
         qs = self.get_queryset().filter(include_q).exclude(exclude_q)
+        # "DISTINCT ON (fields)" is not supported by sqlite.  Workaround is to get the list of ids and filter the final
+        # qs on that.
+        qs_ids = qs.values("id").distinct()
+        qs = self.get_queryset().filter(id__in=qs_ids)
         qs = self.limit_result(qs, request)
         data = self.serializer(qs, many=True).data
         return response.Response(data)
