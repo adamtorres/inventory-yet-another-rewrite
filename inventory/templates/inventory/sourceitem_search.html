@@ -25,8 +25,26 @@
 <label for="search_code">Code:</label>
 <input type="text" id="search_code" data-search-field="code" placeholder="code">
 </div>
-</form>
 <div>
+    <span>
+    <input type="checkbox" id="result_style_selector_div" name="result_style_selector" value="div" checked="checked" />
+    <label for="result_style_selector_div">Div</label>
+    </span>
+    <span>
+    <input type="checkbox" id="result_style_selector_ul" name="result_style_selector" value="ul" />
+    <label for="result_style_selector_ul">List</label>
+    </span>
+    <span>
+    <input type="checkbox" id="result_style_selector_table" name="result_style_selector" value="table" />
+    <label for="result_style_selector_table">Table</label>
+    </span>
+    <span>
+    <input type="checkbox" id="result_style_selector_table_multiline" name="result_style_selector" value="table-multiline" />
+    <label for="result_style_selector_table_multiline">Multiline Table</label>
+    </span>
+</div>
+</form>
+<div id="results_in_table_multiline" style="display: none;">
 Results in a table with multi-line rows.
 <table style="display: none;">
 <tbody>
@@ -89,7 +107,7 @@ Results in a table with multi-line rows.
 </table>
 
 </div>
-<div>
+<div id="results_in_table" style="display: none;">
 Results in a table
 <table style="display: none;">
 <tbody>
@@ -147,7 +165,7 @@ Results in a table
 </tbody>
 </table>
 </div>
-<div>
+<div id="results_in_ul" style="display: none;">
 Results in a ul.
 <ul>
 <li id="srch_result_template_ul" style="display: none;">
@@ -179,7 +197,7 @@ Results in a ul.
 
 </ul>
 </div>
-<div>
+<div id="results_in_div" style="display: none;">
 Results in divs
 <div id="templates" style="display: none;">
     <div id="srch_result_template_div">
@@ -211,21 +229,25 @@ let srch_url = "{% url "inventory:api_sourceitem_search" %}";
 let result_style = ["ul", "div", "table", "table-multiline"];
 let result_style_ids = {
     "div": {
+        "container": "results_in_div",
         "results": "search_results_div",
         "template": "srch_result_template_div",
         "no_results_template": "srch_no_result_template_div",
     },
     "ul": {
+        "container": "results_in_ul",
         "results": "search_results_ul",
         "template": "srch_result_template_ul",
         "no_results_template": "srch_no_result_template_ul",
     },
     "table": {
+        "container": "results_in_table",
         "results": "search_results_table",
         "template": "srch_result_template_tablerow",
         "no_results_template": "srch_no_result_template_tablerow",
     },
     "table-multiline": {
+        "container": "results_in_table_multiline",
         "results": "search_results_table_ml",
         "template": ["srch_result_template_tablerow_ml", "srch_result_template_tablerow_ml2"],
         "no_results_template": "srch_no_result_template_tablerow_ml",
@@ -336,8 +358,84 @@ function srch_timer_elapsed_func(caller_obj) {
     xhttp.open("GET", srch_url + "?" + query_string, true);
     xhttp.send();
 }
+function srch_key_is_visible(e) {
+    let donot_ignore = [
+        "Backspace", "Space", "Backquote", "Equal", "Minus", "Backslash", "BracketRight", "BracketLeft", "Quote",
+        "Semicolon", "Slash", "Period", "Comma",
+        "KeyA", "KeyB", "KeyC", "KeyD", "KeyE", "KeyF", "KeyG", "KeyH", "KeyI", "KeyJ", "KeyK", "KeyL", "KeyM",
+        "KeyN", "KeyO", "KeyP", "KeyQ", "KeyR", "KeyS", "KeyT", "KeyU", "KeyV", "KeyW", "KeyX", "KeyY", "KeyZ",
+        "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", "Digit0",
+    ]
+    return donot_ignore.includes(e.code);
+}
+function srch_key_is_not_visible(e) {
+    let ignore = [
+        'ShiftLeft', 'MetaLeft', 'AltLeft', 'ControlLeft',
+        'ShiftRight', 'MetaRight', 'AltRight', 'ControlRight',
+        'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+        'Enter', 'Tab', 'CapsLock',
+        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"
+    ]
+    return ignore.includes(e.code);
+}
+function srch_filter_keydown(e) {
+    if (srch_key_is_visible(e)){
+        srch_start_timer();
+    } else if (!srch_key_is_not_visible(e)) {
+        srch_start_timer();
+    }
+}
+function input_focusout() {
+    // logit(" > clear timer from focusout");
+    window.clearTimeout(srch_keypress_timer);
+}
+function srch_update_result_style() {
+    result_style = [];
+    for (const element of document.querySelectorAll("[name=result_style_selector]")) {
+        if (element.checked) {
+            result_style.push(element.value);
+            console.log(`element: "${element.name}" "${element.id}" "${element.value}"`);
+            document.getElementById(result_style_ids[element.value]["container"]).style.display = "";
+        } else {
+            document.getElementById(result_style_ids[element.value]["container"]).style.display = "none";
+        }
+    }
+    srch_start_timer();
+}
+function srch_setup_events() {
+    for (const element of srch_get_search_elements()) {
+        if ((element.tagName === "INPUT") && (element.type === "text")) {
+            console.log(`Found text input: "${element.dataset.searchField}"`);
+            // keydown and focusout events
+            element.addEventListener('keydown', (event) => {
+                srch_filter_keydown(event);
+            });
+            element.addEventListener('focusout', (event) => {
+                input_focusout();
+            });
+        }
+        if ((element.tagName === "INPUT") && (element.type === "checkbox")) {
+            console.log(`Found checkbox input: "${element.dataset.searchField}"`);
+            element.addEventListener('onclick', (event) => {
+                srch_start_timer();
+            });
+        }
+    }
+    for (const element of document.querySelectorAll("[name=result_style_selector]")) {
+        element.addEventListener('change', (event) => {
+            srch_update_result_style();
+        });
+    }
+}
+function srch_start_timer() {
+    console.log("Start a timer.");
+    window.clearTimeout(srch_keypress_timer);
+    srch_keypress_timer = setTimeout(srch_timer_elapsed_func, 750);
+}
+
 (function() {
     // onload based on https://stackoverflow.com/a/9899701
+    srch_setup_events();
     srch_no_results();
 })();
 </script>
