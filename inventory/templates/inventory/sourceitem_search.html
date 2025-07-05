@@ -26,8 +26,131 @@
 <input type="text" id="search_code" data-search-field="code" placeholder="code">
 </div>
 </form>
+<div>
+Results in a table with multi-line rows.
+<table style="display: none;">
+<tbody>
+    <tr id="srch_no_result_template_tablerow_ml">
+        <td colspan="*">No results</td>
+    </tr>
+    <tr id="srch_result_template_tablerow_ml">
+        <td data-field="id">__id__</td>
+        <td data-field="source">__source__</td>
+        <td data-field="item_category">__item_category__</td>
+        <td data-field="item_description">__item_description__</td>
+        <td data-field="item_name">__item_name__</td>
+        <td data-field="brand">__brand__</td>
+        <td data-field="source_category">__source_category__</td>
+        <td data-field="unit_size_unit">__unit_size_unit__</td>
+        <td data-field="unit_size_amount">__unit_size_amount__</td>
+    </tr>
+    <tr id="srch_result_template_tablerow_ml2">
+        <td data-field="subunit_size_unit">__subunit_size_unit__</td>
+        <td data-field="subunit_size_amount">__subunit_size_amount__</td>
+        <td data-field="active">__active__</td>
+        <td data-field="quantity">__quantity__</td>
+        <td data-field="allow_split_pack">__allow_split_pack__</td>
+        <td data-field="cryptic_name">__cryptic_name__</td>
+        <td data-field="expanded_name">__expanded_name__</td>
+        <td data-field="common_name">__common_name__</td>
+        <td data-field="item_number">__item_number__</td>
+        <td data-field="extra_number">__extra_number__</td>
+    </tr>
+</tbody>
+</table>
+<table>
+<thead>
+    <tr>
+        <th>id</th>
+        <th>source</th>
+        <th>item category</th>
+        <th>item description</th>
+        <th>item name</th>
+        <th>brand</th>
+        <th>source category</th>
+        <th>unit size unit</th>
+        <th>unit size amount</th>
+    </tr>
+    <tr>
+        <th>subunit size unit</th>
+        <th>subunit size amount</th>
+        <th>active</th>
+        <th>quantity</th>
+        <th>allow split pack</th>
+        <th>cryptic name</th>
+        <th>expanded name</th>
+        <th>common name</th>
+        <th>item number</th>
+        <th>extra number</th>
+    </tr>
+</thead>
+<tbody id="search_results_table_ml">
+</tbody>
+</table>
+
+</div>
+<div>
+Results in a table
+<table style="display: none;">
+<tbody>
+    <tr id="srch_no_result_template_tablerow">
+        <td colspan="*">No results</td>
+    </tr>
+    <tr id="srch_result_template_tablerow">
+        <td data-field="id">__id__</td>
+        <td data-field="source">__source__</td>
+        <td data-field="item_category">__item_category__</td>
+        <td data-field="item_description">__item_description__</td>
+        <td data-field="item_name">__item_name__</td>
+        <td data-field="brand">__brand__</td>
+        <td data-field="source_category">__source_category__</td>
+        <td data-field="unit_size_unit">__unit_size_unit__</td>
+        <td data-field="unit_size_amount">__unit_size_amount__</td>
+        <td data-field="subunit_size_unit">__subunit_size_unit__</td>
+        <td data-field="subunit_size_amount">__subunit_size_amount__</td>
+        <td data-field="active">__active__</td>
+        <td data-field="quantity">__quantity__</td>
+        <td data-field="allow_split_pack">__allow_split_pack__</td>
+        <td data-field="cryptic_name">__cryptic_name__</td>
+        <td data-field="expanded_name">__expanded_name__</td>
+        <td data-field="common_name">__common_name__</td>
+        <td data-field="item_number">__item_number__</td>
+        <td data-field="extra_number">__extra_number__</td>
+    </tr>
+</tbody>
+</table>
+<table>
+<thead>
+    <tr>
+        <th>id</th>
+        <th>source</th>
+        <th>item category</th>
+        <th>item description</th>
+        <th>item name</th>
+        <th>brand</th>
+        <th>source category</th>
+        <th>unit size unit</th>
+        <th>unit size amount</th>
+        <th>subunit size unit</th>
+        <th>subunit size amount</th>
+        <th>active</th>
+        <th>quantity</th>
+        <th>allow split pack</th>
+        <th>cryptic name</th>
+        <th>expanded name</th>
+        <th>common name</th>
+        <th>item number</th>
+        <th>extra number</th>
+    </tr>
+</thead>
+<tbody id="search_results_table">
+</tbody>
+</table>
+</div>
+<div>
+Results in a ul.
 <ul>
-<li id="srch_result_template" style="display: none;">
+<li id="srch_result_template_ul" style="display: none;">
     <span data-field="id">__id__</span>
     <span data-field="source">__source__</span>
     <span data-field="item_category">__item_category__</span>
@@ -48,10 +171,32 @@
     <span data-field="item_number">__item_number__</span>
     <span data-field="extra_number">__extra_number__</span>
 </li>
+<li id="srch_no_result_template_ul" style="display: none;">
+    Nope.
+</li>
 </ul>
-<ul id="search_results">
+<ul id="search_results_ul">
 
 </ul>
+</div>
+<div>
+Results in divs
+<div id="templates" style="display: none;">
+    <div id="srch_result_template_div">
+        <span data-field="id">__id__</span>
+        <span data-field="source">__source__</span>
+        <span data-field="item_category">__item_category__</span>
+        <span data-field="item_description">__item_description__</span>
+        <span data-field="item_name">__item_name__</span>
+    </div>
+    <div id="srch_no_result_template_div">
+        Nope.
+    </div>
+</div>
+<div id="search_results_div">
+
+</div>
+</div>
 <ul>
 <li><a href="{% url "inventory:sourceitem_create" %}">New Source Item</a></li>
 <li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
@@ -62,29 +207,68 @@
 <script>
 let srch_keypress_timer;
 let srch_url = "{% url "inventory:api_sourceitem_search" %}";
-let srch_results_element_id = "search_results";
+
+let result_style = "table-multiline";
+let result_style_ids = {
+    "div": {
+        "results": "search_results_div",
+        "template": "srch_result_template_div",
+        "no_results_template": "srch_no_result_template_div",
+    },
+    "ul": {
+        "results": "search_results_ul",
+        "template": "srch_result_template_ul",
+        "no_results_template": "srch_no_result_template_ul",
+    },
+    "table": {
+        "results": "search_results_table",
+        "template": "srch_result_template_tablerow",
+        "no_results_template": "srch_no_result_template_tablerow",
+    },
+    "table-multiline": {
+        "results": "search_results_table_ml",
+        "template": ["srch_result_template_tablerow_ml", "srch_result_template_tablerow_ml2"],
+        "no_results_template": "srch_no_result_template_tablerow_ml",
+    },
+}
+
 let srch_results_element = null;
-let srch_result_element_template_id = "srch_result_template";
 let srch_result_element_template = null;
+let srch_no_result_element_template = null;
+
 function srch_get_result_element() {
     // The root of the container element for search results.
-    return document.getElementById(srch_results_element_id);
+    return document.getElementById(result_style_ids[result_style]["results"]);
 }
 function srch_get_result_element_template() {
-    // The root of the template used for individual search results.
-    return document.getElementById(srch_result_element_template_id);
+    // The root of the template used for individual search results.  Always an array even if there is only one element.
+    if (Array.isArray(result_style_ids[result_style]["template"])) {
+        srch_result_element_template = [];
+        for (const id of result_style_ids[result_style]["template"]) {
+            srch_result_element_template.push(document.getElementById(id));
+        }
+        return srch_result_element_template;
+    }
+    return [document.getElementById(result_style_ids[result_style]["template"])];
+}
+function srch_get_no_result_element_template() {
+    // The root of the template used for indicating no results.
+    return document.getElementById(result_style_ids[result_style]["no_results_template"]);
 }
 function srch_remove_all_results() {
     // Clear any existing search results in preparation for either "No results" or new elements.
+    if (srch_results_element.firstChild === null) {
+        return;
+    }
     while( srch_results_element.firstChild ){
         srch_results_element.removeChild( srch_results_element.firstChild );
     }
 }
 function srch_no_results() {
     srch_remove_all_results();
-    let li = document.createElement("li");
-    li.appendChild(document.createTextNode("No results"));
-    srch_results_element.appendChild(li);
+    let new_result = srch_no_result_element_template.cloneNode(true);
+    srch_results_element.appendChild(new_result);
+    new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
 }
 function srch_populate_results(data) {
     if (data.length === 0) {
@@ -97,12 +281,15 @@ function srch_populate_results(data) {
     }
 }
 function srch_add_result(item_to_add) {
-    let new_result = srch_result_element_template.cloneNode(true);
-    for (const element of new_result.querySelectorAll("[data-field]")) {
-        element.innerHTML = item_to_add[element.dataset.field];
+    for (const template_element of srch_result_element_template) {
+        let new_result = template_element.cloneNode(true);
+        for (const element of new_result.querySelectorAll("[data-field]")) {
+            element.innerHTML = item_to_add[element.dataset.field];
+        }
+        new_result.removeAttribute("id");
+        srch_results_element.appendChild(new_result);
+        new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
     }
-    srch_results_element.appendChild(new_result);
-    new_result.style.display = "block";
 }
 function srch_get_search_elements() {
     const form = document.getElementById("search_form");
@@ -152,6 +339,7 @@ function srch_timer_elapsed_func(caller_obj) {
     // onload based on https://stackoverflow.com/a/9899701
     srch_results_element = srch_get_result_element();
     srch_result_element_template = srch_get_result_element_template();
+    srch_no_result_element_template = srch_get_no_result_element_template();
     srch_no_results();
 })();
 </script>
