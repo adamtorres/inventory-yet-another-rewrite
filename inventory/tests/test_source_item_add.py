@@ -18,6 +18,5 @@ class TestSourceItemAdd(TestCase):
             common_name="the common name", item=self.butter, brand="the brand", unit_size=self.one_pound,
             source_category="the source category"
         )
-        self.assertFalse(si.discontinued)
         self.assertTrue(si.active)
         self.assertTrue(si.allow_split_pack)

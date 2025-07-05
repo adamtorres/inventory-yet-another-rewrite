@@ -102,6 +102,47 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        # 'file': {
+        #     'class': 'logging.FileHandler',
+        #     'filename': 'debug.log',  # You can specify a file path
+        #     'formatter': 'verbose',
+        # },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console',],  # Send Django logs to console and file
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'inventory': {
+            'handlers': ['console',],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -132,6 +173,7 @@ SHELL_PLUS_IMPORTS = [
 ]
 SHELL_PLUS_PYGMENTS_ENABLED = True
 SHELL_PLUS_PRINT_SQL_TRUNCATE = 0
+RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 0
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

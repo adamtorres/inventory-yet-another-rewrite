@@ -41,3 +41,7 @@ class SourceItemUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return urls.reverse("inventory:sourceitem_detail", args=(self.object.id,))
+
+
+class SourceItemSearchView(generic.TemplateView):
+    template_name = "inventory/sourceitem_search.html"

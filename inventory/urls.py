@@ -55,6 +55,7 @@ urlpatterns = [
     urls.path("source_item/<int:pk>/delete", i_views.SourceItemDeleteView.as_view(), name="sourceitem_delete"),
     urls.path("source_item/<int:pk>/edit", i_views.SourceItemUpdateView.as_view(), name="sourceitem_update"),
     urls.path("source_item/new", i_views.SourceItemCreateView.as_view(), name="sourceitem_create"),
+    urls.path("source_item/search", i_views.SourceItemSearchView.as_view(), name="sourceitem_search"),
 
     urls.path("unit_sizes/", i_views.UnitSizeListView.as_view(), name="unitsize_list"),
     urls.path("unit_size/<int:pk>", i_views.UnitSizeDetailView.as_view(), name="unitsize_detail"),

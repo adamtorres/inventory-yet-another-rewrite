@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Source Item Search{% endblock %}
+
+{% block content %}
+<form id="search_form">
+<div>
+<label for="search_name">Name:</label>
+<input type="text" id="search_name" data-search-field="name" placeholder="name">
+</div>
+<div>
+<label for="search_name2">Second Name:</label>
+<input type="text" id="search_name2" data-search-field="name" placeholder="name">
+</div>
+<div>
+<label for="search_exclude_name">Exclude Name:</label>
+<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name">
+</div>
+<div>
+<label for="search_exclude_name2">Second Exclude Name:</label>
+<input type="text" id="search_exclude_name2" data-search-field="-name" placeholder="exclude name">
+</div>
+<div>
+<label for="search_code">Code:</label>
+<input type="text" id="search_code" data-search-field="code" placeholder="code">
+</div>
+</form>
+<ul id="search_results">
+
+</ul>
+<ul>
+<li><a href="{% url "inventory:sourceitem_create" %}">New Source Item</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+let srch_keypress_timer;
+let srch_url = "{% url "inventory:api_sourceitem_search" %}";
+let srch_results_element_id = "search_results";
+let srch_results_element = null;
+function srch_get_result_element() {
+    return document.getElementById(srch_results_element_id);
+}
+function srch_remove_all_results() {
+    while( srch_results_element.firstChild ){
+        srch_results_element.removeChild( srch_results_element.firstChild );
+    }
+}
+function srch_no_results() {
+    srch_remove_all_results();
+    let li = document.createElement("li");
+    li.appendChild(document.createTextNode("No results"));
+    li.setAttribute("id", "some value");
+    srch_results_element.appendChild(li);
+}
+function srch_get_search_elements() {
+    const form = document.getElementById("search_form");
+    return form.querySelectorAll("[data-search-field]");
+}
+function srch_get_values_to_send() {
+    let values_to_send = {
+        empty: true,
+        "search_terms": []
+    };
+    for (const element of srch_get_search_elements()) {
+        if (element.value !== "") {
+            console.log(`${element.dataset.searchField}, "${element.value}"`);
+            values_to_send.search_terms.push({key: element.dataset.searchField, value: element.value});
+            values_to_send.empty = false;
+        }
+    }
+    return values_to_send;
+}
+function srch_convert_values_to_query_string(values_to_send) {
+    const params = new URLSearchParams();
+    for (const pair of values_to_send.search_terms) {
+        console.log(`search_terms: ${pair.key} = ${pair.value}`);
+        params.append(pair.key, pair.value);
+    }
+    let param_string = params.toString();
+    console.log(`param_string = "${param_string}"`)
+    return param_string;
+}
+function srch_timer_elapsed_func(caller_obj) {
+    let values_to_send = srch_get_values_to_send();
+    if (values_to_send.empty) {
+        srch_no_results();
+        return;
+    }
+    let query_string = srch_convert_values_to_query_string(values_to_send)
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(`response from API: redacted`);
+        srch_results_element.innerHTML = this.responseText;
+    }
+    xhttp.open("GET", srch_url + "?" + query_string, true);
+    xhttp.send();
+}
+(function() {
+    // onload based on https://stackoverflow.com/a/9899701
+    srch_results_element = srch_get_result_element();
+    srch_no_results();
+})();
+</script>
+
+{% endblock %}

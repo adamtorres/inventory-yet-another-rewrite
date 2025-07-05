@@ -1,6 +1,8 @@
 import json
 import logging
 
+from django.db import models
+
 from rest_framework import response, views
 
 from .. import models as inv_models, serializers as inv_serializers
@@ -12,8 +14,70 @@ logger = logging.getLogger(__name__)
 class APISearchView(views.APIView):
     model = None
     serializer = None
-    prefetch_fields = None
-    select_related_fields = None
+    prefetch_fields = []
+    select_related_fields = []
+    search_terms = {}
+
+    def build_search_filter(self, search_terms):
+        """
+        Builds the Q object to search self.model.objects.
+
+        :param search_terms: dict with term as key and search values as a list.  Keys might have prefixes.
+        :return: a pair of Q objects to apply to self.model.objects. (include Q, exclude Q)
+        """
+        # Full query string: |name=fuji&|name=gala&|name=red+delicious&name=apple&-name=juice&|unit=113&|unit=80&-unit=#10
+
+        # Full query string split for legibility
+        # |name=fuji
+        # |name=gala
+        # |name=red+delicious
+        # name=apple
+        # -name=juice
+        # |unit=113
+        # |unit=80
+        # -unit=#10
+
+        # Converted to lists by prefix/term
+        # |name = ["fuji", "gala", "red delicious"]
+        # name = ["apple"]
+        # -name = ["juice"]
+        # |unit = ["113", "80"]
+        # -unit = ["#10"]
+
+        q_dict = {}
+        for search_term, value_list in search_terms.items():
+            if not value_list:
+                continue
+            if search_term.startswith("-") or search_term.startswith("|"):
+                st_key = search_term[1:]
+                and_or_ex = search_term[0]
+            else:
+                st_key = search_term
+                and_or_ex = "&"
+            if st_key not in q_dict:
+                q_dict[st_key] = {"&": models.Q(), "|": models.Q(), "-": models.Q()}
+
+            for value in value_list:
+                one_value_q = models.Q()
+                for field_name in self.search_terms[st_key]:
+                    pile_of_tokens = models.Q()
+                    for token in value.strip().split(" "):
+                        pile_of_tokens &= models.Q(**{field_name + "__icontains": token})
+                    one_value_q = one_value_q | pile_of_tokens
+
+                match and_or_ex:
+                    case "|": q_dict[st_key]["|"] |= one_value_q
+                    case "&": q_dict[st_key]["&"] &= one_value_q
+                    case "-": q_dict[st_key]["-"] &= one_value_q
+        include_q = models.Q()
+        exclude_q = models.Q()
+        for search_term, st_q in q_dict.items():
+            # TODO: skip if a Q is empty?  Doesn't seem to do anything to the generated SQL.
+            include_q &= st_q["&"] & st_q["|"]
+            exclude_q &= st_q["-"]
+        logger.debug(f"include_q = {include_q!r}")
+        logger.debug(f"exclude_q = {exclude_q!r}")
+        return include_q, exclude_q
 
     def get_queryset(self):
         qs = self.model.objects.all()
@@ -22,36 +86,35 @@ class APISearchView(views.APIView):
         return qs
 
     def get(self, request, format=None):
-        # prefix = type of search.
-        # & or none = this included with the others
+        # prefix = type of search. Assumed AND but "-" excludes and "|" ORs.
+        # none = this included with the others
         # | = this or any of the other | values
         # - = this excluded from the others
-        criteria = [
-            {"search_target": "name", "value": "apple"},
-            {"search_target": "-name", "value": "juice"},
-            {"search_target": "|name", "value": "fuji"},
-            {"search_target": "|name", "value": "gala"},
-            {"search_target": "|name", "value": "red"},
-        ]
-        # Take all the "|name" values and build an OR filter
-        #    (name ILIKE "%fuji%") OR (name ILIKE "%gala%") OR (name ILIKE "%red%")
-        # Run through the "&name", "name", and the above and build the ANDed filter
-        # (name ILIKE "%apple%") AND ((name ILIKE "%fuji%") OR (name ILIKE "%gala%") OR (name ILIKE "%red%"))
-        # Tack on the "-name" values as "AND NOT"
-        # (name ILIKE "%apple%") AND (
-        #     (name ILIKE "%fuji%") OR (name ILIKE "%gala%") OR (name ILIKE "%red%")
-        # ) AND NOT (name ILIKE "%juice%")
-        # Having only a single "|name" would be no different than "name" or "&name"
-        terms = request.GET.get('terms')
-        logger.debug(f"APISearchView.get: terms = {terms!r}")
-        logger.debug(f"request.data: {request.data!r}")
-        if not terms:
+        search_terms = self.get_search_terms_from_request(request)
+        if not search_terms:
             return response.Response(self.serializer(self.get_queryset().none(), many=True).data)
-        # search_filter = self.model.objects.build_search_filter(terms)
-        qs = self.get_queryset()
+        logger.debug(f"search_terms: {search_terms!r}")
+        include_q, exclude_q = self.build_search_filter(search_terms)
+        qs = self.get_queryset().filter(include_q).exclude(exclude_q)
         qs = self.limit_result(qs, request)
         data = self.serializer(qs, many=True).data
         return response.Response(data)
+
+    def get_search_terms_from_request(self, request):
+        """
+        Extracts the values to search for from the GET params using the keys in self.search_terms.
+        Adds the prefixes "-" and "|" for exclusion and OR matches.
+        :param request: The request object.
+        :return: A dict with just the terms provided.  No empty lists.
+        """
+        search_terms = {}
+        for st in self.search_terms.keys():
+            for prefix in ["-", "", "|"]:
+                prefixed_st = prefix + st
+                value = request.GET.getlist(prefixed_st)
+                if value:
+                    search_terms[prefixed_st] = request.GET.getlist(prefixed_st)
+        return search_terms
 
     def limit_result(self, qs, request):
         try:
@@ -82,9 +145,20 @@ class ItemSearch(APISearchView):
     prefetch_fields = ['category']
     # select_related_fields = ['category']
 
+    search_terms = {
+        'name': [
+            "name", "sourceitem_set__cryptic_name", "sourceitem_set__expanded_name", "sourceitem_set__common_name"],
+    }
+
 
 class SourceItemSearch(APISearchView):
     model = inv_models.SourceItem
     serializer = inv_serializers.SourceItemSerializer
     prefetch_fields = ['source', 'item', 'item__category']
     # select_related_fields = ['source', 'item', 'item__category']
+
+    search_terms = {
+        'name': ["item__name", "cryptic_name", "expanded_name", "common_name"],
+        'code': ["item_number", "extra_number"],
+        'unit': ["unit_size__amount", "unit_size__unit", "subunit_size__amount", "subunit_size__unit"],
+    }

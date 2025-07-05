@@ -9,7 +9,8 @@ from .order_line_item import (
     OrderLineItemFormsetView)
 from .source import SourceUpdateView, SourceListView, SourceDetailView, SourceDeleteView, SourceCreateView
 from .source_item import (
-    SourceItemUpdateView, SourceItemListView, SourceItemDetailView, SourceItemDeleteView, SourceItemCreateView)
+    SourceItemUpdateView, SourceItemListView, SourceItemDetailView, SourceItemDeleteView, SourceItemCreateView,
+    SourceItemSearchView)
 from .unit_size import UnitSizeUpdateView, UnitSizeListView, UnitSizeDetailView, UnitSizeDeleteView, UnitSizeCreateView
 
 class InventoryHomepageView(generic.TemplateView):
