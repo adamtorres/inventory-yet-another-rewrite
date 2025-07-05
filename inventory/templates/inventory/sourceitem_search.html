@@ -7,7 +7,7 @@
 <form id="search_form">
 <div>
 <label for="search_name">Name:</label>
-<input type="text" id="search_name" data-search-field="name" placeholder="name" value="apple">
+<input type="text" id="search_name" data-search-field="name" placeholder="name">
 </div>
 <div>
 <label for="search_name2">Second Name:</label>
@@ -15,7 +15,7 @@
 </div>
 <div>
 <label for="search_exclude_name">Exclude Name:</label>
-<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name" value="">
+<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name">
 </div>
 <div>
 <label for="search_exclude_name2">Second Exclude Name:</label>
@@ -45,6 +45,7 @@
 </div>
 </form>
 <div id="results_in_table_multiline" style="display: none;">
+<hr />
 Results in a table with multi-line rows.
 <table style="display: none;">
 <tbody>
@@ -108,6 +109,7 @@ Results in a table with multi-line rows.
 
 </div>
 <div id="results_in_table" style="display: none;">
+<hr />
 Results in a table
 <table style="display: none;">
 <tbody>
@@ -166,6 +168,7 @@ Results in a table
 </table>
 </div>
 <div id="results_in_ul" style="display: none;">
+<hr />
 Results in a ul.
 <ul>
 <li id="srch_result_template_ul" style="display: none;">
@@ -198,6 +201,7 @@ Results in a ul.
 </ul>
 </div>
 <div id="results_in_div" style="display: none;">
+<hr />
 Results in divs
 <div id="templates" style="display: none;">
     <div id="srch_result_template_div">
@@ -215,6 +219,7 @@ Results in divs
 
 </div>
 </div>
+<hr />
 <ul>
 <li><a href="{% url "inventory:sourceitem_create" %}">New Source Item</a></li>
 <li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
@@ -437,6 +442,7 @@ function srch_start_timer() {
     // onload based on https://stackoverflow.com/a/9899701
     srch_setup_events();
     srch_no_results();
+    srch_update_result_style();
 })();
 </script>
 
