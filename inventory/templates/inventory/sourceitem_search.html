@@ -15,7 +15,7 @@
 </div>
 <div>
 <label for="search_exclude_name">Exclude Name:</label>
-<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name" value="juice">
+<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name" value="">
 </div>
 <div>
 <label for="search_exclude_name2">Second Exclude Name:</label>
@@ -208,7 +208,7 @@ Results in divs
 let srch_keypress_timer;
 let srch_url = "{% url "inventory:api_sourceitem_search" %}";
 
-let result_style = "table-multiline";
+let result_style = "ul";
 let result_style_ids = {
     "div": {
         "results": "search_results_div",
@@ -232,42 +232,39 @@ let result_style_ids = {
     },
 }
 
-let srch_results_element = null;
-let srch_result_element_template = null;
-let srch_no_result_element_template = null;
-
-function srch_get_result_element() {
+function srch_get_result_element(_result_style) {
     // The root of the container element for search results.
-    return document.getElementById(result_style_ids[result_style]["results"]);
+    return document.getElementById(result_style_ids[_result_style]["results"]);
 }
-function srch_get_result_element_template() {
+function srch_get_result_element_template(_result_style) {
     // The root of the template used for individual search results.  Always an array even if there is only one element.
-    if (Array.isArray(result_style_ids[result_style]["template"])) {
-        srch_result_element_template = [];
-        for (const id of result_style_ids[result_style]["template"]) {
-            srch_result_element_template.push(document.getElementById(id));
+    if (Array.isArray(result_style_ids[_result_style]["template"])) {
+        let _srch_result_element_template = [];
+        for (const id of result_style_ids[_result_style]["template"]) {
+            _srch_result_element_template.push(document.getElementById(id));
         }
-        return srch_result_element_template;
+        return _srch_result_element_template;
     }
-    return [document.getElementById(result_style_ids[result_style]["template"])];
+    return [document.getElementById(result_style_ids[_result_style]["template"])];
 }
-function srch_get_no_result_element_template() {
+function srch_get_no_result_element_template(_result_style) {
     // The root of the template used for indicating no results.
-    return document.getElementById(result_style_ids[result_style]["no_results_template"]);
+    return document.getElementById(result_style_ids[_result_style]["no_results_template"]);
 }
 function srch_remove_all_results() {
     // Clear any existing search results in preparation for either "No results" or new elements.
-    if (srch_results_element.firstChild === null) {
+    let _srch_results_element = srch_get_result_element(result_style);
+    if (_srch_results_element.firstChild === null) {
         return;
     }
-    while( srch_results_element.firstChild ){
-        srch_results_element.removeChild( srch_results_element.firstChild );
+    while( _srch_results_element.firstChild ){
+        _srch_results_element.removeChild( _srch_results_element.firstChild );
     }
 }
 function srch_no_results() {
     srch_remove_all_results();
-    let new_result = srch_no_result_element_template.cloneNode(true);
-    srch_results_element.appendChild(new_result);
+    let new_result = srch_get_no_result_element_template(result_style).cloneNode(true);
+    srch_get_result_element(result_style).appendChild(new_result);
     new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
 }
 function srch_populate_results(data) {
@@ -281,13 +278,13 @@ function srch_populate_results(data) {
     }
 }
 function srch_add_result(item_to_add) {
-    for (const template_element of srch_result_element_template) {
+    for (const template_element of srch_get_result_element_template(result_style)) {
         let new_result = template_element.cloneNode(true);
         for (const element of new_result.querySelectorAll("[data-field]")) {
             element.innerHTML = item_to_add[element.dataset.field];
         }
         new_result.removeAttribute("id");
-        srch_results_element.appendChild(new_result);
+        srch_get_result_element(result_style).appendChild(new_result);
         new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
     }
 }
@@ -337,9 +334,6 @@ function srch_timer_elapsed_func(caller_obj) {
 }
 (function() {
     // onload based on https://stackoverflow.com/a/9899701
-    srch_results_element = srch_get_result_element();
-    srch_result_element_template = srch_get_result_element_template();
-    srch_no_result_element_template = srch_get_no_result_element_template();
     srch_no_results();
 })();
 </script>
