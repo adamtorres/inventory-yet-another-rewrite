@@ -227,12 +227,11 @@ Results in divs
 {% endblock %}
 
 {% block body_scripts %}
+<script src="{% static "js/search.js" %}"></script>
 <script>
-let srch_keypress_timer;
-let srch_url = "{% url "inventory:api_sourceitem_search" %}";
+srch_url = "{% url "inventory:api_sourceitem_search" %}";
 
-let active_result_styles = ["ul", "div", "table", "table-multiline"];
-let result_style_ids = {
+result_style_ids = {
     "div": {
         "container": "results_in_div",
         "results": "search_results_div",
@@ -258,180 +257,22 @@ let result_style_ids = {
         "no_results_template": "search_no_result_template_tablerow_ml",
     },
 }
-
-function srch_add_result(item_to_add, _result_style) {
-    for (const template_element of srch_get_result_element_template(_result_style)) {
-        let new_result = template_element.cloneNode(true);
-        for (const element of new_result.querySelectorAll("[data-field]")) {
-            element.innerHTML = item_to_add[element.dataset.field];
-        }
-        new_result.removeAttribute("id");
-        srch_get_result_element(_result_style).appendChild(new_result);
-        new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
-    }
-}
-function srch_convert_values_to_query_string(values_to_send) {
-    const params = new URLSearchParams();
-    for (const pair of values_to_send.search_terms) {
-        // console.log(`search_terms: ${pair.key} = ${pair.value}`);
-        params.append(pair.key, pair.value);
-    }
-    let param_string = params.toString();
-    // console.log(`param_string = "${param_string}"`)
-    return param_string;
-}
-function srch_filter_keydown(e) {
-    if (srch_key_is_visible(e)){
-        srch_start_timer();
-    } else if (!srch_key_is_not_visible(e)) {
-        srch_start_timer();
-    }
-}
-function srch_get_no_result_element_template(_result_style) {
-    // The root of the template used for indicating no results.
-    return document.getElementById(result_style_ids[_result_style]["no_results_template"]);
-}
-function srch_get_result_element(_result_style) {
-    // The root of the container element for search results.
-    return document.getElementById(result_style_ids[_result_style]["results"]);
-}
-function srch_get_result_element_template(_result_style) {
-    // The root of the template used for individual search results.  Always an array even if there is only one element.
-    if (Array.isArray(result_style_ids[_result_style]["template"])) {
-        let _srch_result_element_template = [];
-        for (const id of result_style_ids[_result_style]["template"]) {
-            _srch_result_element_template.push(document.getElementById(id));
-        }
-        return _srch_result_element_template;
-    }
-    return [document.getElementById(result_style_ids[_result_style]["template"])];
-}
-function srch_get_search_elements() {
-    const form = document.getElementById("search_form");
-    return form.querySelectorAll("[data-search-field]");
-}
-function srch_get_values_to_send() {
-    let values_to_send = {
-        empty: true,
-        "search_terms": []
-    };
-    for (const element of srch_get_search_elements()) {
-        if (element.value !== "") {
-            // console.log(`${element.dataset.searchField}, "${element.value}"`);
-            values_to_send.search_terms.push({key: element.dataset.searchField, value: element.value});
-            values_to_send.empty = false;
-        }
-    }
-    return values_to_send;
-}
-function srch_input_focusout() {
-    // logit(" > clear timer from focusout");
-    window.clearTimeout(srch_keypress_timer);
-}
-function srch_key_is_not_visible(e) {
-    let ignore = [
-        'ShiftLeft', 'MetaLeft', 'AltLeft', 'ControlLeft',
-        'ShiftRight', 'MetaRight', 'AltRight', 'ControlRight',
-        'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
-        'Enter', 'Tab', 'CapsLock',
-        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"
-    ]
-    return ignore.includes(e.code);
-}
-function srch_key_is_visible(e) {
-    let donot_ignore = [
-        "Backspace", "Space", "Backquote", "Equal", "Minus", "Backslash", "BracketRight", "BracketLeft", "Quote",
-        "Semicolon", "Slash", "Period", "Comma",
-        "KeyA", "KeyB", "KeyC", "KeyD", "KeyE", "KeyF", "KeyG", "KeyH", "KeyI", "KeyJ", "KeyK", "KeyL", "KeyM",
-        "KeyN", "KeyO", "KeyP", "KeyQ", "KeyR", "KeyS", "KeyT", "KeyU", "KeyV", "KeyW", "KeyX", "KeyY", "KeyZ",
-        "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", "Digit0",
-    ]
-    return donot_ignore.includes(e.code);
-}
-function srch_no_results() {
-    for (const _result_style of active_result_styles) {
-        srch_remove_all_results(_result_style);
-        let new_result = srch_get_no_result_element_template(_result_style).cloneNode(true);
-        srch_get_result_element(_result_style).appendChild(new_result);
-        new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
-    }
-}
-function srch_populate_results(data) {
-    if (data.length === 0) {
-        srch_no_results();
-        return;
-    }
-    for (const _result_style of active_result_styles) {
-        srch_remove_all_results(_result_style);
-        for (const item of data) {
-            srch_add_result(item, _result_style);
-        }
-    }
-}
-function srch_remove_all_results(_result_style) {
-    // Clear any existing search results in preparation for either "No results" or new elements.
-    let _srch_results_element = srch_get_result_element(_result_style);
-    if (_srch_results_element.firstChild === null) {
-        return;
-    }
-    while( _srch_results_element.firstChild ){
-        _srch_results_element.removeChild( _srch_results_element.firstChild );
-    }
-}
-function srch_setup_events() {
-    for (const element of srch_get_search_elements()) {
-        if ((element.tagName === "INPUT") && (element.type === "text")) {
-            console.log(`Found text input: "${element.dataset.searchField}"`);
-            // keydown and focusout events
-            element.addEventListener('keydown', (event) => {
-                srch_filter_keydown(event);
-            });
-            element.addEventListener('focusout', (event) => {
-                srch_input_focusout();
-            });
-        }
-        if ((element.tagName === "INPUT") && (element.type === "checkbox")) {
-            console.log(`Found checkbox input: "${element.dataset.searchField}"`);
-            element.addEventListener('onclick', (event) => {
-                srch_start_timer();
-            });
-        }
-    }
+function setup_events() {
     for (const element of document.querySelectorAll("[name=result_style_selector]")) {
         element.addEventListener('change', (event) => {
-            srch_update_result_style();
+            update_result_style();
         });
     }
 }
-function srch_start_timer() {
-    console.log("Start a timer.");
-    window.clearTimeout(srch_keypress_timer);
-    srch_keypress_timer = setTimeout(srch_timer_elapsed_func, 750);
-}
-function srch_timer_elapsed_func(caller_obj) {
-    let values_to_send = srch_get_values_to_send();
-    if (values_to_send.empty) {
-        srch_no_results();
-        return;
-    }
-    let query_string = srch_convert_values_to_query_string(values_to_send)
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-        let data = JSON.parse(this.responseText);
-        {#srch_results_element.innerHTML = this.responseText;#}
-        srch_populate_results(data);
-    }
-    xhttp.open("GET", srch_url + "?" + query_string, true);
-    xhttp.send();
-}
-function srch_update_result_style() {
+function update_result_style() {
     active_result_styles = [];
     for (const element of document.querySelectorAll("[name=result_style_selector]")) {
         if (element.checked) {
             active_result_styles.push(element.value);
-            console.log(`element: "${element.name}" "${element.id}" "${element.value}"`);
+            console.log(`active element: "${element.name}" "${element.id}" "${element.value}"`);
             document.getElementById(result_style_ids[element.value]["container"]).style.display = "";
         } else {
+            console.log(`disabled element: "${element.name}" "${element.id}" "${element.value}"`);
             document.getElementById(result_style_ids[element.value]["container"]).style.display = "none";
             srch_remove_all_results(element.value);
         }
@@ -441,9 +282,8 @@ function srch_update_result_style() {
 
 (function() {
     // onload based on https://stackoverflow.com/a/9899701
-    srch_setup_events();
-    srch_no_results();
-    srch_update_result_style();
+    setup_events();
+    update_result_style();
 })();
 </script>
 

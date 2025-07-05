@@ -91,7 +91,6 @@ class APISearchView(views.APIView):
         search_terms = self.get_search_terms_from_request(request)
         if not search_terms:
             return response.Response(self.serializer(self.get_queryset().none(), many=True).data)
-        logger.debug(f"search_terms: {search_terms!r}")
         include_q, exclude_q = self.build_search_filter(search_terms)
         qs = self.get_queryset().filter(include_q).exclude(exclude_q)
         qs = self.limit_result(qs, request)
