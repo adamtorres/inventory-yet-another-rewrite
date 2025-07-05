@@ -21,19 +21,22 @@
 <label for="search_exclude_name2">Second Exclude Name:</label>
 <input type="text" id="search_exclude_name2" data-search-field="-name" placeholder="exclude name">
 </div>
+<div>
+<label for="search_category">Category:</label>
+<input type="text" id="search_category" data-search-field="category" placeholder="category">
+</div>
 </form>
 
 
 <div id="results_in_table">
 <hr />
-Results in a table
 <table style="display: none;">
 <tbody>
     <tr id="search_no_result_template_tablerow">
         <td colspan="*">No results</td>
     </tr>
     <tr id="search_result_template_tablerow">
-        <td data-field="id">__id__</td>
+        <td data-field="id" style="display: none;">__id__</td>
         <td data-field="name">__name__</td>
         <td data-field="description">__description__</td>
         <td data-field="category">__category__</td>
@@ -44,7 +47,10 @@ Results in a table
 <table>
 <thead>
     <tr>
-        <th>id</th>
+        <th style="display: none;">id</th>
+        <th>name</th>
+        <th>description</th>
+        <th>category</th>
     </tr>
 </thead>
 <tbody id="search_results_table">

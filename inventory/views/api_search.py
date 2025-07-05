@@ -149,6 +149,7 @@ class ItemSearch(APISearchView):
     search_terms = {
         'name': [
             "name", "sourceitem__cryptic_name", "sourceitem__expanded_name", "sourceitem__common_name"],
+        'category': ["category__name"],
     }
 
 
