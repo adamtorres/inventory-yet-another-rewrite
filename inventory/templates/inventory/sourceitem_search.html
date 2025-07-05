@@ -208,7 +208,7 @@ Results in divs
 let srch_keypress_timer;
 let srch_url = "{% url "inventory:api_sourceitem_search" %}";
 
-let result_style = "ul";
+let result_style = ["ul", "div", "table", "table-multiline"];
 let result_style_ids = {
     "div": {
         "results": "search_results_div",
@@ -251,9 +251,9 @@ function srch_get_no_result_element_template(_result_style) {
     // The root of the template used for indicating no results.
     return document.getElementById(result_style_ids[_result_style]["no_results_template"]);
 }
-function srch_remove_all_results() {
+function srch_remove_all_results(_result_style) {
     // Clear any existing search results in preparation for either "No results" or new elements.
-    let _srch_results_element = srch_get_result_element(result_style);
+    let _srch_results_element = srch_get_result_element(_result_style);
     if (_srch_results_element.firstChild === null) {
         return;
     }
@@ -262,29 +262,33 @@ function srch_remove_all_results() {
     }
 }
 function srch_no_results() {
-    srch_remove_all_results();
-    let new_result = srch_get_no_result_element_template(result_style).cloneNode(true);
-    srch_get_result_element(result_style).appendChild(new_result);
-    new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
+    for (const _result_style of result_style) {
+        srch_remove_all_results(_result_style);
+        let new_result = srch_get_no_result_element_template(_result_style).cloneNode(true);
+        srch_get_result_element(_result_style).appendChild(new_result);
+        new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
+    }
 }
 function srch_populate_results(data) {
     if (data.length === 0) {
         srch_no_results();
         return;
     }
-    srch_remove_all_results();
-    for (const item of data) {
-        srch_add_result(item);
+    for (const _result_style of result_style) {
+        srch_remove_all_results(_result_style);
+        for (const item of data) {
+            srch_add_result(item, _result_style);
+        }
     }
 }
-function srch_add_result(item_to_add) {
-    for (const template_element of srch_get_result_element_template(result_style)) {
+function srch_add_result(item_to_add, _result_style) {
+    for (const template_element of srch_get_result_element_template(_result_style)) {
         let new_result = template_element.cloneNode(true);
         for (const element of new_result.querySelectorAll("[data-field]")) {
             element.innerHTML = item_to_add[element.dataset.field];
         }
         new_result.removeAttribute("id");
-        srch_get_result_element(result_style).appendChild(new_result);
+        srch_get_result_element(_result_style).appendChild(new_result);
         new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
     }
 }
