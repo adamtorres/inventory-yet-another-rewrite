@@ -7,7 +7,7 @@
 <form id="search_form">
 <div>
 <label for="search_name">Name:</label>
-<input type="text" id="search_name" data-search-field="name" placeholder="name">
+<input type="text" id="search_name" data-search-field="name" placeholder="name" value="apple">
 </div>
 <div>
 <label for="search_name2">Second Name:</label>
@@ -15,7 +15,7 @@
 </div>
 <div>
 <label for="search_exclude_name">Exclude Name:</label>
-<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name">
+<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name" value="juice">
 </div>
 <div>
 <label for="search_exclude_name2">Second Exclude Name:</label>
@@ -56,6 +56,18 @@ function srch_no_results() {
     li.setAttribute("id", "some value");
     srch_results_element.appendChild(li);
 }
+function srch_add_result(item_to_add) {
+    let li = document.createElement("li");
+    let div = document.createElement("div");
+    let unit_size = `${item_to_add.unit_size_amount} ${item_to_add.unit_size_unit}`;
+    if ((+item_to_add.quantity) > 1) {
+        unit_size = `${item_to_add.quantity}ct ${unit_size}`;
+    }
+    div.innerText = `${item_to_add.item_name}, ${item_to_add.cryptic_name}, ${unit_size}, `;
+    li.appendChild(div);
+    li.setAttribute("data-id", item_to_add.id);
+    srch_results_element.appendChild(li);
+}
 function srch_get_search_elements() {
     const form = document.getElementById("search_form");
     return form.querySelectorAll("[data-search-field]");
@@ -67,7 +79,7 @@ function srch_get_values_to_send() {
     };
     for (const element of srch_get_search_elements()) {
         if (element.value !== "") {
-            console.log(`${element.dataset.searchField}, "${element.value}"`);
+            // console.log(`${element.dataset.searchField}, "${element.value}"`);
             values_to_send.search_terms.push({key: element.dataset.searchField, value: element.value});
             values_to_send.empty = false;
         }
@@ -77,11 +89,11 @@ function srch_get_values_to_send() {
 function srch_convert_values_to_query_string(values_to_send) {
     const params = new URLSearchParams();
     for (const pair of values_to_send.search_terms) {
-        console.log(`search_terms: ${pair.key} = ${pair.value}`);
+        // console.log(`search_terms: ${pair.key} = ${pair.value}`);
         params.append(pair.key, pair.value);
     }
     let param_string = params.toString();
-    console.log(`param_string = "${param_string}"`)
+    // console.log(`param_string = "${param_string}"`)
     return param_string;
 }
 function srch_timer_elapsed_func(caller_obj) {
@@ -93,8 +105,17 @@ function srch_timer_elapsed_func(caller_obj) {
     let query_string = srch_convert_values_to_query_string(values_to_send)
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        console.log(`response from API: redacted`);
-        srch_results_element.innerHTML = this.responseText;
+        let data = JSON.parse(this.responseText);
+        {#srch_results_element.innerHTML = this.responseText;#}
+        if (data.length === 0) {
+            srch_no_results();
+            return;
+        }
+        srch_remove_all_results();
+        for (const item of data) {
+            srch_add_result(item);
+        }
+
     }
     xhttp.open("GET", srch_url + "?" + query_string, true);
     xhttp.send();

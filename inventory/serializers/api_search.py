@@ -8,7 +8,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = inv_models.Item
-        fields = ["name", "description", "category"]
+        fields = ["id", "name", "description", "category"]
 
     def get_category(self, obj):
         return obj.category.name
@@ -27,7 +27,7 @@ class SourceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = inv_models.SourceItem
         fields = [
-            "source", "item_category", "item_description", "item_name", "brand", "source_category",
+            "id", "source", "item_category", "item_description", "item_name", "brand", "source_category",
             "unit_size_unit", "unit_size_amount", "subunit_size_unit", "subunit_size_amount",
             "active", "quantity", "allow_split_pack", "cryptic_name", "expanded_name", "common_name", "item_number",
             "extra_number"]
