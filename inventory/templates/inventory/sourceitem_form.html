@@ -23,14 +23,14 @@
         <div class="custom-field-wrapper">
             {{ field.label_tag }}
             {{ field }}
-            {% if field.id_for_label in "id_unit_size,id_subunit_size" %}
+            {% if not popup and field.id_for_label in "id_unit_size,id_subunit_size" %}
                 <a class="my-pop-up" href="{% url "inventory:unitsize_create" %}"
                    data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_unitsize" %}"
                    data-refresh-visible-fn="format_unit_size">
                     <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">
                 </a>
             {% endif %}
-            {% if field.id_for_label == "id_item" %}
+            {% if not popup and field.id_for_label == "id_item" %}
                 <a class="my-pop-up" href="{% url "inventory:item_create" %}"
                    data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_item" %}"
                    data-refresh-visible-fn="format_item">
@@ -53,9 +53,11 @@
     <a href="{% url "inventory:sourceitem_detail" pk=object.id %}">Cancel</a>
 </div>
 {% endif %}
+{% if not popup %}
 <div>
     <a href="{% url "inventory:sourceitem_list" %}">Cancel and go back to list</a>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block body_scripts %}

@@ -47,3 +47,28 @@
     <a href="{% url "inventory:order_list" %}">Back to orders</a>
 </div>
 {% endblock %}
+
+{% block body_scripts %}
+<script src="{% static "js/not_jquery.js" %}"></script>
+<script src="{% static "js/popup_create.js" %}"></script>
+<script>
+// `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
+ready(popup_create_setup);
+popup_properties = "height=500,width=800,resizable=yes,scrollbars=yes";
+function format_source_item(e) {
+    let formatted = "";
+    if (e["expanded_name"] !== "") {
+        formatted += e["expanded_name"];
+    } else {
+        formatted += e["cryptic_name"];
+    }
+    formatted += ` ${e["quantity"]}x ${e["unit_size_amount"]}`;
+    if (e["unit_size_unit"] === "subunit") {
+        formatted += `ct ${e["subunit_size_amount"]}${e["subunit_size_unit"]}`;
+    } else {
+        formatted += e["unit_size_unit"];
+    }
+    return formatted;
+}
+</script>
+{% endblock %}

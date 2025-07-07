@@ -1,10 +1,10 @@
 from django import urls
 from django.views import generic
 
-from inventory import models as inv_models
+from inventory import mixins as inv_mixins, models as inv_models
 
 
-class SourceItemCreateView(generic.CreateView):
+class SourceItemCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.SourceItem
     fields = [
         "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",

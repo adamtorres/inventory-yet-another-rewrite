@@ -17,6 +17,7 @@ class APISearchView(views.APIView):
     prefetch_fields = []
     select_related_fields = []
     search_terms = {}
+    order_fields = []
 
     def build_search_filter(self, search_terms):
         """
@@ -98,6 +99,8 @@ class APISearchView(views.APIView):
         # qs on that.
         qs_ids = qs.values("id").distinct()
         qs = self.get_queryset().filter(id__in=qs_ids)
+        if self.order_fields:
+            qs = qs.order_by(*self.order_fields)
         qs = self.limit_result(qs, request)
         data = self.serializer(qs, many=True).data
         return response.Response(data)
@@ -158,6 +161,7 @@ class SourceItemSearch(APISearchView):
     model = inv_models.SourceItem
     serializer = inv_serializers.SourceItemSerializer
     prefetch_fields = ['source', 'item', 'item__category']
+    order_fields = ["item__name", "expanded_name", "cryptic_name"]
     # select_related_fields = ['source', 'item', 'item__category']
 
     search_terms = {

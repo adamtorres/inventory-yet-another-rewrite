@@ -5,6 +5,7 @@
 {# which uses OrderLineItemFormset #}
 {# which uses OrderLineItemForm #}
 {# which uses this file. #}
+{% load static %}
 {% if form.instance.id %}
   <!-- existing item -->
 {% else %}
@@ -27,6 +28,11 @@
     <td class="source_item_col">
         {{ form.source_item.errors }}
         {{ form.source_item }}
+        <a class="my-pop-up" href="{% url "inventory:sourceitem_create" %}"
+           data-control="{{ form.source_item.id_for_label }}" data-refresh-url="{% url "inventory:api_sourceitem_search" %}?source={{ source_pk }}"
+           data-refresh-visible-fn="format_source_item">
+            <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">
+        </a>
     </td>
     <td class="quantity_ordered_col">
         {{ form.quantity_ordered.errors }}

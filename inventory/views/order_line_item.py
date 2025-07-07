@@ -19,6 +19,7 @@ class OrderLineItemCreateView(generic.CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["order_pk"] = self.kwargs['order_pk']
+        context["source_pk"] = inv_models.Order.objects.get(id=self.kwargs['order_pk']).source.id
         return context
 
     def get_success_url(self):
