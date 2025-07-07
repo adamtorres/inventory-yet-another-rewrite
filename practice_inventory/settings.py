@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-xvjz-m)i_)v&ebh(9xg^*58ugg48g9*e+yftosqfs@x=u6+zj$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'inventory.apps.InventoryConfig',
     'rest_framework',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

@@ -7,6 +7,7 @@ app_name = "inventory"
 
 
 urlpatterns = [
+    urls.path("api/category", i_views.APICategoryView.as_view(), name="api_category"),
     urls.path("api/item_search", i_views.ItemSearch.as_view(), name="api_item_search"),
     urls.path("api/source_item_search", i_views.SourceItemSearch.as_view(), name="api_sourceitem_search"),
 
