@@ -32,7 +32,8 @@
             {% endif %}
             {% if not popup and field.id_for_label == "id_item" %}
                 <a class="my-pop-up" href="{% url "inventory:item_create" %}"
-                   data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_item" %}"
+                   data-control="{{ field.id_for_label }}"
+                   data-refresh-url="{% url "inventory:api_item" %}?all_objects=1"
                    data-refresh-visible-fn="format_item">
                     <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">
                 </a>

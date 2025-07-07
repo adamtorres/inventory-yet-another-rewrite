@@ -5,8 +5,6 @@ from django.db import models
 
 from rest_framework import response, views
 
-from .. import models as inv_models, serializers as inv_serializers
-
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +89,9 @@ class APISearchView(views.APIView):
         # | = this or any of the other | values
         # - = this excluded from the others
         search_terms = self.get_search_terms_from_request(request)
-        if not search_terms:
+        all_obj_requested = request.GET.get("all_objects", "0") == "1"
+        if not search_terms and not all_obj_requested:
+            # TODO: Should this default to no results if no filters?
             return response.Response(self.serializer(self.get_queryset().none(), many=True).data)
         include_q, exclude_q = self.build_search_filter(search_terms)
         qs = self.get_queryset().filter(include_q).exclude(exclude_q)
@@ -142,33 +142,3 @@ class APISearchView(views.APIView):
         if self.select_related_fields:
             return qs.select_related(*self.select_related_fields)
         return qs
-
-
-class ItemSearch(APISearchView):
-    model = inv_models.Item
-    serializer = inv_serializers.ItemSerializer
-    prefetch_fields = ['category']
-    # select_related_fields = ['category']
-
-    search_terms = {
-        'name': [
-            "name", "sourceitem__cryptic_name", "sourceitem__expanded_name", "sourceitem__common_name"],
-        'category': ["category__name"],
-    }
-
-
-class SourceItemSearch(APISearchView):
-    model = inv_models.SourceItem
-    serializer = inv_serializers.SourceItemSerializer
-    prefetch_fields = ['source', 'item', 'item__category']
-    order_fields = ["item__name", "expanded_name", "cryptic_name"]
-    # select_related_fields = ['source', 'item', 'item__category']
-
-    search_terms = {
-        'name': ["item__name", "cryptic_name", "expanded_name", "common_name"],
-        'code': ["item_number", "extra_number"],
-        'unit': [
-            "unit_amount", "unit_amount_text", "unit_size__unit",
-            "subunit_amount", "subunit_amount_text", "subunit_size__unit"],
-        'source': ["source__name", "source__id"],
-    }

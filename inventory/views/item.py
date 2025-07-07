@@ -1,7 +1,8 @@
 from django import urls
 from django.views import generic
 
-from inventory import mixins as inv_mixins, models as inv_models
+from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
+from . import utils as inv_utils
 
 
 class ItemCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
@@ -46,3 +47,18 @@ class ItemUpdateView(generic.UpdateView):
 
 class ItemSearchView(generic.TemplateView):
     template_name = "inventory/item_search.html"
+
+
+class APIItemView(inv_utils.APISearchView):
+    model = inv_models.Item
+    serializer = inv_serializers.ItemSerializer
+    order_fields = ["category__name", "name"]
+    prefetch_fields = ['category']
+    # select_related_fields = ['category']
+
+    search_terms = {
+        'name': [
+            "name", "sourceitem__cryptic_name", "sourceitem__expanded_name", "sourceitem__common_name"],
+        'category': ["category__name"],
+    }
+

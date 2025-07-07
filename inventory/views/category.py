@@ -2,8 +2,9 @@ import logging
 
 from django import http, urls
 from django.views import generic
+from rest_framework import response, views
 
-from inventory import mixins as inv_mixins, models as inv_models
+from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 
 
 logger = logging.getLogger(__name__)
@@ -38,3 +39,14 @@ class CategoryUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return urls.reverse("inventory:category_detail", args=(self.object.id,))
+
+
+class APICategoryView(views.APIView):
+    model = inv_models.Category
+    serializer = inv_serializers.CategorySerializer
+
+    def get(self, request, format=None):
+        return response.Response(self.serializer(self.get_queryset(), many=True).data)
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by("name")

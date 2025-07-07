@@ -7,7 +7,7 @@ from inventory import views as inv_views
 
 class TestSourceItemSearch(TestCase):
     def setUp(self):
-        self.url = urls.reverse("inventory:api_sourceitem_search")
+        self.url = urls.reverse("inventory:api_sourceitem")
         self.apple_search_terms = {
             '-name': ['juice'],
             'name': ['apple'],
