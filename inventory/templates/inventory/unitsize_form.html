@@ -15,7 +15,9 @@
     <a href="{% url "inventory:unitsize_detail" pk=object.id %}">Cancel</a>
 </div>
 {% endif %}
+{% if not popup %}
 <div>
     <a href="{% url "inventory:unitsize_list" %}">Cancel and go back to list</a>
 </div>
+{% endif %}
 {% endblock %}

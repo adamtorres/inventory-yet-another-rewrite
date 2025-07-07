@@ -1,10 +1,10 @@
-from django import urls
+from django import http, urls
 from django.views import generic
 
-from inventory import models as inv_models
+from inventory import mixins as inv_mixins, models as inv_models
 
 
-class UnitSizeCreateView(generic.CreateView):
+class UnitSizeCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.UnitSize
     fields = ["unit", "amount"]
 
