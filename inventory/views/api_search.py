@@ -60,9 +60,10 @@ class APISearchView(views.APIView):
             for value in value_list:
                 one_value_q = models.Q()
                 for field_name in self.search_terms[st_key]:
+                    modifier = "__iexact" if (field_name == "id" or field_name.endswith("__id")) else "__icontains"
                     pile_of_tokens = models.Q()
                     for token in value.strip().split(" "):
-                        pile_of_tokens &= models.Q(**{field_name + "__icontains": token})
+                        pile_of_tokens &= models.Q(**{field_name + modifier: token})
                     one_value_q = one_value_q | pile_of_tokens
 
                 match and_or_ex:
@@ -163,4 +164,5 @@ class SourceItemSearch(APISearchView):
         'name': ["item__name", "cryptic_name", "expanded_name", "common_name"],
         'code': ["item_number", "extra_number"],
         'unit': ["unit_size__amount", "unit_size__unit", "subunit_size__amount", "subunit_size__unit"],
+        'source': ["source__name", "source__id"],
     }
