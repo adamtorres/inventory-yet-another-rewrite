@@ -167,6 +167,8 @@ class SourceItemSearch(APISearchView):
     search_terms = {
         'name': ["item__name", "cryptic_name", "expanded_name", "common_name"],
         'code': ["item_number", "extra_number"],
-        'unit': ["unit_size__amount", "unit_size__unit", "subunit_size__amount", "subunit_size__unit"],
+        'unit': [
+            "unit_amount", "unit_amount_text", "unit_size__unit",
+            "subunit_amount", "subunit_amount_text", "subunit_size__unit"],
         'source': ["source__name", "source__id"],
     }

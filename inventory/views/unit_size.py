@@ -6,7 +6,7 @@ from inventory import mixins as inv_mixins, models as inv_models
 
 class UnitSizeCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.UnitSize
-    fields = ["unit", "amount"]
+    fields = ["unit"]
 
     def get_success_url(self):
         return urls.reverse("inventory:unitsize_detail", args=(self.object.id,))
@@ -24,7 +24,7 @@ class UnitSizeDetailView(generic.DetailView):
 
 class UnitSizeListView(generic.ListView):
     model = inv_models.UnitSize
-    ordering = ["unit", "amount"]
+    ordering = ["unit"]
 
 
 class UnitSizeUpdateView(generic.UpdateView):

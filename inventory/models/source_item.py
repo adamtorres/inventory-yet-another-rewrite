@@ -6,7 +6,13 @@ class SourceItem(models.Model):
     item = models.ForeignKey("inventory.item", on_delete=models.DO_NOTHING)
     brand = models.CharField(max_length=255)
     source_category = models.CharField(max_length=255, help_text="probably won't agree with Item.category")
+
+    unit_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True, help_text="the quantity of units.  The '15.5' in '15.5floz'")
+    unit_amount_text = models.CharField(max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
     unit_size = models.ForeignKey("inventory.UnitSize", on_delete=models.CASCADE, null=True)
+
+    subunit_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True, help_text="the quantity of subunits.  The '15.5' in '15.5floz'")
+    subunit_amount_text = models.CharField(max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
     subunit_size = models.ForeignKey(
         "inventory.UnitSize", on_delete=models.CASCADE, null=True, blank=True, help_text=(
             "For when the box contains packs of multiple units.  Like a box with 8 packs of 6 pudding cups."),

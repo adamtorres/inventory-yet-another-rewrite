@@ -7,4 +7,4 @@ class UnitSizeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = inv_models.UnitSize
-        fields = ["id", "amount", "unit"]
+        fields = ["id", "unit"]

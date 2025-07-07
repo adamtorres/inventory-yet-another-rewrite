@@ -11,4 +11,4 @@ class APIUnitSizeView(views.APIView):
         return response.Response(self.serializer(self.get_queryset(), many=True).data)
 
     def get_queryset(self):
-        return self.model.objects.all().order_by("unit", "amount")
+        return self.model.objects.all().order_by("unit")

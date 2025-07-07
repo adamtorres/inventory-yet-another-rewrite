@@ -8,7 +8,8 @@ class SourceItemCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.SourceItem
     fields = [
         "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
-        "item", "brand", "source_category", "unit_size", "subunit_size", "active", "quantity", "allow_split_pack"]
+        "item", "brand", "source_category", "unit_size", "unit_amount", "unit_amount_text", "subunit_size",
+        "subunit_amount", "subunit_amount_text", "active", "quantity", "allow_split_pack"]
 
     def get_success_url(self):
         return urls.reverse("inventory:sourceitem_detail", args=(self.object.id,))
@@ -37,7 +38,8 @@ class SourceItemUpdateView(generic.UpdateView):
     model = inv_models.SourceItem
     fields = [
         "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
-        "item", "brand", "source_category", "unit_size", "subunit_size", "active", "quantity", "allow_split_pack"]
+        "item", "brand", "source_category", "unit_size", "unit_amount", "unit_amount_text", "subunit_size",
+        "subunit_amount", "subunit_amount_text", "active", "quantity", "allow_split_pack"]
 
     def get_success_url(self):
         return urls.reverse("inventory:sourceitem_detail", args=(self.object.id,))

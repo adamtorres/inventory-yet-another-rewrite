@@ -20,15 +20,14 @@ class SourceItemSerializer(serializers.ModelSerializer):
     item_category = serializers.SerializerMethodField()
     item_description = serializers.SerializerMethodField()
     unit_size_unit = serializers.SerializerMethodField()
-    unit_size_amount = serializers.SerializerMethodField()
     subunit_size_unit = serializers.SerializerMethodField()
-    subunit_size_amount = serializers.SerializerMethodField()
 
     class Meta:
         model = inv_models.SourceItem
         fields = [
             "id", "source", "item_category", "item_description", "item_name", "brand", "source_category",
-            "unit_size_unit", "unit_size_amount", "subunit_size_unit", "subunit_size_amount",
+            "unit_size_unit", "unit_amount", "unit_amount_text",
+            "subunit_size_unit", "subunit_amount", "subunit_amount_text",
             "active", "quantity", "allow_split_pack", "cryptic_name", "expanded_name", "common_name", "item_number",
             "extra_number"]
 
@@ -47,11 +46,5 @@ class SourceItemSerializer(serializers.ModelSerializer):
     def get_subunit_size_unit(self, obj):
         return obj.subunit_size.unit if obj.subunit_size else None
 
-    def get_subunit_size_amount(self, obj):
-        return obj.subunit_size.amount if obj.subunit_size else None
-
     def get_unit_size_unit(self, obj):
         return obj.unit_size.unit if obj.unit_size else None
-
-    def get_unit_size_amount(self, obj):
-        return obj.unit_size.amount if obj.unit_size else None

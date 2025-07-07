@@ -1,29 +1,3 @@
-"""
-/inventory/api/source_item_search?name=apple&|name=gala&|name=fuji&|name=red+delicious&-name=juice&|unit=113&|unit=80&-unit=%2310
-{
-    '-name': ['juice'],
-    'name': ['apple'],
-    '|name': ['gala', 'fuji', 'red delicious'],
-    '-unit': ['#10'],
-    '|unit': ['113', '80']
-}
-
-{
-    'name': {
-        '&': <Q: (OR: ('item__name__icontains', 'apple'), ('cryptic_name__icontains', 'apple'), ('expanded_name__icontains', 'apple'), ('common_name__icontains', 'apple'))>,
-        '|': <Q: (OR: ('item__name__icontains', 'gala'), ('cryptic_name__icontains', 'gala'), ('expanded_name__icontains', 'gala'), ('common_name__icontains', 'gala'),
-            ('item__name__icontains', 'fuji'), ('cryptic_name__icontains', 'fuji'), ('expanded_name__icontains', 'fuji'), ('common_name__icontains', 'fuji'),
-            (AND: ('item__name__icontains', 'red'), ('item__name__icontains', 'delicious')), (AND: ('cryptic_name__icontains', 'red'), ('cryptic_name__icontains', 'delicious')), (AND: ('expanded_name__icontains', 'red'), ('expanded_name__icontains', 'delicious')), (AND: ('common_name__icontains', 'red'), ('common_name__icontains', 'delicious')))>,
-        '-': <Q: (OR: ('item__name__icontains', 'juice'), ('cryptic_name__icontains', 'juice'), ('expanded_name__icontains', 'juice'), ('common_name__icontains', 'juice'))>
-    },
-    'unit': {
-        '&': <Q: (AND: )>,
-        '|': <Q: (OR: ('unit_size__amount__icontains', '113'), ('unit_size__unit__icontains', '113'), ('subunit_size__amount__icontains', '113'), ('subunit_size__unit__icontains', '113'),
-            ('unit_size__amount__icontains', '80'), ('unit_size__unit__icontains', '80'), ('subunit_size__amount__icontains', '80'), ('subunit_size__unit__icontains', '80'))>,
-        '-': <Q: (OR: ('unit_size__amount__icontains', '#10'), ('unit_size__unit__icontains', '#10'), ('subunit_size__amount__icontains', '#10'), ('subunit_size__unit__icontains', '#10'))>
-    }
-}
-"""
 from django import urls
 from django.db import models
 from django.test import RequestFactory, TestCase
@@ -70,7 +44,9 @@ class TestSourceItemSearch(TestCase):
         # Checking the Q objects returned that are built from the search term dict.
         include_q_objects, exclude_q_objects = self.apple_view.build_search_filter(self.apple_search_terms)
         name_field_names = ["item__name", "cryptic_name", "expanded_name", "common_name"]
-        unit_field_names = ["unit_size__amount", "unit_size__unit", "subunit_size__amount", "subunit_size__unit"]
+        unit_field_names = [
+            "unit_amount", "unit_amount_text", "unit_size__unit", "subunit_amount", "subunit_amount_text",
+            "subunit_size__unit"]
 
         # inclusions
         apple = self.q_up(name_field_names, "apple", "|")

@@ -255,18 +255,13 @@ And once again with the process for UnitSize but this time via shell_plus.
 Left out the preceding `>>>` to make copy/paste easier.
 
 ```python
-inv_models.UnitSize.objects.create(unit="#10 can", amount=0)
-inv_models.UnitSize.objects.create(unit="floz", amount=15.5)
-inv_models.UnitSize.objects.create(unit="gallon", amount=1)
-inv_models.UnitSize.objects.create(unit="pound", amount=50)
-inv_models.UnitSize.objects.create(unit="pound", amount=25)
-inv_models.UnitSize.objects.create(unit="pound", amount=10)
-inv_models.UnitSize.objects.create(unit="oz", amount=16)
-inv_models.UnitSize.objects.create(unit="oz", amount=18)
-inv_models.UnitSize.objects.create(unit="ct", amount=113)
-inv_models.UnitSize.objects.create(unit="dz", amount=30)
-inv_models.UnitSize.objects.create(unit="dz", amount=15)
-inv_models.UnitSize.objects.create(unit="pound", amount=1)
+inv_models.UnitSize.objects.create(unit="#10 can")
+inv_models.UnitSize.objects.create(unit="floz")
+inv_models.UnitSize.objects.create(unit="gallon")
+inv_models.UnitSize.objects.create(unit="pound")
+inv_models.UnitSize.objects.create(unit="oz")
+inv_models.UnitSize.objects.create(unit="ct")
+inv_models.UnitSize.objects.create(unit="dz")
 ```
 
 And dumping the data is the same as for previous models.

@@ -8,14 +8,9 @@ class UnitSize(models.Model):
     """
     # description = "#10 can", "15 floz can", "16oz bag", "50lb bag", "5 gallon bucket"
     unit = models.CharField(max_length=1024, help_text="oz, floz, lb, pint, gallon")
-    amount = models.DecimalField(
-        max_digits=9, decimal_places=4, help_text="the quantity of units.  The '15.5' in '15.5floz'")
 
     class Meta:
-        ordering = ["unit", "amount"]
+        ordering = ["unit"]
 
     def __str__(self):
-        _unit = "pk" if self.unit == "subunit" else f" {self.unit}"
-        if self.amount:
-            return f"{self.amount}{_unit}"
-        return _unit.strip()
+        return "pk" if self.unit == "subunit" else self.unit
