@@ -25,7 +25,8 @@
             {{ field }}
             {% if field.id_for_label in "id_unit_size,id_subunit_size" %}
         <a class="my-pop-up" href="{% url "inventory:unitsize_create" %}"
-           data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_unitsize" %}">
+           data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_unitsize" %}"
+           data-refresh-visible-fn="format_unit_size">
             <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">
         </a>
             {% endif %}
@@ -56,7 +57,7 @@
 <script>
 // `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
 ready(popup_create_setup);
-refresh_visible_fn = function(e) {
+function format_unit_size(e) {
     return `${e["amount"]} ${e["unit"]}`;
 }
 </script>

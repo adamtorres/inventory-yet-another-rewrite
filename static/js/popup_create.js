@@ -1,20 +1,20 @@
 /*
 Expects an <a> tag formed like the following:
     <a class="my-pop-up" href="{% url "inventory:category_create" %}"
-       data-control="{{ form.category.id_for_label }}" data-refresh-url="{% url "inventory:api_category" %}">
+       data-control="{{ form.category.id_for_label }}" data-refresh-url="{% url "inventory:api_category" %}"
+       data-refresh-visible-fn="format_unit_size">
         <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">
     </a>
 class="my-pop-up" is used to find the tags and attach event handlers.
 href is the create url for the object.
 data-control is the id of the select control to refresh.
 data-refresh-url points to an API which returns a JSON of all of the objects.
-
-For visible values more complex than a single field, use the function, refresh_visible_fn.
-    refresh_visible_fn = function(e) {
+data-refresh-visible-fn is a function name that formats the output of the API into a string.
+    function format_unit_size(e) {
         return `${e["amount"]} ${e["unit"]}`;
     }
-It receives a single object from the list returned by the data-refresh-url API from the <a> tag.  You can use whatever
-logic needed along with formatting.  Just so long as a single string is returned.
+    It receives a single object from the list returned by the data-refresh-url API from the <a> tag.  You can use
+    whatever logic needed along with formatting.  Just so long as a single string is returned.
  */
 
 // Used to find the <a> tags
@@ -29,11 +29,10 @@ var popup_queryparam_flag = "_popup";
 var refresh_id_field = "id";
 // The visible field in the API response when refreshing the <select>.  Ignored if refresh_visible_fn is set.
 var refresh_visible_field = "name";
-// function which will be passed an object from the data-refresh-url result.  As string is expected.
-var refresh_visible_fn = null;
 
 let refresh_because_of_popup = null;
 let refresh_popup_url = null;
+let refresh_visible_fn = null;
 
 function popup_create_setup() {
     for (const el of document.getElementsByClassName(popup_class_name)) {
@@ -47,6 +46,7 @@ function popup_event(e) {
     let a_tag = e.target.parentNode;
     refresh_because_of_popup = document.getElementById(a_tag.dataset.control);
     refresh_popup_url = a_tag.dataset.refreshUrl;
+    refresh_visible_fn = window[a_tag.dataset.refreshVisibleFn];
     const href = new URL(a_tag.href);
     href.searchParams.set(popup_queryparam_flag, 1);
     const win = window.open(href, "What's in a name?", popup_properties);
