@@ -12,6 +12,8 @@ class PopupCreateMixin:
 
     def post(self, request, *args, **kwargs):
         original_return = super().post(request, *args, **kwargs)
+        if not (request.GET.get("_popup", "0") == "1"):
+            return original_return
         form = self.get_form()
         if not form.is_valid():
             # Don't want to close the popup if there's a problem.
