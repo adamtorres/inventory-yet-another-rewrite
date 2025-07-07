@@ -1,6 +1,7 @@
 from django.views import generic
 
 from .api_category import APICategoryView
+from .api_item import APIItemView
 from .api_search import ItemSearch, SourceItemSearch
 from .api_unit_size import APIUnitSizeView
 from .category import CategoryUpdateView, CategoryListView, CategoryDetailView, CategoryDeleteView, CategoryCreateView

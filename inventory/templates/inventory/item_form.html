@@ -36,10 +36,13 @@
         {% for error in form.category.errors %}
             <span class="help-block">{{ error }}</span>
         {% endfor %}
-        <a class="my-pop-up" href="{% url "inventory:category_create" %}"
-           data-control="{{ form.category.id_for_label }}" data-refresh-url="{% url "inventory:api_category" %}">
-            <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">
-        </a>
+        {% if not popup %}
+            {# TODO: popups don't stack.  The category popup closes the item popup without saving it. #}
+            <a class="my-pop-up" href="{% url "inventory:category_create" %}"
+               data-control="{{ form.category.id_for_label }}" data-refresh-url="{% url "inventory:api_category" %}">
+                <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">
+            </a>
+        {% endif %}
     </div>
     <input type="submit" value="Save">
 </form>
@@ -48,9 +51,11 @@
     <a href="{% url "inventory:item_detail" pk=object.id %}">Cancel</a>
 </div>
 {% endif %}
+{% if not popup %}
 <div>
     <a href="{% url "inventory:item_list" %}">Cancel and go back to list</a>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block body_scripts %}

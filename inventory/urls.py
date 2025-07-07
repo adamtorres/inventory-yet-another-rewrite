@@ -9,6 +9,7 @@ app_name = "inventory"
 urlpatterns = [
     urls.path("api/category", i_views.APICategoryView.as_view(), name="api_category"),
     urls.path("api/item_search", i_views.ItemSearch.as_view(), name="api_item_search"),
+    urls.path("api/item", i_views.APIItemView.as_view(), name="api_item"),
     urls.path("api/source_item_search", i_views.SourceItemSearch.as_view(), name="api_sourceitem_search"),
     urls.path("api/unit_size", i_views.APIUnitSizeView.as_view(), name="api_unitsize"),
 
