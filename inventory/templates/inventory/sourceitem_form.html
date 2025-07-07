@@ -56,6 +56,8 @@
 <script>
 // `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
 ready(popup_create_setup);
-refresh_visible_field = "unit";
+refresh_visible_fn = function(e) {
+    return `${e["amount"]} ${e["unit"]}`;
+}
 </script>
 {% endblock %}

@@ -8,6 +8,13 @@ class="my-pop-up" is used to find the tags and attach event handlers.
 href is the create url for the object.
 data-control is the id of the select control to refresh.
 data-refresh-url points to an API which returns a JSON of all of the objects.
+
+For visible values more complex than a single field, use the function, refresh_visible_fn.
+    refresh_visible_fn = function(e) {
+        return `${e["amount"]} ${e["unit"]}`;
+    }
+It receives a single object from the list returned by the data-refresh-url API from the <a> tag.  You can use whatever
+logic needed along with formatting.  Just so long as a single string is returned.
  */
 
 // Used to find the <a> tags
@@ -20,8 +27,10 @@ var expected_origin = "http://localhost:8000";
 var popup_queryparam_flag = "_popup";
 // The id field in the API response when refreshing the <select>.
 var refresh_id_field = "id";
-// The visible field in the API response when refreshing the <select>.
+// The visible field in the API response when refreshing the <select>.  Ignored if refresh_visible_fn is set.
 var refresh_visible_field = "name";
+// function which will be passed an object from the data-refresh-url result.  As string is expected.
+var refresh_visible_fn = null;
 
 let refresh_because_of_popup = null;
 let refresh_popup_url = null;
@@ -56,7 +65,13 @@ async function handle_popup_close(e) {
         if (e[refresh_id_field] === new_id.id) {
             is_selected = " selected";
         }
+        let visible_string = "";
+        if (refresh_visible_fn == null) {
+            visible_string = e[refresh_visible_field];
+        } else {
+            visible_string = refresh_visible_fn(e);
+        }
         refresh_because_of_popup.appendChild(
-            generateElements(`<option value="${e[refresh_id_field]}"${is_selected}>${e[refresh_visible_field]}</option>`)[0]);
+            generateElements(`<option value="${e[refresh_id_field]}"${is_selected}>${visible_string}</option>`)[0]);
     });
 }
