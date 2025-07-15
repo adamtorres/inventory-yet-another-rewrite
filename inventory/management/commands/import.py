@@ -1,13 +1,11 @@
 import json
 import pathlib
 
-from django.core.management.base import BaseCommand
-from django_extensions.management.debug_cursor import monkey_patch_cursordebugwrapper
-
+from . import base_command
 from ... import models as inv_models
 
 
-class Command(BaseCommand):
+class Command(base_command.MyBaseCommand):
     import_folder = None
     cache_category = {}
     cache_item = {}
@@ -83,17 +81,6 @@ class Command(BaseCommand):
         if not tmp:
             print(f"!! {unit_size!r} not found when looking for {unit_size.lower().strip()!r}.")
         return tmp
-
-    def handle(self, *args, **options):
-        print_sql = False
-        print_sql_location = False
-        if options.get("verbosity", 1) >= 2:
-            print_sql = True
-        if options.get("verbosity", 1) >= 3:
-            print_sql_location = True
-        with monkey_patch_cursordebugwrapper(
-                print_sql=print_sql, confprefix="SHELL_PLUS", print_sql_location=print_sql_location):
-            self.actual_handle(*args, **options)
 
     def import_category(self):
         category_json_file = self.import_folder / "category.json"
