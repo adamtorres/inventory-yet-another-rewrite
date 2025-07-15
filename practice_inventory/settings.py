@@ -130,7 +130,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console',],  # Send Django logs to console and file
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
         'inventory': {

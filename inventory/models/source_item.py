@@ -21,7 +21,7 @@ class SourceItem(models.Model):
     active = models.BooleanField(
         default=True, help_text="Products sometimes change their packaging.  This option allows the unit size to remain"
                                 " tied to the source item but no longer selectable.")
-
+    #TODO: This shouldn't be here.  unit_amount is the quantity of unit_size.
     quantity = models.IntegerField(default=1, help_text="How many of the UnitSize is there in this package?")
     allow_split_pack = models.BooleanField(
         default=True,
@@ -39,7 +39,7 @@ class SourceItem(models.Model):
         null=False, blank=True, default="")
 
     # Note: Some sources reuse codes.  Not frequently, but it has happened.
-    # TODO: How to handle changing codes?  Duplicate SourceItem?
+    # TODO: How to handle changing codes?  Duplicate SourceItem?  ArrayField/JSONField?
     item_number = models.CharField(
         max_length=255, null=False, blank=True, default="",
         help_text="The main number/code used to identify this product at this source for this unit size.")
