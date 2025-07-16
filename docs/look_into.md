@@ -308,3 +308,9 @@ Object.prototype.toString
   .toLowerCase();
 ```
 
+## Issues
+
+* Single purchased item is a variety pack.  How do we split that to track the items?
+  * "lemon, lime, orange jello" needs to add quantity of 3 types of gelatin.
+* Items which don't need inventoried.
+  * things that appear on broulims receipts like newspapers, Tuesday lunch/board snacks, etc.
