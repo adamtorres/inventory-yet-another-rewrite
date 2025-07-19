@@ -46,6 +46,7 @@ class Command(base_command.MyBaseCommand):
         if new_unit_size == '"':
             new_unit_size = "in"
         if new_unit_size == "-#":
+            # doesn't get here because "-" is in remove_chars
             new_unit_size = "#avg"
         if new_unit_size == "#":
             new_unit_size = "lb"
@@ -148,12 +149,15 @@ class Command(base_command.MyBaseCommand):
         batch = []
         for i, si in enumerate(si_data["full_list"]):
             self.get_category(si["source_category"])
+            unit_amount_text, unit_size = self.split_unit_size(si["unit_size"])
             batch.append(inv_models.SourceItem(
                 source=source,
                 item=self.get_item(si["common_name"]),
                 brand="?",
                 source_category=si["source_category"],
-                unit_amount_text=si["unit_size"],
+                quantity=si["pack_quantity"],
+                unit_amount=si["unit_quantity"],
+                unit_amount_text=unit_amount_text,
                 unit_size=self.get_unit_size(self.clean_unit_size(si["unit_size"])),
                 cryptic_name=si["cryptic_name"],
                 expanded_name=si["verbose_name"],
@@ -197,3 +201,24 @@ class Command(base_command.MyBaseCommand):
         found_folders.sort()
         for f in found_folders:
             print(f"\t{f}")
+
+    @staticmethod
+    def split_unit_size(raw_unit_size):
+        """
+        takes "15.5oz" and returns ["15.5", "oz"]
+        takes "8-12#avg" and returns ["8-12", "lb avg"]
+        takes "14#avg" and returns ["14", "lb avg"]
+
+        :param raw_unit_size:
+        :return:
+        """
+        remove_chars = "0123456789. -/"
+        amount_text = ""
+        for c in raw_unit_size:
+            if c not in remove_chars:
+                break
+            amount_text += c
+        unit_size = raw_unit_size[len(amount_text):]
+        if raw_unit_size:
+            print(f"{raw_unit_size!r} = {amount_text!r}, {unit_size!r}")
+        return amount_text, unit_size
