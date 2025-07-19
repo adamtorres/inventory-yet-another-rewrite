@@ -136,3 +136,5 @@ scratch/
 # pg_dump files as data exports probably shouldn't live in the repo.
 pg_dump*.sql
 
+# A script used to test ideas before adding them elsewhere.
+**/scratch.py
