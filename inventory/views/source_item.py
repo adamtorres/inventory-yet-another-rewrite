@@ -64,4 +64,5 @@ class APISourceItemView(inv_utils.APISearchView):
             "unit_amount", "unit_amount_text", "unit_size__unit",
             "subunit_amount", "subunit_amount_text", "subunit_size__unit"],
         'source': ["source__name", "source__id"],
+        'category': ["source_category", "item__category__name"],
     }
