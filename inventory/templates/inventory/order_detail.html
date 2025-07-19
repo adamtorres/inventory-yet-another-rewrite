@@ -33,7 +33,7 @@ items:
 <tbody>
     {% for item in order.orderlineitem_set.all %}
         <tr>
-            <td><a href="{% url "inventory:orderlineitem_detail" order_pk=object.pk pk=item.pk %}">{{ item.source_item }}</a></td>
+            <td><a href="{% url "inventory:sourceitem_detail" pk=item.source_item.pk %}">{{ item.source_item }}</a></td>
             <td>{{ item.line_item_number }}</td>
             <td>
                 {% if item.quantity_ordered == item.quantity_delivered %}

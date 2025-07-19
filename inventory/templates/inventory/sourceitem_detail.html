@@ -11,7 +11,7 @@
 <div>cryptic name: {{ object.cryptic_name }}</div>
 <div>expanded name: {{ object.expanded_name }}</div>
 <div>common name: {{ object.common_name }}</div>
-<div>item: {{ object.item }}</div>
+<div>item: <a href="{% url "inventory:item_detail" pk=object.item.id %}">{{ object.item }}</a></div>
 <div>brand: {{ object.brand }}</div>
 <div>source category: {{ object.source_category }}</div>
 <div>category: {{ object.item.category }}</div>
@@ -19,6 +19,14 @@
 <div>subunit size: {{ object.subunit_size }} / {{ object.subunit_amount }} / {{ object.subunit_amount_text }}</div>
 <div>quantity: {{ object.quantity }}</div>
 <div>allow split pack: {{ object.allow_split_pack }}</div>
+<ul>
+{% for order_line_item in object.orderlineitem_set.all %}
+    <li>
+        <a href="{% url "inventory:order_detail" pk=order_line_item.order.id %}">
+            {{ order_line_item.order.delivered_date }}</a>, {{ order_line_item.quantity_delivered }} x
+        ${{ order_line_item.per_pack_price }} = ${{ order_line_item.extended_price }}</li>
+{% endfor %}
+</ul>
 <ul>
     <li><a href="{% url "inventory:sourceitem_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "inventory:sourceitem_delete" pk=object.pk %}">Delete</a></li>

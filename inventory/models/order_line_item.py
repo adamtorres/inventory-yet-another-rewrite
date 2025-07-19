@@ -27,7 +27,7 @@ class OrderLineItem(models.Model):
     rejected_reason = models.TextField(null=True, blank=True, help_text="Why was this item sent back?")
 
     class Meta:
-        ordering = ["line_item_number"]
+        ordering = ["-order__delivered_date", "order__source", "line_item_number"]
 
     def __str__(self):
         return f"{self.line_item_number} {self.quantity_ordered}x {self.source_item}"
