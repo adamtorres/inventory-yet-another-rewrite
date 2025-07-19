@@ -11,6 +11,7 @@ class Command(base_command.MyBaseCommand):
     import_folder = None
     cache_category = {}
     cache_item = {}
+    cache_order = {}
     cache_source = {}
     cache_source_item = {}
     cache_unit_size = {}
@@ -19,11 +20,11 @@ class Command(base_command.MyBaseCommand):
         self.import_folder = pathlib.Path(options["import_folder"])
         self.populate_caches()
         # self.show_all_json_files()
-        # self.import_source()
-        # self.import_category()
-        # self.import_item()
-        # self.import_unit_size()
-        # self.import_source_item()
+        self.import_source()
+        self.import_category()
+        self.import_item()
+        self.import_unit_size()
+        self.import_source_item()
         self.import_order()
 
     def add_arguments(self, parser):
@@ -72,7 +73,13 @@ class Command(base_command.MyBaseCommand):
     def get_item(self, item_name):
         tmp = self.cache_item.get(item_name.lower().strip())
         if not tmp:
-            print(f"!! {item_name!r} not found when looking for {item_name.lower().strip()!r}.")
+            print(f"!! Item {item_name!r} not found when looking for {item_name.lower().strip()!r}.")
+        return tmp
+
+    def get_order(self, order_key):
+        tmp = self.cache_order.get(order_key.lower().strip())
+        if not tmp:
+            print(f"!! Order {order_key!r} not found when looking for {order_key.lower().strip()!r}.")
         return tmp
 
     def get_related_path(self, obj: type[models.Model], remaining_path: str):
@@ -93,13 +100,19 @@ class Command(base_command.MyBaseCommand):
     def get_source(self, source_name):
         tmp = self.cache_source.get(source_name.lower().strip())
         if not tmp:
-            print(f"!! {source_name!r} not found when looking for {source_name.lower().strip()!r}.")
+            print(f"!! Source {source_name!r} not found when looking for {source_name.lower().strip()!r}.")
+        return tmp
+
+    def get_source_item(self, source_item):
+        tmp = self.cache_source_item.get(source_item.lower().strip())
+        if not tmp:
+            print(f"!! SourceItem {source_item!r} not found when looking for {source_item.lower().strip()!r}.")
         return tmp
 
     def get_unit_size(self, unit_size):
         tmp = self.cache_unit_size.get(unit_size.lower().strip())
         if not tmp:
-            print(f"!! {unit_size!r} not found when looking for {unit_size.lower().strip()!r}.")
+            print(f"!! UnitSize {unit_size!r} not found when looking for {unit_size.lower().strip()!r}.")
         return tmp
 
     def import_category(self):
@@ -141,9 +154,48 @@ class Command(base_command.MyBaseCommand):
                 f"{order_data["calculated_line_item_count"]} != {order_data["total_line_item_count"]}")
         source = self.get_source(order_data["source_name"])
         print(f"Orders for {source}.")
-        order_keys = ["delivered_date", "order_number", "line_item_count"]
-        # for order in order_data["orders"]:
-        #     print("\t", [order[ok] for ok in order_keys])
+        orders_to_create = []
+        orders_created = 0
+        for order in order_data["orders"]:
+            orders_to_create.append(inv_models.Order(
+                source=source, delivered_date=order["delivered_date"], order_number=order["order_number"],
+                po_text=order["po_text"]))
+            if len(orders_to_create) > 50:
+                inv_models.Order.objects.bulk_create(orders_to_create)
+                orders_created += len(orders_to_create)
+                orders_to_create[:] = []
+        if len(orders_to_create):
+            inv_models.Order.objects.bulk_create(orders_to_create)
+            orders_created += len(orders_to_create)
+            orders_to_create[:] = []
+        print(f"\tCreated {orders_created} Orders.")
+        self.populate_cache(
+            "Order", self.cache_order, inv_models.Order, "source__name|delivered_date|order_number")
+        line_items_to_create = []
+        line_items_created = 0
+        for order in order_data["orders"]:
+            order_key = "|".join([source.name, str(order["delivered_date"]), order["order_number"]])
+            order_obj = self.get_order(order_key)
+            for oli in order["line_items"]:
+                si = self.get_source_item("|".join([order_data["source_name"], oli["cryptic_name"], oli["item_code"]]))
+                qty_deliv = int(oli["delivered_quantity"])
+                qty_ordered = qty_deliv if qty_deliv else 1
+                line_items_to_create.append(inv_models.OrderLineItem(
+                    order=order_obj, source_item=si, line_item_number=int(oli["line_item_number"]),
+                    quantity_ordered=qty_ordered, quantity_delivered=qty_deliv,
+                    per_pack_price=oli["pack_cost"], extended_price=oli["extended_cost"],
+                    per_weight_price=oli["per_pound_cost"], per_pack_weights=oli["individual_weights"],
+                    total_weight=oli["total_weight"], notes=oli["extra_notes"]
+                ))
+            if len(line_items_to_create) > 50:
+                inv_models.OrderLineItem.objects.bulk_create(line_items_to_create)
+                line_items_created += len(line_items_to_create)
+                line_items_to_create[:] = []
+        if len(line_items_to_create):
+            inv_models.OrderLineItem.objects.bulk_create(line_items_to_create)
+            line_items_created += len(line_items_to_create)
+            line_items_to_create[:] = []
+        print(f"\tCreated {line_items_created} OrderLineItems.")
 
     def import_source(self):
         source_json_file = self.import_folder / "source.json"
@@ -229,7 +281,7 @@ class Command(base_command.MyBaseCommand):
         for obj in model.objects.all():
             keys = []
             for kf in key_fields:
-                keys.append(str(self.get_related_path(obj, kf)))
+                keys.append(str(self.get_related_path(obj, kf)).lower().strip())
             cache.update({"|".join(keys): obj})
         print(f"Cached {len(cache)} {cache_name}.")
         if print_sample_keys:
@@ -243,14 +295,8 @@ class Command(base_command.MyBaseCommand):
         self.populate_cache(
             "SourceItem", self.cache_source_item, inv_models.SourceItem,
             "source__name|cryptic_name|item_number")
-        # self.cache_source.update({obj.name: obj for obj in inv_models.Source.objects.all()})
-        # print(f"Cached {len(self.cache_source)} Source.")
-        # self.cache_category.update({obj.name: obj for obj in inv_models.Category.objects.all()})
-        # print(f"Cached {len(self.cache_category)} Category.")
-        # self.cache_item.update({obj.name: obj for obj in inv_models.Item.objects.all()})
-        # print(f"Cached {len(self.cache_item)} Item.")
-        # self.cache_unit_size.update({obj.unit: obj for obj in inv_models.UnitSize.objects.all()})
-        # print(f"Cached {len(self.cache_unit_size)} UnitSize.")
+        self.populate_cache(
+            "Order", self.cache_order, inv_models.Order, "source__name|delivered_date|order_number")
 
     def show_all_json_files(self):
         print(f"Searching for JSON files in {self.import_folder}...")
