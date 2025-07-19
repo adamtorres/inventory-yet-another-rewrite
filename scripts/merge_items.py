@@ -29,6 +29,7 @@ from django.core.management import call_command
 
 def run():
     dupes = [
+        ["butter cup", "individual butter cup"],
         ["candy corn", "candy corn autumn mix", "-k", "candy corn"],
         ["chocolate chips", "semisweet chocolate chip"],
         ["condensed tomato soup", "tomato soup", "-k", "tomato soup|canned & dry"],
@@ -76,5 +77,5 @@ def run():
     ]
     for dupe in dupes:
         print("=" * 80)
-        call_command('merge_items', '--safe', '-d', *dupe)
+        call_command('merge_items', '-d', *dupe)
     print("=" * 80)

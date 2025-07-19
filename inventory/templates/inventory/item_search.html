@@ -37,7 +37,7 @@
     </tr>
     <tr id="search_result_template_tablerow">
         <td data-field="id" style="display: none;">__id__</td>
-        <td data-field="name">__name__</td>
+        <td><a data-href-fn="get_item_url"><span data-field="name">__name__</span></a></td>
         <td data-field="description">__description__</td>
         <td data-field="category">__category__</td>
     </tr>
@@ -69,6 +69,10 @@
 {% block body_scripts %}
 <script src="{% static "js/search.js" %}"></script>
 <script>
+function get_item_url(item_id) {
+    let some_url = "{% url "inventory:item_detail" pk="9999" %}";
+    return some_url.replace("9999", `${item_id}`);
+}
 srch_url = "{% url "inventory:api_item" %}";
 active_result_styles = ["arbitrary_style_name"];
 result_style_ids = {
