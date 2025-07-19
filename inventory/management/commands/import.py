@@ -1,6 +1,8 @@
 import json
 import pathlib
 
+from django.db import models
+
 from . import base_command
 from ... import models as inv_models
 
@@ -10,17 +12,19 @@ class Command(base_command.MyBaseCommand):
     cache_category = {}
     cache_item = {}
     cache_source = {}
+    cache_source_item = {}
     cache_unit_size = {}
 
     def actual_handle(self, *args, **options):
         self.import_folder = pathlib.Path(options["import_folder"])
         self.populate_caches()
         # self.show_all_json_files()
-        self.import_source()
-        self.import_category()
-        self.import_item()
-        self.import_unit_size()
-        self.import_source_item()
+        # self.import_source()
+        # self.import_category()
+        # self.import_item()
+        # self.import_unit_size()
+        # self.import_source_item()
+        self.import_order()
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -71,6 +75,21 @@ class Command(base_command.MyBaseCommand):
             print(f"!! {item_name!r} not found when looking for {item_name.lower().strip()!r}.")
         return tmp
 
+    def get_related_path(self, obj: type[models.Model], remaining_path: str):
+        """
+        Recursive function to resolve names like "item__category__name".  This uses the "__" to separate the related
+        instances.  If there is a separator, the function will call itself with the remaining path.
+
+        :param obj: An instance of a model
+        :param remaining_path: string path to a value on `obj` or on a related object.
+        :return:
+        """
+        try:
+            cur_path, new_remaining_path = remaining_path.split("__", 1)
+            return self.get_related_path(getattr(obj, cur_path), new_remaining_path)
+        except ValueError:
+            return getattr(obj, remaining_path)
+
     def get_source(self, source_name):
         tmp = self.cache_source.get(source_name.lower().strip())
         if not tmp:
@@ -109,6 +128,22 @@ class Command(base_command.MyBaseCommand):
                 untouched_count += 1
             self.cache_item[item_name.lower().strip()] = obj
         print(f"{category_name}: created({created_count}) untouched({untouched_count}) total({item_data["length"]})")
+
+    def import_order(self):
+        for order_json_file in self.import_folder.glob("orders_by_source_*.json"):
+            self.import_order_json_file(order_json_file)
+
+    def import_order_json_file(self, order_json_file):
+        order_data = json.load(order_json_file.open("r"))
+        if order_data["calculated_line_item_count"] != order_data["total_line_item_count"]:
+            print(
+                f"Error: line item counts do not match in {order_json_file}.  "
+                f"{order_data["calculated_line_item_count"]} != {order_data["total_line_item_count"]}")
+        source = self.get_source(order_data["source_name"])
+        print(f"Orders for {source}.")
+        order_keys = ["delivered_date", "order_number", "line_item_count"]
+        # for order in order_data["orders"]:
+        #     print("\t", [order[ok] for ok in order_keys])
 
     def import_source(self):
         source_json_file = self.import_folder / "source.json"
@@ -172,6 +207,9 @@ class Command(base_command.MyBaseCommand):
             batch[:] = []
         si_count = inv_models.SourceItem.objects.filter(source__name=si_data["group_name"]).count()
         print(f"{si_data["group_name"]} now has {si_count} SourceItems.")
+        self.populate_cache(
+            "SourceItem", self.cache_source_item, inv_models.SourceItem,
+            "source__name|cryptic_name|item_number")
 
     def import_unit_size(self):
         unit_size_json_file = self.import_folder / "unit_size.json"
@@ -185,15 +223,34 @@ class Command(base_command.MyBaseCommand):
             total_count += 1
         print(f"UnitSize: created({created_count}) total({total_count})")
 
+    def populate_cache(self, cache_name, cache, model, key_fields, print_sample_keys=False):
+        # key_fields could be made up of multiple fields separated by "|".
+        key_fields = key_fields.split("|")
+        for obj in model.objects.all():
+            keys = []
+            for kf in key_fields:
+                keys.append(str(self.get_related_path(obj, kf)))
+            cache.update({"|".join(keys): obj})
+        print(f"Cached {len(cache)} {cache_name}.")
+        if print_sample_keys:
+            print("\t", [k for k in list(cache.keys())[:5]])
+
     def populate_caches(self):
-        self.cache_source.update({obj.name: obj for obj in inv_models.Source.objects.all()})
-        print(f"Cached {len(self.cache_source)} Source.")
-        self.cache_category.update({obj.name: obj for obj in inv_models.Category.objects.all()})
-        print(f"Cached {len(self.cache_category)} Category.")
-        self.cache_unit_size.update({obj.unit: obj for obj in inv_models.UnitSize.objects.all()})
-        print(f"Cached {len(self.cache_unit_size)} UnitSize.")
-        self.cache_item.update({obj.name: obj for obj in inv_models.Item.objects.all()})
-        print(f"Cached {len(self.cache_item)} Item.")
+        self.populate_cache("Source", self.cache_source, inv_models.Source, "name")
+        self.populate_cache("Category", self.cache_category, inv_models.Category, "name")
+        self.populate_cache("Item", self.cache_item, inv_models.Item, "name")
+        self.populate_cache("UnitSize", self.cache_unit_size, inv_models.UnitSize, "unit")
+        self.populate_cache(
+            "SourceItem", self.cache_source_item, inv_models.SourceItem,
+            "source__name|cryptic_name|item_number")
+        # self.cache_source.update({obj.name: obj for obj in inv_models.Source.objects.all()})
+        # print(f"Cached {len(self.cache_source)} Source.")
+        # self.cache_category.update({obj.name: obj for obj in inv_models.Category.objects.all()})
+        # print(f"Cached {len(self.cache_category)} Category.")
+        # self.cache_item.update({obj.name: obj for obj in inv_models.Item.objects.all()})
+        # print(f"Cached {len(self.cache_item)} Item.")
+        # self.cache_unit_size.update({obj.unit: obj for obj in inv_models.UnitSize.objects.all()})
+        # print(f"Cached {len(self.cache_unit_size)} UnitSize.")
 
     def show_all_json_files(self):
         print(f"Searching for JSON files in {self.import_folder}...")
