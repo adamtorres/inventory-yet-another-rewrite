@@ -29,6 +29,11 @@ function srch_add_result(item_to_add, _result_style) {
         for (const element of new_result.querySelectorAll("[data-field]")) {
             element.innerHTML = item_to_add[element.dataset.field];
         }
+        for (const element of new_result.querySelectorAll("[data-href-fn]")) {
+            // Sets the href for any element providing a function to convert the id into a url.
+            // TODO: allow for multiple fields - orderlineitem_detail needs order_pk and pk.
+            element.href = window[element.dataset.hrefFn](item_to_add["id"]);
+        }
         new_result.removeAttribute("id");
         srch_get_result_element(_result_style).appendChild(new_result);
         new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'

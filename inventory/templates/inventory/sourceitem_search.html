@@ -223,6 +223,7 @@ Results in a ul.
 Results in divs
 <div id="templates" style="display: none;">
     <div id="search_result_template_div">
+        <a href="" data-href-fn=get_source_item_url>
         <span data-field="id">__id__</span>
         <span data-field="source">__source__</span>
         <span data-field="item_category">__item_category__</span>
@@ -244,6 +245,7 @@ Results in divs
         <span data-field="common_name">__common_name__</span>
         <span data-field="item_number">__item_number__</span>
         <span data-field="extra_number">__extra_number__</span>
+        </a>
     </div>
     <div id="search_no_result_template_div">
         Nope.
@@ -263,6 +265,11 @@ Results in divs
 {% block body_scripts %}
 <script src="{% static "js/search.js" %}"></script>
 <script>
+function get_source_item_url(source_item_id) {
+    let some_url = "{% url "inventory:sourceitem_detail" pk="9999" %}";
+    return some_url.replace("9999", `${source_item_id}`);
+}
+
 srch_url = "{% url "inventory:api_sourceitem" %}";
 
 result_style_ids = {
