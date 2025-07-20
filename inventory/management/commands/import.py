@@ -180,12 +180,15 @@ class Command(base_command.MyBaseCommand):
                 si = self.get_source_item("|".join([order_data["source_name"], oli["cryptic_name"], oli["item_code"]]))
                 qty_deliv = int(oli["delivered_quantity"])
                 qty_ordered = qty_deliv if qty_deliv else 1
+                raw_import_data = oli.copy()
+                raw_import_data.update({k: v for k, v in order.items() if k not in ["line_items", "ids"]})
                 line_items_to_create.append(inv_models.OrderLineItem(
                     order=order_obj, source_item=si, line_item_number=int(oli["line_item_number"]),
                     quantity_ordered=qty_ordered, quantity_delivered=qty_deliv,
                     per_pack_price=oli["pack_cost"], extended_price=oli["extended_cost"],
                     per_weight_price=oli["per_pound_cost"], per_pack_weights=oli["individual_weights"],
-                    total_weight=oli["total_weight"], notes=oli["extra_notes"]
+                    total_weight=oli["total_weight"], notes=oli["extra_notes"],
+                    raw_import_data=json.dumps(raw_import_data, default=str, sort_keys=True),
                 ))
             if len(line_items_to_create) > 50:
                 inv_models.OrderLineItem.objects.bulk_create(line_items_to_create)
@@ -237,6 +240,8 @@ class Command(base_command.MyBaseCommand):
         for i, si in enumerate(si_data["full_list"]):
             self.get_category(si["source_category"])
             unit_amount_text, unit_size = self.split_unit_size(si["unit_size"])
+            raw_import_data = si.copy()
+            raw_import_data["source"] = si_data["group_name"]
             batch.append(inv_models.SourceItem(
                 source=source,
                 item=self.get_item(si["common_name"]),
@@ -250,6 +255,7 @@ class Command(base_command.MyBaseCommand):
                 expanded_name=si["verbose_name"],
                 item_number=si["item_code"],
                 extra_number=si["extra_code"],
+                raw_import_data=json.dumps(raw_import_data, default=str, sort_keys=True),
             ))
             if (i % 50) == 0:
                 inv_models.SourceItem.objects.bulk_create(batch)

@@ -129,7 +129,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console',],  # Send Django logs to console and file
+            'handlers': ['console',],
             'level': 'INFO',
             'propagate': False,
         },

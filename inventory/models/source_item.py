@@ -47,6 +47,9 @@ class SourceItem(models.Model):
         max_length=255, null=False, blank=True, default="",
         help_text="Some sources have a second identifying number/code.")
 
+    raw_import_data = models.JSONField(
+        null=True, blank=True, help_text="Raw JSON data that contributed to this object's creation.")
+
     def __str__(self):
         name = self.common_name or self.expanded_name or self.cryptic_name
         subunit_size = ""

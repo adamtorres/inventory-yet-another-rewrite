@@ -26,6 +26,9 @@ class OrderLineItem(models.Model):
     rejected = models.BooleanField(default=False, help_text="Item sent back because of damage, incorrect, etc.")
     rejected_reason = models.TextField(null=True, blank=True, help_text="Why was this item sent back?")
 
+    raw_import_data = models.JSONField(
+        null=True, blank=True, help_text="Raw JSON data that contributed to this object's creation.")
+
     class Meta:
         ordering = ["-order__delivered_date", "order__source", "line_item_number"]
 
