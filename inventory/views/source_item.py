@@ -29,9 +29,8 @@ class SourceItemDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        duration_andor_end_date = inv_models.Setting.objects.get_value("report", "date_range")
-        context["totals"] = self.object.total_ordered(**duration_andor_end_date)
-        start_date, end_date = model_utils.calculate_start_and_end_dates(**duration_andor_end_date)
+        context["totals"] = self.object.total_ordered()
+        start_date, end_date = model_utils.calculate_start_and_end_dates()
         context["line_items"] = self.object.line_items.filter(order__delivered_date__range=[start_date, end_date])
         return context
 

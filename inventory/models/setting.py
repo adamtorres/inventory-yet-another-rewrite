@@ -9,12 +9,15 @@ class SettingManager(models.Manager):
         return {s.name: s.value for s in self.filter(group=group_name).order_by("name")}
 
     def get_value(self, group, name):
-        obj = self.get(group=group, name=name)
-        if "duration" in obj.value:
-            obj.value["duration"] = datetime.datetime.today().date() - dateparser.parse(obj.value["duration"]).date()
-        if "end_date" in obj.value:
-            obj.value["end_date"] = dateparser.parse(obj.value["end_date"])
-        return obj.value
+        return self.get(group=group, name=name).value
+
+    def get_report_date_range(self):
+        value = self.get_value("report", "date_range")
+        if "duration" in value:
+            value["duration"] = datetime.datetime.today().date() - dateparser.parse(value["duration"]).date()
+        if "end_date" in value:
+            value["end_date"] = dateparser.parse(value["end_date"])
+        return value
 
 
 class Setting(models.Model):
