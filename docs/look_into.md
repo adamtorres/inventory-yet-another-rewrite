@@ -314,3 +314,6 @@ Object.prototype.toString
   * "lemon, lime, orange jello" needs to add quantity of 3 types of gelatin.
 * Items which don't need inventoried.
   * things that appear on broulims receipts like newspapers, Tuesday lunch/board snacks, etc.
+* Same SourceItem appearing twice on the same Order.
+  * I believe there was an order with a full pack of lettuce and a split pack of the same lettuce.  Pretty sure it
+    showed two line items on the order.

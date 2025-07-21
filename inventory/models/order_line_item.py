@@ -3,7 +3,9 @@ from django.db import models
 
 class OrderLineItem(models.Model):
     order = models.ForeignKey("inventory.Order", on_delete=models.CASCADE)
-    source_item = models.ForeignKey("inventory.SourceItem", on_delete=models.DO_NOTHING)
+    source_item = models.ForeignKey(
+        "inventory.SourceItem", on_delete=models.DO_NOTHING, related_query_name="line_items",
+        related_name="line_items")
 
     line_item_number = models.IntegerField(default=0, help_text="the ordering on the invoice")
 

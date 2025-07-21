@@ -8,6 +8,9 @@
 <div>Description: {{ object.description }}</div>
 <div>Category: {{ object.category }}</div>
 <div>
+<div>
+    Between {{ totals.start_date }} and {{ totals.end_date }}, there were {{ totals.orders }} orders totalling ${{ totals.extended_price }}.
+</div>
 Source Items:
 <ul>
     {% for si in source_items %}

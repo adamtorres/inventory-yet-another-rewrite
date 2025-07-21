@@ -19,12 +19,15 @@
 <div>subunit size: {{ object.subunit_size }} / {{ object.subunit_amount }} / {{ object.subunit_amount_text }}</div>
 <div>quantity: {{ object.quantity }}</div>
 <div>allow split pack: {{ object.allow_split_pack }}</div>
+<div>
+    Between {{ totals.start_date }} and {{ totals.end_date }}, there were {{ totals.orders }} orders totalling ${{ totals.extended_price }}.
+</div>
 <ul>
-{% for order_line_item in object.orderlineitem_set.all %}
+{% for line_item in line_items %}
     <li>
-        <a href="{% url "inventory:order_detail" pk=order_line_item.order.id %}">
-            {{ order_line_item.order.delivered_date }}</a>, {{ order_line_item.quantity_delivered }} x
-        ${{ order_line_item.per_pack_price }} = ${{ order_line_item.extended_price }}</li>
+        <a href="{% url "inventory:order_detail" pk=line_item.order.id %}">
+            {{ line_item.order.delivered_date }}</a>, {{ line_item.quantity_delivered }} x
+        ${{ line_item.per_pack_price }} = ${{ line_item.extended_price }}</li>
 {% endfor %}
 </ul>
 <ul>

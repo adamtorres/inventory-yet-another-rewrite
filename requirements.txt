@@ -21,3 +21,6 @@ djangorestframework
 
 # Modify form fields in the html template instead of in python code.
 django-widget-tweaks
+
+# interprets "1 year" and such for simple human readable settings.
+dateparser
