@@ -145,7 +145,7 @@ class Command(base_command.MyBaseCommand):
     def get_source_items_to_update(dupe_items):
         source_items_to_update = set()
         for dupe_item in dupe_items:
-            source_items_to_update.update(dupe_item.sourceitem_set.all())
+            source_items_to_update.update(dupe_item.source_items.all())
         return source_items_to_update
 
     def item_name_to_filter_kwarg(self, item_name):
@@ -158,7 +158,7 @@ class Command(base_command.MyBaseCommand):
     @staticmethod
     def show_item(item, prefix="", indent=0):
         print(f"{" " * indent}{prefix}{" " if prefix else ""}Item: {item.id} / {item.name!r} / {item.description} / {item.category.name!r}")
-        for si in item.sourceitem_set.all():
+        for si in item.source_items.all():
             print(f"{" " * (indent+1)}↳ SourceItem({si.id}): {si}")
 
     def show_dupe_items(self, dupe_items):

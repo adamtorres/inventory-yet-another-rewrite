@@ -17,6 +17,18 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
+    def get_orders(self, duration: datetime.timedelta=None, end_date: datetime.date=None):
+        start_date, end_date = utils.calculate_start_and_end_dates(duration=duration, end_date=end_date)
+        qs = self.source_items.filter(line_items__order__delivered_date__range=[start_date, end_date])
+        qs = qs.annotate(
+            delivered_date=models.F("line_items__order__delivered_date"),
+            quantity_delivered=models.F("line_items__quantity_delivered"),
+            extended_price=models.F("line_items__extended_price"),
+            order_id=models.F("line_items__order__id"),
+        )
+        qs = qs.order_by("-delivered_date")
+        return qs
+
     def total_ordered(self, duration: datetime.timedelta=None, end_date: datetime.date=None) -> dict:
         """
 

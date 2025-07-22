@@ -29,7 +29,8 @@ class ItemDetailView(generic.DetailView):
         context["totals"] = self.object.total_ordered()
         start_date, end_date = model_utils.calculate_start_and_end_dates()
         context["source_items"] = self.object.source_items.filter(
-            line_items__order__delivered_date__range=[start_date, end_date])
+            line_items__order__delivered_date__range=[start_date, end_date]).distinct()
+        context["orders"] = self.object.get_orders()
         return context
 
 

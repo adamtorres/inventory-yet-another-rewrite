@@ -10,10 +10,17 @@
 <div>
 <div>
     Between {{ totals.start_date }} and {{ totals.end_date }}, there were {{ totals.orders }} orders totalling ${{ totals.extended_price }}.
+    <ul>
+        {% for order in orders %}
+            <li>
+                <a href="{% url "inventory:order_detail" pk=order.order_id %}">{{ order.delivered_date }}, {{ order.quantity_delivered }}, ${{ order.extended_price }}</a>,
+                <a href="{% url "inventory:sourceitem_detail" pk=order.id %}">{{ order.cryptic_name }}</a></li>
+        {% endfor %}
+    </ul>
 </div>
 Source Items:
 <ul>
-    {% for si in source_items %}
+    {% for si in object.source_items.all.distinct %}
         <li><a href="{% url "inventory:sourceitem_detail" pk=si.pk %}">{{ si }}</a></li>
     {% endfor %}
 </ul>
