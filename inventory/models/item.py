@@ -11,7 +11,8 @@ class Item(models.Model):
         help_text="overly complicated JSON object used to suggest this item for new source items.", null=True,
         blank=True)
     description = models.TextField(help_text="General description of the item and how it'd likely be used.")
-    category = models.ForeignKey("inventory.Category", on_delete=models.DO_NOTHING)
+    category = models.ForeignKey(
+        "inventory.Category", on_delete=models.DO_NOTHING, related_name="items", related_query_name="items")
 
     def __str__(self):
         return self.name

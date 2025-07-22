@@ -50,3 +50,26 @@ class APICategoryView(views.APIView):
 
     def get_queryset(self):
         return self.model.objects.all().order_by("name")
+
+
+class APICategoryReportView(views.APIView):
+    model = inv_models.Category
+    serializer = inv_serializers.CategoryReportSerializer
+
+    def get(self, request, format=None):
+        return response.Response(self.serializer(self.get_queryset(), many=True).data)
+
+    def get_queryset(self):
+        return self.model.objects.total_ordered().order_by("name")
+
+
+class ReportCategoryView(generic.TemplateView):
+    template_name = "inventory/category_report.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = inv_models.Category.objects.total_ordered()
+        context["start_date"] = data["start_date"]
+        context["end_date"] = data["end_date"]
+        context["total_ordered"] = data["data"]
+        return context

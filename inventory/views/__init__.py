@@ -1,7 +1,8 @@
 from django.views import generic
 
 from .category import (
-    CategoryUpdateView, CategoryListView, CategoryDetailView, CategoryDeleteView, CategoryCreateView, APICategoryView)
+    CategoryUpdateView, CategoryListView, CategoryDetailView, CategoryDeleteView, CategoryCreateView, APICategoryView,
+    APICategoryReportView, ReportCategoryView)
 from .item import (
     ItemUpdateView, ItemListView, ItemDetailView, ItemDeleteView, ItemCreateView, ItemSearchView, APIItemView)
 from .order import OrderUpdateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Category Report{% endblock %}
+
+{% block content %}
+Orders from {{ start_date }} to {{ end_date }}.
+<table>
+<thead>
+<tr>
+    <th>Name</th>
+    <th>Extended Price</th>
+    <th>Orders</th>
+</tr>
+</thead>
+<tbody>
+{% for category in total_ordered %}
+    <tr>
+        <td data-id="{{ category.id }}">{{ category.name }}</td>
+        <td>{{ category.extended_price }}</td>
+        <td>{{ category.orders }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<ul>
+    <li><a href="{% url "inventory:category_list" %}">Category List</a></li>
+</ul>
+{% endblock %}

@@ -8,6 +8,7 @@ app_name = "inventory"
 
 urlpatterns = [
     urls.path("api/category", i_views.APICategoryView.as_view(), name="api_category"),
+    urls.path("api/category/report", i_views.APICategoryReportView.as_view(), name="api_category_report"),
     urls.path("api/item", i_views.APIItemView.as_view(), name="api_item"),
     urls.path("api/source", i_views.APISourceView.as_view(), name="api_source"),
     urls.path("api/source_item", i_views.APISourceItemView.as_view(), name="api_sourceitem"),
@@ -47,6 +48,8 @@ urlpatterns = [
     urls.path(
         "order/<int:order_pk>/lineitems", i_views.OrderLineItemFormsetView.as_view(),
         name="orderlineitem_formset"),
+
+    urls.path("reports/category", i_views.ReportCategoryView.as_view(), name="reports_category"),
 
     urls.path("sources/", i_views.SourceListView.as_view(), name="source_list"),
     urls.path("source/<int:pk>", i_views.SourceDetailView.as_view(), name="source_detail"),
