@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Inventory : Category Report{% endblock %}
 
@@ -17,7 +18,7 @@ Orders from {{ start_date }} to {{ end_date }}.
 {% for category in total_ordered %}
     <tr>
         <td data-id="{{ category.id }}">{{ category.name }}</td>
-        <td>{{ category.extended_price }}</td>
+        <td>${{ category.extended_price|floatformat:2|intcomma }}</td>
         <td>{{ category.orders }}</td>
     </tr>
 {% endfor %}

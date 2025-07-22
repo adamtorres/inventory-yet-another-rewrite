@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Inventory : Order{% endblock %}
 
@@ -34,7 +35,7 @@ items:
     {% for item in order.orderlineitem_set.all %}
         <tr>
             <td><a href="{% url "inventory:sourceitem_detail" pk=item.source_item.pk %}">{{ item.source_item }}</a></td>
-            <td><span style="display: none;">{{ item.id }}</span>{{ item.line_item_number }}</td>
+            <td><span style="display: none;">{{ item.id }}</span><a href="{% url "inventory:orderlineitem_detail" order_pk=order.id pk=item.id %}">{{ item.line_item_number }}</a></td>
             <td>
                 {% if item.quantity_ordered == item.quantity_delivered %}
                     {{ item.quantity_delivered }}
@@ -44,9 +45,9 @@ items:
             </td>
             <td style="display: none;">{{ item.remote_stock }}</td>
             <td style="display: none;">{{ item.expect_backorder_delivery }}</td>
-            <td>{{ item.per_pack_price }}</td>
-            <td>{{ item.extended_price }}</td>
-            <td>{{ item.per_weight_price }}</td>
+            <td>{{ item.per_pack_price|floatformat:2|intcomma }}</td>
+            <td>{{ item.extended_price|floatformat:2|intcomma }}</td>
+            <td>{{ item.per_weight_price|floatformat:2|intcomma }}</td>
             <td>{{ item.per_pack_weights }}</td>
             <td>{{ item.total_weight }}</td>
             <td>{{ item.notes }}</td>

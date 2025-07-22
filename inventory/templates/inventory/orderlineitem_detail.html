@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Inventory : Order Line Item{% endblock %}
 
@@ -11,10 +12,10 @@
 <div>quantity_delivered: {{ object.quantity_delivered }}</div>
 <div>remote_stock: {{ object.remote_stock }}</div>
 <div>expect_backorder_delivery: {{ object.expect_backorder_delivery }}</div>
-<div>per_pack_price: {{ object.per_pack_price }}</div>
-<div>extended_price: {{ object.extended_price }}</div>
-<div>tax: {{ object.tax }}</div>
-<div>per_weight_price: {{ object.per_weight_price }}</div>
+<div>per_pack_price: {{ object.per_pack_price|floatformat:2|intcomma }}</div>
+<div>extended_price: {{ object.extended_price|floatformat:2|intcomma }}</div>
+<div>tax: {{ object.tax|floatformat:2|intcomma }}</div>
+<div>per_weight_price: {{ object.per_weight_price|floatformat:2|intcomma }}</div>
 <div>per_pack_weights: {{ object.per_pack_weights }}</div>
 <div>total_weight: {{ object.total_weight }}</div>
 <div>notes: {{ object.notes }}</div>

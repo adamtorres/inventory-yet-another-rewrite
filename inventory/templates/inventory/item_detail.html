@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Inventory : Item{% endblock %}
 
@@ -9,11 +10,11 @@
 <div>Category: {{ object.category }}</div>
 <div>
 <div>
-    Between {{ totals.start_date }} and {{ totals.end_date }}, there were {{ totals.orders }} orders totalling ${{ totals.extended_price }}.
+    Between {{ totals.start_date }} and {{ totals.end_date }}, there were {{ totals.orders }} orders totalling ${{ totals.extended_price|floatformat:2|intcomma }}.
     <ul>
         {% for order in orders %}
             <li>
-                <a href="{% url "inventory:order_detail" pk=order.order_id %}">{{ order.delivered_date }}, {{ order.quantity_delivered }}, ${{ order.extended_price }}</a>,
+                <a href="{% url "inventory:order_detail" pk=order.order_id %}">{{ order.delivered_date }}, {{ order.quantity_delivered }}, ${{ order.extended_price|floatformat:2|intcomma }}</a>,
                 <a href="{% url "inventory:sourceitem_detail" pk=order.id %}">{{ order.cryptic_name }}</a></li>
         {% endfor %}
     </ul>
