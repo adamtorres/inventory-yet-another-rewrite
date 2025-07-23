@@ -1,7 +1,8 @@
 from django import http, urls
 from django.views import generic
 
-from inventory import forms as inv_forms, models as inv_models
+from .. import forms as inv_forms, models as inv_models, serializers as inv_serializers
+from . import utils as inv_utils
 
 
 class OrderLineItemCreateView(generic.CreateView):
@@ -48,6 +49,10 @@ class OrderLineItemDetailView(generic.DetailView):
         return context
 
 
+class OrderLineItemSearchView(generic.TemplateView):
+    template_name = "inventory/orderlineitem_search.html"
+
+
 class OrderLineItemUpdateView(generic.UpdateView):
     model = inv_models.OrderLineItem
     fields = [
@@ -92,3 +97,28 @@ class OrderLineItemFormsetView(generic.detail.SingleObjectMixin, generic.FormVie
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super().post(request, *args, **kwargs)
+
+
+class APIOrderLineItemView(inv_utils.APISearchView):
+    model = inv_models.OrderLineItem
+    serializer = inv_serializers.APIOrderLineItemSerializer
+    order_fields = ["-order__delivered_date", "order__source__name", "source_item__cryptic_name"]
+    select_related_fields = [
+        "source_item", "source_item__item__category", "source_item__unit_size", "source_item__subunit_size", "order"
+    ]
+    # prefetch_fields = ['line_items', 'line_items__source_item', 'line_items__source_item__item']
+
+    search_terms = {
+        'name': [
+            "source_item__item__name", "source_item__cryptic_name",
+            "source_item__expanded_name", "source_item__common_name"],
+        'code': ["source_item__item_number", "source_item__extra_number"],
+        'unit': [
+            "source_item__unit_amount", "source_item__unit_amount_text",
+            "source_item__unit_size__unit",
+            "source_item__subunit_amount", "source_item__subunit_amount_text",
+            "source_item__subunit_size__unit"],
+        'source': ["order__source__name", "order__source__id"],
+        'category': ["source_item__source_category", "source_item__item__category__name"],
+        'order_number': ["order__order_number"],
+    }

@@ -11,6 +11,7 @@ urlpatterns = [
     urls.path("api/category/report", i_views.APICategoryReportView.as_view(), name="api_category_report"),
     urls.path("api/item", i_views.APIItemView.as_view(), name="api_item"),
     urls.path("api/order", i_views.APIOrderView.as_view(), name="api_order"),
+    urls.path("api/orderlineitem", i_views.APIOrderLineItemView.as_view(), name="api_orderlineitem"),
     urls.path("api/source", i_views.APISourceView.as_view(), name="api_source"),
     urls.path("api/source_item", i_views.APISourceItemView.as_view(), name="api_sourceitem"),
     urls.path("api/unit_size", i_views.APIUnitSizeView.as_view(), name="api_unitsize"),
@@ -50,6 +51,7 @@ urlpatterns = [
         "order/<int:order_pk>/lineitems", i_views.OrderLineItemFormsetView.as_view(),
         name="orderlineitem_formset"),
     urls.path("order/search", i_views.OrderSearchView.as_view(), name="order_search"),
+    urls.path("orderlineitem/search", i_views.OrderLineItemSearchView.as_view(), name="orderlineitem_search"),
 
     urls.path("reports/category", i_views.ReportCategoryView.as_view(), name="reports_category"),
 

@@ -9,7 +9,7 @@ from .order import (
     OrderUpdateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView, OrderSearchView, APIOrderView)
 from .order_line_item import (
     OrderLineItemUpdateView, OrderLineItemDetailView, OrderLineItemDeleteView, OrderLineItemCreateView,
-    OrderLineItemFormsetView)
+    OrderLineItemFormsetView, OrderLineItemSearchView, APIOrderLineItemView)
 from .source import (
     SourceUpdateView, SourceListView, SourceDetailView, SourceDeleteView, SourceCreateView, APISourceView)
 from .source_item import (

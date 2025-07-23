@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Order Line Item Search{% endblock %}
+
+{% block content %}
+<form id="search_form">
+<div>
+<label for="search_category">Category:</label>
+<input type="text" id="search_category" data-search-field="category" placeholder="category">
+</div>
+<div>
+<label for="search_unit">Unit:</label>
+<input type="text" id="search_unit" data-search-field="unit" placeholder="unit: 1lb, #10">
+</div>
+<div>
+<label for="search_name">Name:</label>
+<input type="text" id="search_name" data-search-field="name" placeholder="name">
+</div>
+<div>
+<label for="search_name2">Second Name:</label>
+<input type="text" id="search_name2" data-search-field="name" placeholder="name">
+</div>
+<div>
+<label for="search_exclude_name">Exclude Name:</label>
+<input type="text" id="search_exclude_name" data-search-field="-name" placeholder="exclude name">
+</div>
+<div>
+<label for="search_exclude_name2">Second Exclude Name:</label>
+<input type="text" id="search_exclude_name2" data-search-field="-name" placeholder="exclude name">
+</div>
+<div>
+<label for="search_code">Code:</label>
+<input type="text" id="search_code" data-search-field="code" placeholder="code">
+</div>
+<div>
+<label for="search_order_number">Order number:</label>
+<input type="text" id="search_order_number" data-search-field="order_number" placeholder="order number">
+</div>
+<div>
+    How to search a loose "when"?  As in, "last month", "July", or "specific date +/- a day or 3".
+</div>
+</form>
+
+<div id="results_in_div">
+<hr />
+Results in divs
+<div id="templates" style="display: none;">
+    <div id="search_result_template_div">
+        <span data-field="id">__id__</span>
+        <span data-field="source">__source__</span>
+        <span data-field="delivered_date">__delivered_date__</span>
+        <a href="" data-href-fn="get_orderlineitem_url" data-href-arg-line-item="id" data-href-arg-order="order_id">
+        <span data-field="order_number">__order_number__</span>
+        </a>
+        <span data-field="category">__category__</span>
+        <span data-field="item_number">__item_number__</span>
+        <span data-field="source_item_name">__source_item_name__</span>
+        <span data-field="unit_amount">__unit_amount__</span>
+        <span data-field="unit_amount_text">__unit_amount_text__</span>
+        <span data-field="unit_size">__unit_size__</span>
+    </div>
+    <div id="search_no_result_template_div">
+        Nope.
+    </div>
+</div>
+<div id="search_results_div">
+
+</div>
+</div>
+<hr />
+<ul>
+<li><a href="{% url "inventory:order_create" %}">New Order</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}
+
+{% block body_scripts %}
+<script src="{% static "js/search.js" %}"></script>
+<script>
+function get_orderlineitem_url(order_and_lineitem_id) {
+    let order_id = order_and_lineitem_id["order"];
+    let orderlineitem_id = order_and_lineitem_id["line-item"];
+    let some_url = "{% url "inventory:orderlineitem_detail" order_pk="8888" pk="9999" %}";
+    return some_url.replace("9999", `${orderlineitem_id}`).replace("8888", `${order_id}`);
+}
+
+srch_url = "{% url "inventory:api_orderlineitem" %}";
+active_result_styles = ["div"];
+result_style_ids = {
+    "div": {
+        "container": "results_in_div",
+        "results": "search_results_div",
+        "template": "search_result_template_div",
+        "no_results_template": "search_no_result_template_div",
+    },
+}
+</script>
+
+{% endblock %}

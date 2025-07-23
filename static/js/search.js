@@ -31,8 +31,18 @@ function srch_add_result(item_to_add, _result_style) {
         }
         for (const element of new_result.querySelectorAll("[data-href-fn]")) {
             // Sets the href for any element providing a function to convert the id into a url.
-            // TODO: allow for multiple fields - orderlineitem_detail needs order_pk and pk.
-            element.href = window[element.dataset.hrefFn](item_to_add["id"]);
+            const href_args = srch_get_href_args(element);
+            if (Object.keys(href_args).length === 0) {
+                // The non-data-href-arg- way of assuming the only needed value is the "id".
+                element.href = window[element.dataset.hrefFn](item_to_add["id"]);
+            } else {
+                // Calling page uses data-href-arg-CUSTOM to specify values to pass to data-href-fn.
+                for (const href_arg_key of Object.keys(href_args)) {
+                    // Swapping the name of the field with the value from the current item.
+                    href_args[href_arg_key] = item_to_add[href_args[href_arg_key]];
+                }
+                element.href = window[element.dataset.hrefFn](href_args);
+            }
         }
         new_result.removeAttribute("id");
         srch_get_result_element(_result_style).appendChild(new_result);
@@ -52,6 +62,21 @@ function srch_filter_keydown(e) {
     } else if (!srch_key_is_not_visible(e)) {
         srch_start_timer();
     }
+}
+function srch_get_href_args(e) {
+    /*
+    Returns the data attributes of element e which are named "data-href-arg-*".
+    <a ... data-href-arg-order="x" data-href-arg-line-item="y">
+    returns {"order": "x", "line-item": "y"}
+    */
+    const attributes = {};
+    for (let i = 0; i < e.attributes.length; i++) {
+        const attribute = e.attributes[i];
+        if (attribute.name.startsWith('data-href-arg-')) {
+            attributes[attribute.name.slice(14)] = attribute.value;
+        }
+    }
+    return attributes;
 }
 function srch_get_no_result_element_template(_result_style) {
     // The root of the template used for indicating no results.
