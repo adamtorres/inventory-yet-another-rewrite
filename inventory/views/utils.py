@@ -42,7 +42,7 @@ class APISearchView(views.APIView):
         # -name = ["juice"]
         # |unit = ["113", "80"]
         # -unit = ["#10"]
-
+        exact_match_fields = ["id", "order_number"]
         q_dict = {}
         for search_term, value_list in search_terms.items():
             if not value_list:
@@ -59,12 +59,14 @@ class APISearchView(views.APIView):
             for value in value_list:
                 one_value_q = models.Q()
                 for field_name in self.search_terms[st_key]:
-                    modifier = "__iexact" if (field_name == "id" or field_name.endswith("__id")) else "__icontains"
+                    if field_name in exact_match_fields or field_name.endswith("__id"):
+                        modifier = "__iexact"
+                    else:
+                        modifier = "__icontains"
                     pile_of_tokens = models.Q()
                     for token in value.strip().split(" "):
                         pile_of_tokens &= models.Q(**{field_name + modifier: token})
                     one_value_q = one_value_q | pile_of_tokens
-
                 match and_or_ex:
                     case "|": q_dict[st_key]["|"] |= one_value_q
                     case "&": q_dict[st_key]["&"] &= one_value_q

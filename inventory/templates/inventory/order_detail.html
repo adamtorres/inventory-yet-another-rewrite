@@ -32,7 +32,7 @@ items:
 </tr>
 </thead>
 <tbody>
-    {% for item in order.orderlineitem_set.all %}
+    {% for item in order.line_items.all %}
         <tr>
             <td><a href="{% url "inventory:sourceitem_detail" pk=item.source_item.pk %}">{{ item.source_item }}</a></td>
             <td><span style="display: none;">{{ item.id }}</span><a href="{% url "inventory:orderlineitem_detail" order_pk=order.id pk=item.id %}">{{ item.line_item_number }}</a></td>
@@ -64,6 +64,6 @@ items:
     <li><a href="{% url "inventory:orderlineitem_create" order_pk=object.pk %}">Add line item</a></li>
     <li><a href="{% url "inventory:order_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "inventory:order_delete" pk=object.pk %}">Delete</a></li>
-    <li><a href="{% url "inventory:order_list" %}">Order List</a></li>
+    <li><a href="{% url "inventory:order_search" %}">Order Search</a></li>
 </ul>
 {% endblock %}

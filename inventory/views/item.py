@@ -56,7 +56,7 @@ class ItemSearchView(generic.TemplateView):
 
 class APIItemView(inv_utils.APISearchView):
     model = inv_models.Item
-    serializer = inv_serializers.ItemSerializer
+    serializer = inv_serializers.APIItemSerializer
     order_fields = ["category__name", "name"]
     prefetch_fields = ['category']
     # select_related_fields = ['category']

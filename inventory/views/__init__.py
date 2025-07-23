@@ -5,7 +5,8 @@ from .category import (
     APICategoryReportView, ReportCategoryView)
 from .item import (
     ItemUpdateView, ItemListView, ItemDetailView, ItemDeleteView, ItemCreateView, ItemSearchView, APIItemView)
-from .order import OrderUpdateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView
+from .order import (
+    OrderUpdateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView, OrderSearchView, APIOrderView)
 from .order_line_item import (
     OrderLineItemUpdateView, OrderLineItemDetailView, OrderLineItemDeleteView, OrderLineItemCreateView,
     OrderLineItemFormsetView)

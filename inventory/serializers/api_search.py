@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .. import models as inv_models
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class APIItemSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
 
     class Meta:
@@ -14,7 +14,19 @@ class ItemSerializer(serializers.ModelSerializer):
         return obj.category.name
 
 
-class SourceItemSerializer(serializers.ModelSerializer):
+class APIOrderSerializer(serializers.ModelSerializer):
+    source = serializers.SerializerMethodField()
+
+    class Meta:
+        model = inv_models.Order
+        fields = ["id", "source", "delivered_date", "order_number", "po_text", "notes"]
+
+    @staticmethod
+    def get_source(obj):
+        return obj.source.name
+
+
+class APISourceItemSerializer(serializers.ModelSerializer):
     source = serializers.SerializerMethodField()
     item_name = serializers.SerializerMethodField()
     item_category = serializers.SerializerMethodField()

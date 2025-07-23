@@ -60,7 +60,7 @@ class SourceItemSearchView(generic.TemplateView):
 
 class APISourceItemView(inv_utils.APISearchView):
     model = inv_models.SourceItem
-    serializer = inv_serializers.SourceItemSerializer
+    serializer = inv_serializers.APISourceItemSerializer
     order_fields = ["item__name", "expanded_name", "cryptic_name"]
     prefetch_fields = ['source', 'item', 'item__category']
     # select_related_fields = ['source', 'item', 'item__category']

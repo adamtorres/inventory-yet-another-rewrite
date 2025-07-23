@@ -2,7 +2,8 @@ from django.db import models
 
 
 class OrderLineItem(models.Model):
-    order = models.ForeignKey("inventory.Order", on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        "inventory.Order", on_delete=models.CASCADE, related_name="line_items", related_query_name="line_items")
     source_item = models.ForeignKey(
         "inventory.SourceItem", on_delete=models.DO_NOTHING, related_query_name="line_items",
         related_name="line_items")
