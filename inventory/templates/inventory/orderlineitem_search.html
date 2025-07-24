@@ -3,6 +3,26 @@
 
 {% block title %}Inventory : Order Line Item Search{% endblock %}
 
+{% block styles %}
+<style>
+.orders-container {
+    width: 100%;
+}
+.orders-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 1fr 0.5fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "order-date order-info order-name order-weight order-quantity order-unit order-per-price order-price order-per-use-price";
+}
+.order-cell {
+    border-bottom: black 1px solid;
+}
+.hidden-cell {
+    display: none;
+}
+
+</style>
+{% endblock %}
+
 {% block content %}
 <form id="search_form">
 <div>
@@ -44,27 +64,93 @@
 
 <div id="results_in_div">
 <hr />
-Results in divs
 <div id="templates" style="display: none;">
-    <div id="search_result_template_div">
-        <span data-field="id">__id__</span>
-        <span data-field="source">__source__</span>
-        <span data-field="delivered_date">__delivered_date__</span>
-        <a href="" data-href-fn="get_orderlineitem_url" data-href-arg-line-item="id" data-href-arg-order="order_id">
-        <span data-field="order_number">__order_number__</span>
-        </a>
-        <span data-field="category">__category__</span>
-        <span data-field="item_number">__item_number__</span>
-        <span data-field="source_item_name">__source_item_name__</span>
-        <span data-field="unit_amount">__unit_amount__</span>
-        <span data-field="unit_amount_text">__unit_amount_text__</span>
-        <span data-field="unit_size">__unit_size__</span>
+    <div id="search_result_template_div" class="orders-row">
+        <div class="hidden-cell">
+            <span data-field="id">__id__</span>
+        </div>
+        <div class="order-cell order-date">
+            <span data-field="delivered_date">__delivered_date__</span>
+        </div>
+        <div class="order-cell order-info">
+            <span data-field="source">__source__</span>
+            <a href="" data-href-fn="get_order_url" data-href-arg-order="order_id">
+            <span data-field="order_number">__order_number__</span>
+            </a>
+            <a href="" data-href-fn="get_orderlineitem_url" data-href-arg-line-item="id" data-href-arg-order="order_id">
+            <span data-field="line_item_number">__line_item_number__</span>
+            </a>
+        </div>
+        <div class="order-cell order-name">
+            <div>
+                <span data-field="source_item_name">__source_item_name__</span>
+            </div>
+            <div>
+                <span data-field="category">__category__</span>:
+                <span data-field="item_number">__item_number__</span>:
+                <span data-field="extra_number">__extra_number__</span>
+            </div>
+        </div>
+        <div class="order-cell order-weight">
+            <span data-field="total_weight">__total_weight__</span>
+        </div>
+        <div class="order-cell order-quantity">
+            <span data-field="quantity_delivered">__quantity_delivered__</span>
+        </div>
+        <div class="order-cell order-unit">
+            <span data-field="unit_amount">__unit_amount__</span>
+            <span data-field="unit_amount_text">__unit_amount_text__</span>
+            <span data-field="unit_size">__unit_size__</span>
+            <span data-field="subunit_amount">__subunit_amount__</span>
+            <span data-field="subunit_amount_text">__subunit_amount_text__</span>
+            <span data-field="subunit_size">__subunit_size__</span>
+        </div>
+        <div class="order-cell order-per-price">
+            <span data-field="per_pack_price">__per_pack_price__</span>
+            <span data-field="per_weight_price">__per_weight_price__</span>
+        </div>
+        <div class="order-cell order-price">
+            <span data-field="tax">__tax__</span>
+            <span data-field="extended_price">__extended_price__</span>
+        </div>
+        <div class="order-cell order-per-use-price">
+            ?
+        </div>
     </div>
     <div id="search_no_result_template_div">
         Nope.
     </div>
 </div>
-<div id="search_results_div">
+<div class="orders-row">
+    <div class="order-cell order-date">
+        Delivered Date
+    </div>
+    <div class="order-cell order-info">
+        Source/Order Info
+    </div>
+    <div class="order-cell order-name">
+        Item Name
+    </div>
+    <div class="order-cell order-weight">
+        Total Weight
+    </div>
+    <div class="order-cell order-quantity">
+        Qty
+    </div>
+    <div class="order-cell order-unit">
+        Pack/Unit Details
+    </div>
+    <div class="order-cell order-per-price">
+        Pack Cost
+    </div>
+    <div class="order-cell order-price">
+        Extended Cost
+    </div>
+    <div class="order-cell order-per-use-price">
+        Per Use Cost
+    </div>
+</div>
+<div id="search_results_div" class="orders-container">
 
 </div>
 </div>
@@ -78,6 +164,11 @@ Results in divs
 {% block body_scripts %}
 <script src="{% static "js/search.js" %}"></script>
 <script>
+function get_order_url(href_args) {
+    let order_id = href_args["order"];
+    let some_url = "{% url "inventory:order_detail" pk="8888" %}";
+    return some_url.replace("8888", `${order_id}`);
+}
 function get_orderlineitem_url(order_and_lineitem_id) {
     let order_id = order_and_lineitem_id["order"];
     let orderlineitem_id = order_and_lineitem_id["line-item"];
