@@ -37,3 +37,10 @@ class OrderLineItem(models.Model):
 
     def __str__(self):
         return f"{self.line_item_number} {self.quantity_ordered}x {self.source_item}"
+
+    @property
+    def per_unit_price(self):
+        try:
+            return self.per_pack_price / self.source_item.quantity
+        except ZeroDivisionError:
+            return 0.0

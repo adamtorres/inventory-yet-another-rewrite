@@ -7,6 +7,7 @@ from . import utils
 class SourceItemManager(models.Manager):
     pass
 
+
 class SourceItem(models.Model):
     source = models.ForeignKey(
         "inventory.Source", on_delete=models.DO_NOTHING, related_name="source_items", related_query_name="source_items")

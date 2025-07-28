@@ -25,9 +25,16 @@
 # ./manage.py merge_items --safe -d "cranberry cocktail juice cup" "cranberry juice cocktail cup" "cranberry grape juice cup" "cranberry juice cup|frozen" -k "cranberry juice cup|canned & dry"
 # ./manage.py merge_items --safe -d "grape juice cans" "grape juice cup" "grape juice cups"
 # call_command('merge_items', '--safe', '-d', 'grape juice cans', 'grape juice cup', 'grape juice cups')
+from django.core.management import base
+from django.db import models
+from django.db.models import functions
 from django.core.management import call_command
+from django_extensions.management.debug_cursor import monkey_patch_cursordebugwrapper
 
-def run():
+from inventory import models as inv_models
+
+
+def merge_items():
     dupes = [
         ["butter cup", "individual butter cup"],
         ["candy corn", "candy corn autumn mix", "-k", "candy corn"],
@@ -77,5 +84,34 @@ def run():
     ]
     for dupe in dupes:
         print("=" * 80)
-        call_command('merge_items', '-d', *dupe)
+        try:
+            call_command('merge_items', '--soft-fail', '-d', *dupe)
+        except base.CommandError as ex:
+            print(ex)
+            if ex.returncode != 0:
+                exit(ex.returncode)
     print("=" * 80)
+
+
+def move_per_pack_to_per_weight():
+    qs = inv_models.OrderLineItem.objects.filter(
+        quantity_delivered__gt=0,
+        total_weight__isnull=False, total_weight__gt=0, )
+    qs = qs.annotate(div_by_tw=(models.F("extended_price") / models.F("total_weight")) - models.F("per_pack_price"))
+    qs = qs.filter(div_by_tw__lt=0.01)
+    qs = qs.select_related(
+        "order", "source_item__source", "source_item__unit_size", "source_item__subunit_size", "source_item__item")
+    qs.update(
+        per_weight_price=models.F("per_pack_price"),
+        per_pack_price=0,
+        notes=functions.Concat(models.F("notes"), models.Value("\nswapped per_pack and per_weight prices."))
+    )
+
+
+def run():
+    # 18:37:00 - 18:38:08 = 1:08
+    merge_items()
+    with monkey_patch_cursordebugwrapper(
+            print_sql=True, confprefix="SHELL_PLUS", print_sql_location=False):
+        move_per_pack_to_per_weight()
+

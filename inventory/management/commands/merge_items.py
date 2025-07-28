@@ -1,3 +1,4 @@
+from django.core.management import base
 from django.db import models
 
 from ... import models as inv_models
@@ -9,9 +10,11 @@ class Command(base_command.MyBaseCommand):
     """
     category_separator = "|"
     safe = False
+    soft_fail = False
 
     def actual_handle(self, *args, **options):
         self.safe = options["safe"]
+        self.soft_fail = options["soft_fail"]
         # take all dupe_items' names and add to keep_item's description in a JSON form.
         keep_item, dupe_items = self.get_items(options["keep_item"], options["dupe_item"])
 
@@ -31,6 +34,14 @@ class Command(base_command.MyBaseCommand):
             action='store_true',
             dest='safe',
             help="Safe mode.  Do a dry-run and don't make any changes to the database.",
+            required=False,
+            default=False,
+        )
+        parser.add_argument(
+            '--soft-fail',
+            action='store_true',
+            dest='soft_fail',
+            help="Soft fail.  If this merge fails, don't exit in a way a calling script stops.",
             required=False,
             default=False,
         )
@@ -85,6 +96,11 @@ class Command(base_command.MyBaseCommand):
         else:
             print(f"Found {count_of_items_to_delete} when the dupe list has {len(dupe_items)}.")
 
+    def exit(self, _msg, _exit):
+        if self.soft_fail:
+            raise base.CommandError(_msg, returncode=0)
+        raise base.CommandError(_msg, returncode=_exit)
+
     @staticmethod
     def get_dupe_item_details(dupe_items):
         details = {
@@ -117,10 +133,9 @@ class Command(base_command.MyBaseCommand):
                 print(f"Found multiple Items when looking for {keep_item_name!r}.")
                 for item in inv_models.Item.objects.filter(**filter_kwargs):
                     self.show_item(item)
-                exit(1)
+                self.exit(f"Found multiple Items when looking for {keep_item_name!r}.", 1)
             except inv_models.Item.DoesNotExist:
-                print(f"Could not find an Item with name {keep_item_name!r}.")
-                exit(1)
+                self.exit(f"Could not find an Item with name {keep_item_name!r}.", 1)
 
         q = models.Q()
         for dupe_item_name in dupe_item_names:
@@ -130,15 +145,15 @@ class Command(base_command.MyBaseCommand):
             dupe_items = dupe_items.exclude(id=keep_item.id)
         dupe_items = list(dupe_items)
         if not dupe_items:
-            print(f"Could not find any Items with name(s) {dupe_item_names!r}")
-            exit(1)
+            self.exit(f"Could not find any Items with name(s) {dupe_item_names!r}", 1)
         if not keep_item:
             if len(dupe_items) > 1:
                 # move a dupe_item to keep_item if no keep_item specified.
                 keep_item = dupe_items.pop()
             elif len(dupe_items) == 1:
-                print(f"Only one item found Item({dupe_items[0].id}) for {dupe_item_names}.  Nothing to merge it with.")
-                exit(0)
+                self.exit(
+                    f"Only one item found Item({dupe_items[0].id}) for {dupe_item_names}.  "
+                    f"Nothing to merge it with.", 0)
         return keep_item, dupe_items
 
     @staticmethod

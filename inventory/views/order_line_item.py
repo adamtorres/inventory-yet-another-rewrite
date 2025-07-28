@@ -1,3 +1,5 @@
+import json
+
 from django import http, urls
 from django.views import generic
 
@@ -46,6 +48,7 @@ class OrderLineItemDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["order"] = self.object.order
+        context["import_id"] = json.loads(self.object.raw_import_data)["id"]
         return context
 
 
