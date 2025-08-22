@@ -34,6 +34,22 @@ class ItemDetailView(generic.DetailView):
         return context
 
 
+class ItemListCurrentView(generic.ListView):
+    model = inv_models.Item
+    template_name = "inventory/item_list_current.html"
+
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super().get_context_data(*args, **kwargs)
+    #     self.object_list
+    #     return context
+
+    def get_queryset(self):
+        # populates self.object_list
+        qs = self.model.objects.example_items()
+        qs = qs.prefetch_related("source_items__line_items__order")
+        return qs.order_by().order_by("category__name", "name")
+
+
 class ItemListView(generic.ListView):
     model = inv_models.Item
 

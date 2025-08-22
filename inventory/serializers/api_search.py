@@ -53,7 +53,7 @@ class APIOrderLineItemSerializer(serializers.ModelSerializer):
             "source", "delivered_date", "order_number", "category",
             "quantity", "unit_amount", "unit_amount_text", "unit_size",
             "subunit_amount", "subunit_amount_text", "subunit_size",
-            "source_item_name", "item_number", "extra_number",
+            "source_item_name", "item_number", "extra_number", "per_unit_price"
         ]
 
     @staticmethod

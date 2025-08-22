@@ -41,6 +41,8 @@ class OrderLineItem(models.Model):
     @property
     def per_unit_price(self):
         try:
-            return self.per_pack_price / self.source_item.quantity
+            # pack = 6x #10 cans.  unit_amount = 6
+            # pack = 1x 50lb.  unit_amount = 50
+            return self.per_pack_price / self.source_item.unit_amount
         except ZeroDivisionError:
             return 0.0

@@ -255,6 +255,7 @@ And once again with the process for UnitSize but this time via shell_plus.
 Left out the preceding `>>>` to make copy/paste easier.
 
 ```python
+from inventory import models as inv_models
 inv_models.UnitSize.objects.create(unit="#10 can")
 inv_models.UnitSize.objects.create(unit="floz")
 inv_models.UnitSize.objects.create(unit="gallon")
@@ -306,6 +307,58 @@ At this point, an Order object should be created and saved.
 ##### The line items
 
 * Allow add/change/remove for line items on the order.
+
+### Terminology
+
+#### Quantity and Price
+
+* pack: the item shown on the site.  It could be a pack of one like a bag of flour or it could contain multiple items 
+    like a box of 27 individual milk cartons.  This means the `per_pack_price` is for the whole item or group of items.
+* SourceItem.quantity: Answers the question, how many of SI.unit_size is contained in the pack?  For the box of milk
+    cartons, OLI.quantity will be 27 since there are 27 8oz milk cartons in a single pack.
+* SourceItem.unit_amount/unit_amount_text: unit_amount is a number and unit_amount_text is a free-form text field.
+    For something with a range of sizes, unit_amount_text would be used to show the range as "8-12".  A mathematically
+    usable value will be in unit_amount.  For "8-12", it would be "10".
+* SourceItem.unit_size: Standardizes the unit types.  This is simply "lb", "g", "gal", etc.  The quantity of this size
+    is stored in SI.unit_amount and/or SI.unit_amount_text.
+
+##### Examples
+
+Ordered 4x 50# bag of flour:
+
+* SourceItem.quantity = 1
+* SourceItem.unit_amount = 50
+* SourceItem.unit_amount_text = ""  # Not needed since the value is an exact amount.
+* SourceItem.unit_size.unit = "lb"
+* SourceItem.subunit_amount = NULL
+* SourceItem.subunit_amount_text = NULL
+* SourceItem.subunit_size.unit = NULL
+* OrderLineItem.quantity_delivered = 4
+* OrderLineItem.per_pack_price = 14.00
+* OrderLineItem.extended_price = 56.00 (OrderLineItem.per_pack_price(14.00) * OrderLineItem.quantity_delivered(4))
+* OrderLineItem.per_weight_price = 0.25 (OrderLineItem.per_pack_price(14.00) / SourceItem.unit_amount(50))
+  * This is possible because SI.unit_size is a weight type.
+* OrderLineItem.total_weight = NULL <- Should this be 50 * 4?
+* OrderLineItem.per_pack_weights = NULL  <- Should this be [50, 50, 50, 50]?
+* per unit price: 14.00 (OrderLineItem.per_pack_price(14.00) / SI.quantity(1))
+
+Ordered 4x 6pk #10 corn:
+
+* SourceItem.quantity = 6
+* SourceItem.unit_amount = 1  # A single #10 can.  Should this be the weight/volume/count?
+* SourceItem.unit_amount_text = ""
+* SourceItem.unit_size.unit = "#10"
+* SourceItem.subunit_amount = NULL
+* SourceItem.subunit_amount_text = NULL
+* SourceItem.subunit_size.unit = NULL
+* OrderLineItem.quantity_delivered = 4
+* OrderLineItem.per_pack_price = 9.00
+* OrderLineItem.extended_price = 36.00 (9.00 * 4)
+* OrderLineItem.per_weight_price = NULL
+  * This is not possible because SI.unit_size is NOT a weight type.
+* OrderLineItem.total_weight = NULL
+* OrderLineItem.per_pack_weights = NULL
+* per unit price: 1.50 (OrderLineItem.per_pack_price(9.00) / SI.quantity(6))
 
 # Ideas
 

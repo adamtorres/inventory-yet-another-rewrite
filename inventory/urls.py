@@ -23,6 +23,7 @@ urlpatterns = [
     urls.path("category/new", i_views.CategoryCreateView.as_view(), name="category_create"),
 
     urls.path("items/", i_views.ItemListView.as_view(), name="item_list"),
+    urls.path("items/current", i_views.ItemListCurrentView.as_view(), name="item_list_current"),
     urls.path("item/<int:pk>", i_views.ItemDetailView.as_view(), name="item_detail"),
     urls.path("item/<int:pk>/delete", i_views.ItemDeleteView.as_view(), name="item_delete"),
     urls.path("item/<int:pk>/edit", i_views.ItemUpdateView.as_view(), name="item_update"),

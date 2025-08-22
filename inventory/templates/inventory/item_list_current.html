@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Inventory : Item List Current{% endblock %}
+
+{% block content %}
+
+<table>
+<thead>
+<tr>
+    <th>Item</th>
+    <th>Unit Size</th>
+    <th>Extended Price</th>
+    <th>Per Pack Price</th>
+    <th>Per Unit Price</th>
+</tr>
+</thead>
+<tbody>
+{% for item in item_list %}
+    <tr>
+        <td><a href="{% url "inventory:item_detail" pk=item.pk %}">{{ item.category.name }} - {{ item.name }}</a></td>
+        <td>
+            {{ item.latest_order.unit_amount }} {{ item.latest_order.unit_size }}
+            - {{ item.latest_order.subunit_amount|default_if_none:"" }} {{ item.latest_order.subunit_size|default_if_none:"" }}</td>
+        <td>${{ item.latest_order.extended_price|floatformat:2|intcomma }}</td>
+        <td>{{ item.latest_order.quantity_delivered }} x ${{ item.latest_order.per_pack_price|floatformat:2|intcomma }}</td>
+        <td>${{ item.latest_order.per_unit_price|floatformat:2|intcomma }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<ul>
+<li><a href="{% url "inventory:item_create" %}">New Item</a></li>
+<li><a href="{% url "inventory:item_search" %}">Search Item</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}

@@ -1,4 +1,5 @@
 from .category import Category
+from .conversion import Conversion
 from .item import Item
 from .order import Order
 from .order_line_item import OrderLineItem

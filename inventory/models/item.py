@@ -5,6 +5,35 @@ from django.db import models
 from . import utils
 
 
+class ItemManager(models.Manager):
+    def example_items(self):
+        # simplistic way to get some sample data.
+        item_filter_data = [
+            {"category__name": "canned & dry", "name": "all purpose flour"},
+            {"category__name": "canned & dry", "name": "granulated sugar"},
+            {"category__name": "canned & dry", "name": "instant dry yeast"},
+            {"category__name": "canned & dry", "name": "pork gravy mix"},
+            {"category__name": "canned & dry", "name": "pumpkin puree"},
+            {"category__name": "canned & dry", "name": "semisweet chocolate chip"},
+            {"category__name": "canned & dry", "name": "sliced peach"},
+            {"category__name": "canned & dry", "name": "wheat flour"},
+            {"category__name": "dairy", "name": "butter"},
+            {"category__name": "dairy", "name": "egg"},
+            {"category__name": "dairy", "name": "margarine"},
+            {"category__name": "meats", "name": "beef bottom round"},
+            {"category__name": "meats", "name": "burger patty"},
+            {"category__name": "meats", "name": "italian style meatballs"},
+            {"category__name": "paper & disposable", "name": "3 compartment foam"},
+            {"category__name": "paper & disposable", "name": "saddle pack bag"},
+            {"category__name": "paper & disposable", "name": "foil 3 compartment tray"},
+            {"category__name": "poultry", "name": "cordon bleu"},
+        ]
+        criteria = models.Q()
+        for ifd in item_filter_data:
+            criteria |= models.Q(**ifd)
+        return self.filter(criteria)
+
+
 class Item(models.Model):
     name = models.CharField(max_length=255)
     source_item_search_criteria = models.JSONField(
@@ -13,6 +42,8 @@ class Item(models.Model):
     description = models.TextField(help_text="General description of the item and how it'd likely be used.")
     category = models.ForeignKey(
         "inventory.Category", on_delete=models.DO_NOTHING, related_name="items", related_query_name="items")
+
+    objects = ItemManager()
 
     def __str__(self):
         return self.name
@@ -51,3 +82,49 @@ class Item(models.Model):
         }
         return_value.update(qs)
         return return_value
+
+    def latest_order(self):
+        qs = self.source_items.filter(line_items__quantity_delivered__gt=0).order_by("-line_items__order__delivered_date")
+        latest_source_item = qs.first()
+        if not latest_source_item:
+            return {
+                "item": self,
+                "item_name": self.name,
+            }
+        qs = latest_source_item.line_items.filter(quantity_delivered__gt=0).order_by("-order__delivered_date")
+        latest_order_line_item = qs.first()
+        if not latest_order_line_item:
+            return {
+                "item": self,
+                "source_item": latest_source_item,
+                "item_name": self.name,
+                "unit_size": latest_source_item.unit_size,
+                "subunit_size": latest_source_item.subunit_size,
+            }
+        return {
+            "order": latest_order_line_item.order,
+            "order_line_item": latest_order_line_item,
+            "source_item": latest_source_item,
+            "item": self,
+
+            "order_date": latest_order_line_item.order.delivered_date,
+            "item_name": self.name,
+            "unit_amount": latest_source_item.unit_amount,
+            "unit_size": latest_source_item.unit_size,
+            "subunit_amount": latest_source_item.subunit_amount,
+            "subunit_size": latest_source_item.subunit_size,
+            "extended_price": latest_order_line_item.extended_price,
+            "quantity_delivered": latest_order_line_item.quantity_delivered,
+            "per_pack_price": latest_order_line_item.per_pack_price,
+            "per_unit_price": latest_order_line_item.per_unit_price,
+            "per_something_price": latest_order_line_item.per_unit_price / latest_source_item.unit_amount,
+        }
+
+    def price_in_unit(self, to_unit=None):
+        from .conversion import Conversion
+        latest_order = self.latest_order()
+        from_unit = latest_order["unit_size"]
+        conversion = Conversion.objects.get_conversion(item=self, from_unit=from_unit, to_unit=to_unit)
+        if not conversion:
+            return 0
+        return latest_order["per_unit_price"] * conversion.multiplier

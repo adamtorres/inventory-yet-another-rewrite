@@ -12,7 +12,7 @@ class SourceItem(models.Model):
     source = models.ForeignKey(
         "inventory.Source", on_delete=models.DO_NOTHING, related_name="source_items", related_query_name="source_items")
     item = models.ForeignKey(
-        "inventory.item", on_delete=models.DO_NOTHING, related_name="source_items", related_query_name="source_items")
+        "inventory.Item", on_delete=models.DO_NOTHING, related_name="source_items", related_query_name="source_items")
     brand = models.CharField(max_length=255)
     source_category = models.CharField(max_length=255, help_text="probably won't agree with Item.category")
 
