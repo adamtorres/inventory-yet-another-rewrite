@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Conversion List{% endblock %}
+
+{% block content %}
+<ul>
+{% for conversion in conversion_list %}
+    <li><a href="{% url "inventory:conversion_detail" pk=conversion.pk %}">{{ conversion }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "inventory:conversion_create" %}">New Conversion</a></li>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}

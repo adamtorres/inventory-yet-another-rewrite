@@ -17,6 +17,12 @@ urlpatterns = [
     urls.path("api/source_item", i_views.APISourceItemView.as_view(), name="api_sourceitem"),
     urls.path("api/unit_size", i_views.APIUnitSizeView.as_view(), name="api_unitsize"),
 
+    urls.path("conversions/", i_views.ConversionListView.as_view(), name="conversion_list"),
+    urls.path("conversion/<int:pk>", i_views.ConversionDetailView.as_view(), name="conversion_detail"),
+    urls.path("conversion/<int:pk>/delete", i_views.ConversionDeleteView.as_view(), name="conversion_delete"),
+    urls.path("conversion/<int:pk>/edit", i_views.ConversionUpdateView.as_view(), name="conversion_update"),
+    urls.path("conversion/new", i_views.ConversionCreateView.as_view(), name="conversion_create"),
+
     urls.path("categories/", i_views.CategoryListView.as_view(), name="category_list"),
     urls.path("category/<int:pk>", i_views.CategoryDetailView.as_view(), name="category_detail"),
     urls.path("category/<int:pk>/delete", i_views.CategoryDeleteView.as_view(), name="category_delete"),
