@@ -9,15 +9,6 @@ from inventory import models as inv_models
 logger = logging.getLogger(__name__)
 
 
-class CustomSelect(forms.Select):
-    template_name = "inventory/widgets/item_select.html"
-    option_template_name = "inventory/widgets/item_select_option.html"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        logger.critical("CustomSelect!")
-
-
 class ConversionForm(forms.ModelForm):
     item = grouped_model_choice.GroupedModelChoiceField(
         inv_models.Item.objects.ingredients(),
