@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class CategoryCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Category
-    fields = ["name"]
+    fields = ["name", "ingredient"]
 
     def get_success_url(self):
         return urls.reverse("inventory:category_detail", args=(self.object.id,))
@@ -35,7 +35,7 @@ class CategoryListView(generic.ListView):
 
 class CategoryUpdateView(generic.UpdateView):
     model = inv_models.Category
-    fields = ["name"]
+    fields = ["name", "ingredient"]
 
     def get_success_url(self):
         return urls.reverse("inventory:category_detail", args=(self.object.id,))

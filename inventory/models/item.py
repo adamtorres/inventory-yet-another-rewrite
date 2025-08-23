@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 class ItemManager(models.Manager):
+    def ingredients(self):
+        return self.filter(category__ingredient=True).order_by("category__name", "name")
+
     def example_items(self):
         # simplistic way to get some sample data.
         item_filter_data = [

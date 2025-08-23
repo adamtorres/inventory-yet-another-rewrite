@@ -19,6 +19,7 @@ class CategoryManager(models.Manager):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
+    ingredient = models.BooleanField(default=False, help_text="Are items in this category used for food?")
 
     objects = CategoryManager()
 

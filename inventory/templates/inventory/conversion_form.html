@@ -6,7 +6,41 @@
 {% block content %}
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div>
+        {{ form.non_form_errors }}
+        {{ form.non_field_errors }}
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field }}
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.item.id_for_label }}">{{ form.item.label }}</label>
+        {{ form.item }}
+        {% for error in form.item.errors %}
+            <span class="help-block">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.from_unit.id_for_label }}">{{ form.from_unit.label }}</label>
+        {{ form.from_unit }}
+        {% for error in form.from_unit.errors %}
+            <span class="help-block">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.to_unit.id_for_label }}">{{ form.to_unit.label }}</label>
+        {{ form.to_unit }}
+        {% for error in form.to_unit.errors %}
+            <span class="help-block">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.multiplier.id_for_label }}">{{ form.multiplier.label }}</label>
+        {{ form.multiplier }}
+        {% for error in form.multiplier.errors %}
+            <span class="help-block">{{ error }}</span>
+        {% endfor %}
+    </div>
     <input type="submit" value="Save">
 </form>
 
