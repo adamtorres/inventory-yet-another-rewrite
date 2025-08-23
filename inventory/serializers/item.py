@@ -1,0 +1,65 @@
+import logging
+
+from rest_framework import serializers
+
+
+logger = logging.getLogger(__name__)
+
+
+class APISelectedItemSerializer(serializers.Serializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    per_unit_price = serializers.SerializerMethodField()
+    unit_size = serializers.SerializerMethodField()
+    subunit_size = serializers.SerializerMethodField()
+    per_other_unit_price = serializers.SerializerMethodField()
+    other_unit = serializers.SerializerMethodField()
+
+    temp_latest_order = None
+
+    class Meta:
+        fields = [
+            "id", "name", "category", "per_unit_price", "unit_size", "subunit_size", "per_other_unit_price",
+            "other_unit"]
+
+    def get_id(self, obj):
+        return obj.id
+
+    def get_name(self, obj):
+        return obj.name
+
+    def get_category(self, obj):
+        return obj.category.name
+
+    def get_other_unit(self, obj):
+        return obj.to_unit
+
+    def get_per_unit_price(self, obj):
+        latest_order = self.get_latest_order(obj)
+        # logger.critical(f"APISelectedItemSerializer.get_per_unit_price")
+        # for k, v in self.temp_latest_order.items():
+        #     logger.critical(f"self.temp_latest_order[{k}] = {v!r}")
+        return latest_order.get("per_unit_price", 0.0)
+
+    def get_per_other_unit_price(self, obj):
+        return obj.price_in_unit_value
+
+    def get_subunit_size(self, obj):
+        latest_order = self.get_latest_order(obj)
+        if not latest_order.get("subunit_size"):
+            return None
+        return latest_order["subunit_size"].unit
+
+    def get_unit_size(self, obj):
+        latest_order = self.get_latest_order(obj)
+        if not latest_order.get("unit_size"):
+            return None
+        return latest_order["unit_size"].unit
+
+    def get_latest_order(self, obj, field_to_check=None):
+        if not self.temp_latest_order:
+            self.temp_latest_order = obj.latest_order()
+        if self.temp_latest_order.get("order_line_item") != obj.latest_order().get("order_line_item"):
+            self.temp_latest_order = obj.latest_order()
+        return self.temp_latest_order

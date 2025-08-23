@@ -1,5 +1,7 @@
 from django import urls
+from django.db import models
 from django.views import generic
+from rest_framework import generics
 
 from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 from ..models import utils as model_utils
@@ -83,3 +85,30 @@ class APIItemView(inv_utils.APISearchView):
         'category': ["category__name"],
     }
 
+
+class APISelectedItemDetailView(generics.ListAPIView):
+    model = inv_models.Item
+    serializer_class = inv_serializers.APISelectedItemSerializer
+
+    def get_queryset(self):
+        # http://localhost:8000/inventory/api/items/selected
+        #   ?item_category_unit=butter~dairy~cup
+        #   &item_category_unit=egg~dairy~x
+        #   &item_category_unit=all+purpose+flour~canned+%26+dry~cup
+        #   &item_category_unit=granulated+sugar~canned+%26+dry~cup
+        qs = self.model.objects.all()
+        criteria = models.Q()
+        to_unit_values = {}
+        for item_category_unit in self.request.GET.getlist("item_category_unit"):
+            item_name, category_name, to_unit = item_category_unit.split("~", 2)
+            criteria |= models.Q(category__name=category_name, name=item_name)
+            to_unit_values[f"{item_name}~{category_name}"] = to_unit
+        if not criteria:
+            return self.model.objects.none()
+        data = []
+        for item in qs.filter(criteria):
+            to_unit = to_unit_values[f"{item.name}~{item.category.name}"]
+            item.price_in_unit_value = item.price_in_unit(to_unit)
+            item.to_unit = to_unit
+            data.append(item)
+        return data

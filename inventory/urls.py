@@ -10,6 +10,7 @@ urlpatterns = [
     urls.path("api/category", i_views.APICategoryView.as_view(), name="api_category"),
     urls.path("api/category/report", i_views.APICategoryReportView.as_view(), name="api_category_report"),
     urls.path("api/item", i_views.APIItemView.as_view(), name="api_item"),
+    urls.path("api/items/selected", i_views.APISelectedItemDetailView.as_view(), name="api_selected_items"),
     urls.path("api/order", i_views.APIOrderView.as_view(), name="api_order"),
     urls.path("api/orderlineitem", i_views.APIOrderLineItemView.as_view(), name="api_orderlineitem"),
     urls.path("api/source", i_views.APISourceView.as_view(), name="api_source"),

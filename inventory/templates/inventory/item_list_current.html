@@ -25,7 +25,7 @@
             - {{ item.latest_order.subunit_amount|default_if_none:"" }} {{ item.latest_order.subunit_size|default_if_none:"" }}</td>
         <td>${{ item.latest_order.extended_price|floatformat:2|intcomma }}</td>
         <td>{{ item.latest_order.quantity_delivered }} x ${{ item.latest_order.per_pack_price|floatformat:2|intcomma }}</td>
-        <td>${{ item.latest_order.per_unit_price|floatformat:2|intcomma }}</td>
+        <td>${{ item.latest_order.per_unit_price|floatformat:2|intcomma }} per {{ item.latest_order.unit_size }}</td>
     </tr>
 {% endfor %}
 </tbody>

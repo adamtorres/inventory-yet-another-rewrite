@@ -50,4 +50,7 @@ class Conversion(models.Model):
     objects = ConversionManager()
 
     def __str__(self):
-        return f"(1 {self.from_unit}) * {self.multiplier} = 1 {self.to_unit}"
+        x = f"(1 {self.from_unit}) * {self.multiplier} = 1 {self.to_unit}"
+        if self.item:
+            return f"{self.item} {x}"
+        return x

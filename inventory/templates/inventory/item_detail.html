@@ -14,7 +14,7 @@
     <ul>
         {% for order in orders %}
             <li>
-                <a href="{% url "inventory:order_detail" pk=order.order_id %}">{{ order.delivered_date }}, {{ order.quantity_delivered }}, ${{ order.extended_price|floatformat:2|intcomma }}</a>,
+                <a href="{% url "inventory:order_detail" pk=order.order_id %}">{{ order.delivered_date }}, {{ order.quantity_delivered }}, {{ order.unit_amount }} {{ order.unit_size.unit }}, ${{ order.extended_price|floatformat:2|intcomma }}</a>,
                 <a href="{% url "inventory:sourceitem_detail" pk=order.id %}">{{ order.cryptic_name }}</a></li>
         {% endfor %}
     </ul>
