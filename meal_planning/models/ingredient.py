@@ -12,4 +12,7 @@ class Ingredient(models.Model):
     # TODO: Want to add an ordering to the ingredients. Cannot be automagic since the recipe might be cookie or entree.
 
     class Meta:
-        pass
+        ordering = ["recipe__name", "category", "name"]
+
+    def __str__(self):
+        return f"{self.recipe.name}: {self.name}, {self.unit_amount} {self.unit_size}"

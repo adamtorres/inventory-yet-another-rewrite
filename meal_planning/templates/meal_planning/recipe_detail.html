@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meal Planning : Recipe{% endblock %}
+
+{% block content %}
+<div>Recipe: {{ object.name }}</div>
+<div>Description: {{ object.description }}</div>
+<div>Goes with: {{ object.goes_with }}</div>
+<div>
+<ul>
+{% for ingredient in object.ingredients.all %}
+    <li>{{ ingredient }}</li>
+{% endfor %}
+</ul>
+</div>
+<ul>
+    <li><a href="{% url "meal_planning:recipe_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "meal_planning:recipe_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "meal_planning:recipe_list" %}">Recipe List</a></li>
+</ul>
+{% endblock %}

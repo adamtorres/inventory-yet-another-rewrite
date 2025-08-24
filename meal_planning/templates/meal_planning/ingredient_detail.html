@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meal Planning : Ingredient{% endblock %}
+
+{% block content %}
+<div>Recipe: {{ object.recipe }}</div>
+<div>Name: {{ object.name }}</div>
+<div>Category: {{ object.category }}</div>
+<div>Unit Size: {{ object.unit_size }}</div>
+<div>Unit Amount: {{ object.unit_amount }}</div>
+<ul>
+    <li><a href="{% url "meal_planning:ingredient_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "meal_planning:ingredient_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "meal_planning:ingredient_list" %}">Ingredient List</a></li>
+</ul>
+{% endblock %}

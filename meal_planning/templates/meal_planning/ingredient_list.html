@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meal Planning : Ingredient List{% endblock %}
+
+{% block content %}
+<ul>
+{% for ingredient in ingredient_list %}
+    <li><a href="{% url "meal_planning:ingredient_detail" pk=ingredient.pk %}">{{ ingredient }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "meal_planning:ingredient_create" %}">New Ingredient</a></li>
+<li><a href="{% url "meal_planning:homepage" %}">Meal Planning Homepage</a></li>
+</ul>
+{% endblock %}

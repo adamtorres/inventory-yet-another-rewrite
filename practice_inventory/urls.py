@@ -7,6 +7,7 @@ from django.views import generic
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('inventory/', urls.include('inventory.urls', namespace="inventory")),
+    path('meal_planning/', urls.include('meal_planning.urls', namespace="meal_planning")),
 
     path('', generic.RedirectView.as_view(
         pattern_name="inventory:homepage", permanent=False), name="homepage"),

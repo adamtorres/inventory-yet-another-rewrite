@@ -29,3 +29,13 @@
 #           "subunit_size": null, "per_other_unit_price": 0.10270747222222222, "other_unit": "tbsp" },
 #         { "id": 17851, "name": "egg", "category": "dairy", "per_unit_price": 0.4311111111111111, "unit_size": "ct",
 #           "subunit_size": null, "per_other_unit_price": 0, "other_unit": "x" } ] }
+from django.views import generic
+
+from .ingredient import (
+    IngredientCreateView, IngredientDeleteView, IngredientDetailView, IngredientListView, IngredientUpdateView)
+from .recipe import (
+    RecipeCreateView, RecipeDeleteView, RecipeDetailView, RecipeListView, RecipeUpdateView)
+
+
+class IngredientHomepageView(generic.TemplateView):
+    template_name = "meal_planning/homepage.html"
