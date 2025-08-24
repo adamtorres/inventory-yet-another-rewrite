@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django_extensions',
+    'djfractions',
     'inventory.apps.InventoryConfig',
     'meal_planning.apps.MealPlanningConfig',
     'rest_framework',

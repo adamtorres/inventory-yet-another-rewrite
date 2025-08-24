@@ -50,7 +50,7 @@ class Recipe(models.Model):
             i.original_unit_size = pd["unit_size"]
             i.order_date = pd["order_date"]
             i.per_unit_price = pd["per_other_unit_price"]
-            logger.critical(f"(float({i.unit_amount})={float(i.unit_amount)}) * {i.per_unit_price}")
+            logger.critical(f"{pd["name"]}: (float({i.unit_amount})={float(i.unit_amount)}) * {i.per_unit_price}")
             i.ingredient_price = float(i.unit_amount) * i.per_unit_price
             i.no_pricing_data = False
         return list(ingredient_dict.values())

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
+{% load fractions %}
 
 {% block title %}Meal Planning : Recipe{% endblock %}
 
@@ -42,7 +43,7 @@
 {% for ingredient in ingredients_with_price %}
     <tr>
         <td><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient.name }}</a></td>
-        <td>{{ ingredient.unit_amount }} {{ ingredient.unit_size }}</td>
+        <td>{% display_fraction ingredient.unit_amount limit_denominator=16 coerce_thirds=True %} {{ ingredient.unit_size }}</td>
         {% if ingredient.no_pricing_data %}
             <td colspan="4">&lt;No pricing data available&gt;</td>
         {% else %}

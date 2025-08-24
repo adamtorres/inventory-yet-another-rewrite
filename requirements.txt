@@ -27,3 +27,7 @@ dateparser
 
 # to manually make API calls
 requests
+
+# template tags to show nice fractions on recipes
+django-fractions
+typing-extensions
