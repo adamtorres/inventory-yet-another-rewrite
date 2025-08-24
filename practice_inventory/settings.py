@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_extensions',
     'inventory.apps.InventoryConfig',
+    'meal_planning.apps.MealPlanningConfig',
     'rest_framework',
     'widget_tweaks',
 ]

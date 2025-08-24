@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meal Planning : Home{% endblock %}
+
+{% block content %}
+<ul>
+<li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
+</ul>
+{% endblock %}
