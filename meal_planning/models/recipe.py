@@ -33,6 +33,7 @@ class Recipe(models.Model):
         return avg_value
 
     def get_pricing_data(self):
+        # TODO: Need ingredient groups.  dough, topping, filling, etc.  Duplicating ingredients doesn't currently work.
         ingredient_dict = {}
         for i in self.ingredients.all():
             ingredient_dict[f"{i.name}~{i.category}~{i.unit_size}"] = i
