@@ -1,18 +1,61 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Meal Planning : Recipe{% endblock %}
+
+{% block styles %}
+<style>
+#priced_ingredients {
+    border-collapse: collapse;
+}
+#priced_ingredients th {
+    background-color: lightgray;
+    border: black solid 1px;
+}
+#priced_ingredients td {
+    border: black solid 1px;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+</style>
+
+{% endblock %}
 
 {% block content %}
 <div>Recipe: {{ object.name }}</div>
 <div>Description: {{ object.description }}</div>
 <div>Goes with: {{ object.goes_with }}</div>
 <div>
-<ul>
-{% for ingredient in object.ingredients.all %}
-    <li><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient }}</a></li>
+<table id="priced_ingredients">
+<thead>
+<tr>
+    <th>Ingredient</th>
+    <th>Amount</th>
+    <th>Price</th>
+    <th>Price per unit</th>
+    <th>Price per purchase unit</th>
+    <th>Order Date</th>
+</tr>
+</thead>
+<tbody>
+{% for ingredient in ingredients_with_price %}
+    <tr>
+        <td><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient.name }}</a></td>
+        <td>{{ ingredient.unit_amount }} {{ ingredient.unit_size }}</td>
+        {% if ingredient.no_pricing_data %}
+            <td colspan="4">&lt;No pricing data available&gt;</td>
+        {% else %}
+            <td>${{ ingredient.ingredient_price|floatformat:2|intcomma }}</td>
+            <td>${{ ingredient.per_unit_price|floatformat:2|intcomma }} per {{ ingredient.unit_size }}</td>
+            <td>${{ ingredient.per_original_unit_price|floatformat:2|intcomma }} per {{ ingredient.original_unit_size }}</td>
+            <td>{{ ingredient.order_date }}</td>
+        {% endif %}
+    </tr>
 {% endfor %}
-</ul>
+</tbody>
+</table>
+<div>Total Price: ${{ total_price|floatformat:2|intcomma }}</div>
 </div>
 <ul>
     <li><a href="{% url "meal_planning:recipe_ingredient_create" recipe_pk=object.pk %}">Add ingredient</a></li>

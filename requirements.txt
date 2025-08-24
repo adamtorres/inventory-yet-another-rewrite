@@ -24,3 +24,6 @@ django-widget-tweaks
 
 # interprets "1 year" and such for simple human readable settings.
 dateparser
+
+# to manually make API calls
+requests

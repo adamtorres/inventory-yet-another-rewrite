@@ -26,6 +26,14 @@ Source Items:
     {% endfor %}
 </ul>
 </div>
+<div>
+Conversions:
+<ul>
+    {% for conv in object.conversions.all %}
+        <li><a href="{% url "inventory:conversion_detail" pk=conv.id %}">{{ conv }}</a></li>
+    {% endfor %}
+</ul>
+</div>
 <ul>
     <li><a href="{% url "inventory:item_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "inventory:item_delete" pk=object.pk %}">Delete</a></li>

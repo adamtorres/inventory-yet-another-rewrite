@@ -89,6 +89,7 @@ class APIItemView(inv_utils.APISearchView):
 class APISelectedItemDetailView(generics.ListAPIView):
     model = inv_models.Item
     serializer_class = inv_serializers.APISelectedItemSerializer
+    pagination_class = None
 
     def get_queryset(self):
         # http://localhost:8000/inventory/api/items/selected

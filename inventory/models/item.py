@@ -141,6 +141,9 @@ class Item(models.Model):
         from_unit = latest_order["unit_size"]
         if isinstance(to_unit, str):
             to_unit = UnitSize.objects.get(unit=to_unit)
+        if from_unit == to_unit:
+            # No conversion.  Same units.
+            return latest_order["per_unit_price"]
         conversion = Conversion.objects.get_conversion(item=self, from_unit=from_unit, to_unit=to_unit)
         if not conversion:
             return 0

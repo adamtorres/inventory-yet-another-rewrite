@@ -24,8 +24,15 @@ class RecipeDeleteView(generic.DeleteView):
     def get_success_url(self):
         return urls.reverse("meal_planning:recipe_list")
 
+
 class RecipeDetailView(generic.DetailView):
     queryset = mp_models.Recipe.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["ingredients_with_price"] = self.object.get_pricing_data()
+        context["total_price"] = sum([i.ingredient_price for i in context["ingredients_with_price"]])
+        return context
 
 
 class RecipeListView(generic.ListView):

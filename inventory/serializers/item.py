@@ -15,13 +15,14 @@ class APISelectedItemSerializer(serializers.Serializer):
     subunit_size = serializers.SerializerMethodField()
     per_other_unit_price = serializers.SerializerMethodField()
     other_unit = serializers.SerializerMethodField()
+    order_date = serializers.SerializerMethodField()
 
     temp_latest_order = None
 
     class Meta:
         fields = [
             "id", "name", "category", "per_unit_price", "unit_size", "subunit_size", "per_other_unit_price",
-            "other_unit"]
+            "other_unit", "order_date"]
 
     def get_id(self, obj):
         return obj.id
@@ -31,6 +32,12 @@ class APISelectedItemSerializer(serializers.Serializer):
 
     def get_category(self, obj):
         return obj.category.name
+
+    def get_order_date(self, obj):
+        latest_order = self.get_latest_order(obj)
+        if not latest_order.get("order_date"):
+            return None
+        return latest_order["order_date"]
 
     def get_other_unit(self, obj):
         return obj.to_unit
