@@ -7,6 +7,7 @@
 {{ object }}
 <ul>
     <li><a href="{% url "inventory:conversion_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "inventory:conversion_duplicate" pk=object.pk %}">Duplicate</a></li>
     <li><a href="{% url "inventory:conversion_delete" pk=object.pk %}">Delete</a></li>
     <li><a href="{% url "inventory:conversion_list" %}">Conversion List</a></li>
     <li><a href="{% url "inventory:homepage" %}">Homepage</a></li>

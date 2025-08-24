@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class ConversionForm(forms.ModelForm):
     item = grouped_model_choice.GroupedModelChoiceField(
         inv_models.Item.objects.ingredients(),
-        choices_groupby="category"
+        choices_groupby="category", required=False
     )
     # ('group_label', [('value1', 'display_label1'), ('value2', 'display_label2')])
     from_unit = forms.ModelChoiceField(inv_models.UnitSize.objects.all())

@@ -4,7 +4,8 @@ from .category import (
     CategoryUpdateView, CategoryListView, CategoryDetailView, CategoryDeleteView, CategoryCreateView, APICategoryView,
     APICategoryReportView, ReportCategoryView)
 from .conversion import (
-    ConversionCreateView, ConversionDeleteView, ConversionDetailView, ConversionListView, ConversionUpdateView)
+    ConversionCreateView, ConversionDeleteView, ConversionDetailView, ConversionDuplicateView, ConversionListView,
+    ConversionUpdateView)
 from .item import (
     ItemUpdateView, ItemListCurrentView, ItemListView, ItemDetailView, ItemDeleteView, ItemCreateView, ItemSearchView,
     APIItemView, APISelectedItemDetailView)

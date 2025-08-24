@@ -4,6 +4,14 @@
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Conversion{% endblock %}
 
 {% block content %}
+{% if other_conversions %}
+Other conversions for {{ filter_item|default_if_none:"[no specific item]" }} / {{ filter_from_unit }}:
+<ul>
+{% for other_conversion in other_conversions %}
+    <li>{{ other_conversion }}</li>
+{% endfor %}
+</ul>
+{% endif %}
 <form method="post">
     {% csrf_token %}
     <div>
