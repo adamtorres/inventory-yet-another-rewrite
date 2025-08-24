@@ -10,11 +10,12 @@
 <div>
 <ul>
 {% for ingredient in object.ingredients.all %}
-    <li>{{ ingredient }}</li>
+    <li><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient }}</a></li>
 {% endfor %}
 </ul>
 </div>
 <ul>
+    <li><a href="{% url "meal_planning:recipe_ingredient_create" recipe_pk=object.pk %}">Add ingredient</a></li>
     <li><a href="{% url "meal_planning:recipe_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "meal_planning:recipe_delete" pk=object.pk %}">Delete</a></li>
     <li><a href="{% url "meal_planning:recipe_list" %}">Recipe List</a></li>

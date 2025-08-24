@@ -8,13 +8,17 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save">
+    <input type="submit" value="Save and add another" name="save_and_add_another">
 </form>
 
 {% if object.id %}
 <div>
-    <a href="{% url "meal_planning:ingredient_detail" pk=object.id %}">Cancel</a>
+    <a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=recipe_pk pk=object.id %}">Cancel</a>
 </div>
 {% endif %}
+<div>
+    <a href="{% url "meal_planning:recipe_detail" pk=recipe_pk %}">Cancel and go back to recipe</a>
+</div>
 {% if not popup %}
 <div>
     <a href="{% url "meal_planning:ingredient_list" %}">Cancel and go back to list</a>

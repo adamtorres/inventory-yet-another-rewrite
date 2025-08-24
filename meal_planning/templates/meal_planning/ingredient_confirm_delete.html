@@ -9,5 +9,5 @@
     <p>Are you sure you want to delete "{{ object }}"?</p>
     <input type="submit" value="Confirm">
 </form>
-<a href="{% url "meal_planning:ingredient_detail" pk=object.id %}">Cancel</a>
+<a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=recipe_pk pk=object.id %}">Cancel</a>
 {% endblock %}
