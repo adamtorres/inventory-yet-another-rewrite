@@ -149,7 +149,9 @@ class Item(models.Model):
         from .conversion import Conversion
         from .unit_size import UnitSize
         latest_order = self.latest_order(as_of_date=as_of_date)
-        from_unit = latest_order["unit_size"]
+        from_unit = latest_order.get("unit_size")
+        if not from_unit:
+            return 0
         if isinstance(to_unit, str):
             to_unit = UnitSize.objects.get(unit=to_unit)
         if from_unit == to_unit:

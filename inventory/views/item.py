@@ -109,8 +109,8 @@ class APISelectedItemDetailView(generics.ListAPIView):
         for item in qs.filter(criteria):
             to_unit = to_unit_values[f"{item.name}~{item.category.name}"]
             item.price_in_unit_value = item.price_in_unit(to_unit, as_of_date=as_of_date)
-            item.order_date = item.latest_order(as_of_date=as_of_date)["order_date"]
-            item.per_unit_price = item.latest_order(as_of_date=as_of_date)["per_unit_price"]
+            item.order_date = item.latest_order(as_of_date=as_of_date).get("order_date")
+            item.per_unit_price = item.latest_order(as_of_date=as_of_date).get("per_unit_price")
             if item.latest_order(as_of_date=as_of_date).get("subunit_size"):
                 item.subunit_size = item.latest_order(as_of_date=as_of_date)["subunit_size"].unit
             else:
@@ -119,7 +119,6 @@ class APISelectedItemDetailView(generics.ListAPIView):
                 item.unit_size = item.latest_order(as_of_date=as_of_date)["unit_size"].unit
             else:
                 item.unit_size = None
-            item.unit_size = item.latest_order(as_of_date=as_of_date)["unit_size"].unit
             item.to_unit = to_unit
             data.append(item)
         return data

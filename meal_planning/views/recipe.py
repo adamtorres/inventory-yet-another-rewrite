@@ -1,5 +1,6 @@
 import logging
 
+import dateparser
 from django import http, urls
 from django.views import generic
 from rest_framework import response, views
@@ -30,7 +31,11 @@ class RecipeDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["ingredient_groups_with_price"], recipe_total = self.object.get_pricing_data_for_groups()
+        as_of_date = self.request.GET.get("as_of_date")
+        if as_of_date:
+            as_of_date = dateparser.parse(as_of_date).date()
+        context["ingredient_groups_with_price"], recipe_total = self.object.get_pricing_data_for_groups(
+            as_of_date=as_of_date)
         context["total_price"] = recipe_total
         return context
 
