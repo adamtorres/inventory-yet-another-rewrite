@@ -33,6 +33,9 @@ from django.views import generic
 
 from .ingredient import (
     IngredientCreateView, IngredientDeleteView, IngredientDetailView, IngredientListView, IngredientUpdateView)
+from .ingredient_group import (
+    IngredientGroupCreateView, IngredientGroupDeleteView, IngredientGroupDetailView, IngredientGroupListView,
+    IngredientGroupUpdateView)
 from .recipe import (
     RecipeCreateView, RecipeDeleteView, RecipeDetailView, RecipeListView, RecipeUpdateView)
 

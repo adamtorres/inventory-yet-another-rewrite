@@ -12,11 +12,16 @@ logger = logging.getLogger(__name__)
 
 class IngredientCreateView(generic.CreateView):
     model = mp_models.Ingredient
-    fields = ["recipe", "name", "category", "unit_size", "unit_amount"]
+    fields = ["ingredient_group", "name", "category", "unit_size", "unit_amount"]
 
     def get_initial(self):
+        # Is done before get_context_data
         initial = super().get_initial()
-        initial['recipe'] = self.kwargs['recipe_pk']
+        recipe = mp_models.Recipe.objects.get(id=self.kwargs['recipe_pk'])
+        if recipe.ingredient_groups.count() == 0:
+            recipe.ingredient_groups.create(name="default")
+        last_ig = recipe.ingredient_groups.all().last()
+        initial['ingredient_group'] = last_ig.id
         return initial
 
     def get_context_data(self, **kwargs):
@@ -26,8 +31,8 @@ class IngredientCreateView(generic.CreateView):
 
     def get_success_url(self):
         if "save_and_add_another" in self.request.POST:
-            return urls.reverse("meal_planning:recipe_ingredient_create", args=(self.object.recipe.pk,))
-        return urls.reverse("meal_planning:recipe_detail", args=(self.object.recipe.pk,))
+            return urls.reverse("meal_planning:recipe_ingredient_create", args=(self.kwargs['recipe_pk'],))
+        return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))
 
 
 class IngredientDeleteView(generic.DeleteView):
@@ -39,7 +44,7 @@ class IngredientDeleteView(generic.DeleteView):
         return context
 
     def get_success_url(self):
-        return urls.reverse("meal_planning:recipe_detail", args=(self.object.recipe.pk,))
+        return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))
 
 
 class IngredientDetailView(generic.DetailView):
@@ -53,12 +58,12 @@ class IngredientDetailView(generic.DetailView):
 
 class IngredientListView(generic.ListView):
     model = mp_models.Ingredient
-    ordering = ["recipe", "category", "name", "unit_size", "unit_amount"]
+    ordering = ["ingredient_group", "category", "name", "unit_size", "unit_amount"]
 
 
 class IngredientUpdateView(generic.UpdateView):
     model = mp_models.Ingredient
-    fields = ["recipe", "name", "category", "unit_size", "unit_amount"]
+    fields = ["ingredient_group", "name", "category", "unit_size", "unit_amount"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,4 +71,4 @@ class IngredientUpdateView(generic.UpdateView):
         return context
 
     def get_success_url(self):
-        return urls.reverse("meal_planning:recipe_ingredient_detail", args=(self.object.recipe.id, self.object.id,))
+        return urls.reverse("meal_planning:recipe_ingredient_detail", args=(self.kwargs['recipe_pk'], self.object.id,))

@@ -43,6 +43,9 @@ class OrderLineItem(models.Model):
         try:
             # pack = 6x #10 cans.  unit_amount = 6
             # pack = 1x 50lb.  unit_amount = 50
+            # pack = 6x 5lb tubs of pb.  unit_amount = 5, quantity = 6
+            if self.source_item.quantity:
+                return self.per_pack_price / self.source_item.quantity / self.source_item.unit_amount
             return self.per_pack_price / self.source_item.unit_amount
         except ZeroDivisionError:
             return 0.0

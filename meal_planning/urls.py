@@ -29,5 +29,12 @@ urlpatterns = [
         "recipe/<int:recipe_pk>/ingredient/new", mp_views.IngredientCreateView.as_view(),
         name="recipe_ingredient_create"),
 
+    urls.path(
+        "recipe/<int:recipe_pk>/ingredient_group/<int:pk>", mp_views.IngredientGroupDetailView.as_view(),
+        name="recipe_ingredient_group_detail"),
+    urls.path(
+        "recipe/<int:recipe_pk>/ingredient_group/new", mp_views.IngredientGroupCreateView.as_view(),
+        name="recipe_ingredient_group_create"),
+
     urls.path("", mp_views.IngredientHomepageView.as_view(), name="homepage"),
 ]

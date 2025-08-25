@@ -40,19 +40,24 @@
 </tr>
 </thead>
 <tbody>
-{% for ingredient in ingredients_with_price %}
+{% for ig_name, ingredients in ingredient_groups_with_price.items %}
     <tr>
-        <td><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient.name }}</a></td>
-        <td>{% display_fraction ingredient.unit_amount limit_denominator=16 coerce_thirds=True %} {{ ingredient.unit_size }}</td>
-        {% if ingredient.no_pricing_data %}
-            <td colspan="4">&lt;No pricing data available&gt;</td>
-        {% else %}
-            <td>${{ ingredient.ingredient_price|floatformat:2|intcomma }}</td>
-            <td>${{ ingredient.per_unit_price|floatformat:2|intcomma }} per {{ ingredient.unit_size }}</td>
-            <td>${{ ingredient.per_original_unit_price|floatformat:2|intcomma }} per {{ ingredient.original_unit_size }}</td>
-            <td>{{ ingredient.order_date }}</td>
-        {% endif %}
+    <td colspan="6">{{ ig_name }}</td>
     </tr>
+    {% for ingredient in ingredients %}
+        <tr>
+            <td><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient.name }}</a></td>
+            <td>{% display_fraction ingredient.unit_amount limit_denominator=16 coerce_thirds=True %} {{ ingredient.unit_size }}</td>
+            {% if ingredient.no_pricing_data %}
+                <td colspan="4">&lt;No pricing data available&gt;</td>
+            {% else %}
+                <td>${{ ingredient.ingredient_price|floatformat:2|intcomma }}</td>
+                <td>${{ ingredient.per_unit_price|floatformat:2|intcomma }} per {{ ingredient.unit_size }}</td>
+                <td>${{ ingredient.per_original_unit_price|floatformat:2|intcomma }} per {{ ingredient.original_unit_size }}</td>
+                <td>{{ ingredient.order_date }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
 {% endfor %}
 </tbody>
 </table>
@@ -60,6 +65,7 @@
 </div>
 <ul>
     <li><a href="{% url "meal_planning:recipe_ingredient_create" recipe_pk=object.pk %}">Add ingredient</a></li>
+    <li><a href="{% url "meal_planning:recipe_ingredient_group_create" recipe_pk=object.pk %}">Add ingredient group</a></li>
     <li><a href="{% url "meal_planning:recipe_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "meal_planning:recipe_delete" pk=object.pk %}">Delete</a></li>
     <li><a href="{% url "meal_planning:recipe_list" %}">Recipe List</a></li>
