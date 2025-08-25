@@ -1,3 +1,4 @@
+import dateparser
 from django import urls
 from django.db import models
 from django.views import generic
@@ -92,11 +93,6 @@ class APISelectedItemDetailView(generics.ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        # http://localhost:8000/inventory/api/items/selected
-        #   ?item_category_unit=butter~dairy~cup
-        #   &item_category_unit=egg~dairy~x
-        #   &item_category_unit=all+purpose+flour~canned+%26+dry~cup
-        #   &item_category_unit=granulated+sugar~canned+%26+dry~cup
         qs = self.model.objects.all()
         criteria = models.Q()
         to_unit_values = {}
@@ -107,9 +103,23 @@ class APISelectedItemDetailView(generics.ListAPIView):
         if not criteria:
             return self.model.objects.none()
         data = []
+        as_of_date = self.request.GET.get("as_of_date")
+        if as_of_date:
+            as_of_date = dateparser.parse(as_of_date).date()
         for item in qs.filter(criteria):
             to_unit = to_unit_values[f"{item.name}~{item.category.name}"]
-            item.price_in_unit_value = item.price_in_unit(to_unit)
+            item.price_in_unit_value = item.price_in_unit(to_unit, as_of_date=as_of_date)
+            item.order_date = item.latest_order(as_of_date=as_of_date)["order_date"]
+            item.per_unit_price = item.latest_order(as_of_date=as_of_date)["per_unit_price"]
+            if item.latest_order(as_of_date=as_of_date).get("subunit_size"):
+                item.subunit_size = item.latest_order(as_of_date=as_of_date)["subunit_size"].unit
+            else:
+                item.subunit_size = None
+            if item.latest_order(as_of_date=as_of_date).get("unit_size"):
+                item.unit_size = item.latest_order(as_of_date=as_of_date)["unit_size"].unit
+            else:
+                item.unit_size = None
+            item.unit_size = item.latest_order(as_of_date=as_of_date)["unit_size"].unit
             item.to_unit = to_unit
             data.append(item)
         return data

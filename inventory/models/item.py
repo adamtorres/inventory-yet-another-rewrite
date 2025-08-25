@@ -53,6 +53,7 @@ class Item(models.Model):
     objects = ItemManager()
 
     _latest_order = None
+    _latest_order_as_of_date = None
 
     def __str__(self):
         return self.name
@@ -92,10 +93,16 @@ class Item(models.Model):
         return_value.update(qs)
         return return_value
 
-    def latest_order(self):
-        if self._latest_order:
+    def latest_order(self, as_of_date: datetime.date=None):
+        if self._latest_order and (self._latest_order_as_of_date == as_of_date):
+            # Called a lot: logger.critical(f"Item.latest_order(as_of_date={as_of_date}) CACHED!")
             return self._latest_order
-        qs = self.source_items.filter(line_items__quantity_delivered__gt=0).order_by("-line_items__order__delivered_date")
+        if as_of_date:
+            qs = self.source_items.filter(line_items__order__delivered_date__lte=as_of_date)
+        else:
+            qs = self.source_items.all()
+        self._latest_order_as_of_date = as_of_date
+        qs = qs.filter(line_items__quantity_delivered__gt=0).order_by("-line_items__order__delivered_date")
         latest_source_item = qs.first()
         if not latest_source_item:
             self._latest_order = {
@@ -103,7 +110,11 @@ class Item(models.Model):
                 "item_name": self.name,
             }
             return self._latest_order
-        qs = latest_source_item.line_items.filter(quantity_delivered__gt=0).order_by("-order__delivered_date")
+        if as_of_date:
+            qs = latest_source_item.line_items.filter(order__delivered_date__lte=as_of_date)
+        else:
+            qs = latest_source_item.line_items.all()
+        qs = qs.filter(quantity_delivered__gt=0).order_by("-order__delivered_date")
         latest_order_line_item = qs.first()
         if not latest_order_line_item:
             self._latest_order = {
@@ -134,10 +145,10 @@ class Item(models.Model):
         }
         return self._latest_order
 
-    def price_in_unit(self, to_unit=None):
+    def price_in_unit(self, to_unit=None, as_of_date: datetime.date=None):
         from .conversion import Conversion
         from .unit_size import UnitSize
-        latest_order = self.latest_order()
+        latest_order = self.latest_order(as_of_date=as_of_date)
         from_unit = latest_order["unit_size"]
         if isinstance(to_unit, str):
             to_unit = UnitSize.objects.get(unit=to_unit)
@@ -147,10 +158,4 @@ class Item(models.Model):
         conversion = Conversion.objects.get_conversion(item=self, from_unit=from_unit, to_unit=to_unit)
         if not conversion:
             return 0
-        # logger.critical(f"Item.price_in_unit: from_unit={from_unit}, to_unit={to_unit}")
-        # logger.critical(
-        #     f"per_unit_price({latest_order["per_unit_price"]}) * conversion.multiplier({conversion.multiplier}) = "
-        #     f"{latest_order["per_unit_price"] * conversion.multiplier}")
-        # for k, v in latest_order.items():
-        #     logger.critical(f"latest_order[{k}] = {v!r}")
         return latest_order["per_unit_price"] * conversion.multiplier

@@ -34,39 +34,19 @@ class APISelectedItemSerializer(serializers.Serializer):
         return obj.category.name
 
     def get_order_date(self, obj):
-        latest_order = self.get_latest_order(obj)
-        if not latest_order.get("order_date"):
-            return None
-        return latest_order["order_date"]
+        return obj.order_date
 
     def get_other_unit(self, obj):
         return obj.to_unit
 
     def get_per_unit_price(self, obj):
-        latest_order = self.get_latest_order(obj)
-        # logger.critical(f"APISelectedItemSerializer.get_per_unit_price")
-        # for k, v in self.temp_latest_order.items():
-        #     logger.critical(f"self.temp_latest_order[{k}] = {v!r}")
-        return latest_order.get("per_unit_price", 0.0)
+        return obj.per_unit_price
 
     def get_per_other_unit_price(self, obj):
         return obj.price_in_unit_value
 
     def get_subunit_size(self, obj):
-        latest_order = self.get_latest_order(obj)
-        if not latest_order.get("subunit_size"):
-            return None
-        return latest_order["subunit_size"].unit
+        return obj.subunit_size
 
     def get_unit_size(self, obj):
-        latest_order = self.get_latest_order(obj)
-        if not latest_order.get("unit_size"):
-            return None
-        return latest_order["unit_size"].unit
-
-    def get_latest_order(self, obj, field_to_check=None):
-        if not self.temp_latest_order:
-            self.temp_latest_order = obj.latest_order()
-        if self.temp_latest_order.get("order_line_item") != obj.latest_order().get("order_line_item"):
-            self.temp_latest_order = obj.latest_order()
-        return self.temp_latest_order
+        return obj.unit_size
