@@ -28,6 +28,16 @@
 <div>Description: {{ object.description }}</div>
 <div>Goes with: {{ object.goes_with }}</div>
 <div>
+<form method="get">
+    <label for="as_of_date_select">Limit pricing up to:</label>
+    <select name="as_of_date" id="as_of_date_select">
+        <option value="">Current</option>
+        {% for date_label, date_option in date_options.items %}
+        <option value="{{ date_option|date:"Y-m-d" }}">{{ date_label }} ({{ date_option }})</option>
+        {% endfor %}
+    </select>
+    <button type="submit" value="a" name="as_of_date_form" id="c">Limit Pricing</button>
+</form>
 <table id="priced_ingredients">
 <thead>
 <tr>
@@ -52,7 +62,7 @@
             <td><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient.name }}</a></td>
             <td>{% display_fraction ingredient.unit_amount limit_denominator=16 coerce_thirds=True %} {{ ingredient.unit_size }}</td>
             {% if ingredient.no_pricing_data %}
-                <td colspan="4">&lt;No pricing data available&gt;</td>
+                <td style="color: gray;" colspan="4">&lt;No pricing data available&gt;</td>
             {% else %}
                 <td>${{ ingredient.ingredient_price|floatformat:2|intcomma }}</td>
                 <td>${{ ingredient.per_unit_price|floatformat:2|intcomma }} per {{ ingredient.unit_size }}</td>

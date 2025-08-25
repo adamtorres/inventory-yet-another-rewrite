@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import dateparser
@@ -37,6 +38,15 @@ class RecipeDetailView(generic.DetailView):
         context["ingredient_groups_with_price"], recipe_total = self.object.get_pricing_data_for_groups(
             as_of_date=as_of_date)
         context["total_price"] = recipe_total
+        context["date_options"] = {
+            "6 months ago": datetime.date.today() - datetime.timedelta(days=365*0.5),
+            "1 year ago": datetime.date.today() - datetime.timedelta(days=365),
+            "1.5 years ago": datetime.date.today() - datetime.timedelta(days=365*1.5),
+            "2 years ago": datetime.date.today() - datetime.timedelta(days=365*2),
+            "2.5 years ago": datetime.date.today() - datetime.timedelta(days=365*2.5),
+            "3 years ago": datetime.date.today() - datetime.timedelta(days=365*3),
+            "3.5 years ago": datetime.date.today() - datetime.timedelta(days=365*3.5),
+        }
         return context
 
 
