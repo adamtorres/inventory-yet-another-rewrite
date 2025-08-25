@@ -12,8 +12,8 @@
 {% endfor %}
 </ul>
 <ul>
-{#    <li><a href="{% url "meal_planning:recipe_ingredient_group_update" recipe_pk=recipe_pk pk=object.pk %}">Edit</a></li>#}
-{#    <li><a href="{% url "meal_planning:recipe_ingredient_group_delete" recipe_pk=recipe_pk pk=object.pk %}">Delete</a></li>#}
+    <li><a href="{% url "meal_planning:recipe_ingredient_group_update" recipe_pk=recipe_pk pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "meal_planning:recipe_ingredient_group_delete" recipe_pk=recipe_pk pk=object.pk %}">Delete</a></li>
     <li><a href="{% url "meal_planning:recipe_detail"  pk=recipe_pk %}">Back to recipe</a></li>
 </ul>
 {% endblock %}

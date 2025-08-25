@@ -79,10 +79,16 @@ class Recipe(models.Model):
 
     def get_pricing_data_for_groups(self):
         ingredient_group_pricing = {}
+        total = 0.0
         for ingredient_group in self.ingredient_groups.all():
-            ingredient_group_pricing[ingredient_group.name] = self.get_pricing_data_from_qs(
-                ingredient_group.ingredients.all())
-        return ingredient_group_pricing
+            ingredients = self.get_pricing_data_from_qs(ingredient_group.ingredients.all())
+            ingredient_group_pricing[ingredient_group.name] = {
+                "ingredient_group": ingredient_group,
+                "ingredients": ingredients,
+                "total": sum([i.ingredient_price for i in ingredients]),
+            }
+            total += ingredient_group_pricing[ingredient_group.name]["total"]
+        return ingredient_group_pricing, total
 
     def get_pricing_data_from_qs(self, ingredient_group_qs):
         ingredient_dict = self.prepare_ingredient_dict(ingredient_group_qs)

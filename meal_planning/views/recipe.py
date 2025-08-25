@@ -30,13 +30,7 @@ class RecipeDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # TODO: reformat the dict so the value is a dict {"ingredients": list, "total": 0.0, "ingredient_group": ig_object}
-        context["ingredient_groups_with_price"] = self.object.get_pricing_data_for_groups()
-        ig_totals = {}
-        recipe_total = 0.0
-        for ig_name, ig in context["ingredient_groups_with_price"].items():
-            ig_totals[ig_name] = sum([i.ingredient_price for i in ig])
-            recipe_total += ig_totals[ig_name]
+        context["ingredient_groups_with_price"], recipe_total = self.object.get_pricing_data_for_groups()
         context["total_price"] = recipe_total
         return context
 

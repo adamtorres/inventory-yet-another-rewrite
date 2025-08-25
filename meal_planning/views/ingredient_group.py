@@ -32,7 +32,7 @@ class IngredientGroupDeleteView(generic.DeleteView):
         return context
 
     def get_success_url(self):
-        return urls.reverse("meal_planning:recipe_detail", args=(self.object.recipe.pk,))
+        return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))
 
 
 class IngredientGroupDetailView(generic.DetailView):
@@ -59,4 +59,4 @@ class IngredientGroupUpdateView(generic.UpdateView):
         return context
 
     def get_success_url(self):
-        return urls.reverse("meal_planning:recipe_detail", args=(self.object.recipe.id,))
+        return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))

@@ -40,11 +40,14 @@
 </tr>
 </thead>
 <tbody>
-{% for ig_name, ingredients in ingredient_groups_with_price.items %}
+{% for ig_name, ingredient_group_detail in ingredient_groups_with_price.items %}
     <tr>
-    <td colspan="6">{{ ig_name }}</td>
+        <td colspan="6">
+            <a href="{% url "meal_planning:recipe_ingredient_group_detail" recipe_pk=object.id pk=ingredient_group_detail.ingredient_group.id %}">{{ ig_name }}</a>
+            Group Total: ${{ ingredient_group_detail.total|floatformat:2|intcomma }}
+        </td>
     </tr>
-    {% for ingredient in ingredients %}
+    {% for ingredient in ingredient_group_detail.ingredients %}
         <tr>
             <td><a href="{% url "meal_planning:recipe_ingredient_detail" recipe_pk=object.id pk=ingredient.id %}">{{ ingredient.name }}</a></td>
             <td>{% display_fraction ingredient.unit_amount limit_denominator=16 coerce_thirds=True %} {{ ingredient.unit_size }}</td>
