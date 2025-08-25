@@ -19,7 +19,8 @@ class Recipe(models.Model):
     description = models.TextField(help_text="General description of this recipe.")
     goes_with = models.TextField(
         help_text="ideas on entrees, sides, or desserts this recipe would normally be paired with")
-    # TODO: Add a type field for entree, side, dessert, bread, other
+    # TODO: Add a type field for entree, side, dessert, bread, cookie, cake, other
+    # This type would be used to show cookie:dz, 1/2dz pricing.  Or entree:just count pricing, maybe steam table pan?
 
     objects = RecipeManager()
 
@@ -48,30 +49,6 @@ class Recipe(models.Model):
 
     def get_pricing_data(self):
         return self.get_pricing_data_from_qs(self.ingredients.all())
-
-    def get_pricing_data_old(self):
-        # TODO: Need ingredient groups.  dough, topping, filling, etc.  Duplicating ingredients doesn't currently work.
-        ingredient_dict = {}
-        for i in self.ingredients.all():
-            ingredient_dict[f"{i.name}~{i.category}~{i.unit_size}"] = i
-            i.ingredient_price = 0.0
-            i.no_pricing_data = True
-        ingredient_list = [f"{i.name}~{i.category}~{i.unit_size}" for i in self.ingredients.all()]
-        ugly_domain = Site.objects.get_current().domain
-        url = f"http://{ugly_domain}{urls.reverse("inventory:api_selected_items")}"
-        api_response = requests.get(url, params={"item_category_unit": ingredient_list})
-        pricing_data = api_response.json()
-        for pd in pricing_data:
-            # name, category, other_unit
-            i = ingredient_dict[f"{pd["name"]}~{pd["category"]}~{pd["other_unit"]}"]
-            i.per_original_unit_price = pd["per_unit_price"]
-            i.original_unit_size = pd["unit_size"]
-            i.order_date = pd["order_date"]
-            i.per_unit_price = pd["per_other_unit_price"]
-            logger.critical(f"{pd["name"]}: (float({i.unit_amount})={float(i.unit_amount)}) * {i.per_unit_price}")
-            i.ingredient_price = float(i.unit_amount) * i.per_unit_price
-            i.no_pricing_data = False
-        return list(ingredient_dict.values())
 
     def get_pricing_data_for_group(self, ingredient_group):
         if isinstance(ingredient_group, str):
