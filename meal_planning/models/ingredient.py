@@ -1,20 +1,6 @@
 from django.db import models
 
 
-
-class IngredientGroup(models.Model):
-    recipe = models.ForeignKey(
-        "meal_planning.Recipe", on_delete=models.CASCADE, related_name="ingredient_groups",
-        related_query_name="ingredient_groups")
-    name = models.CharField(max_length=1024, help_text="Is this for the dough, filling, topping, etc?")
-
-    class Meta:
-        ordering = ["recipe__name", "name"]
-
-    def __str__(self):
-        return f"{self.recipe.name}: {self.name}"
-
-
 class Ingredient(models.Model):
     recipe = models.ForeignKey(
         "meal_planning.Recipe", on_delete=models.CASCADE, related_name="ingredients",
@@ -32,8 +18,6 @@ class Ingredient(models.Model):
         ordering = ["ingredient_group__recipe__name", "ingredient_group__name", "category", "name"]
 
     def __str__(self):
-        if self.recipe:
-            return f"{self.recipe.name}: {self.name}, {self.unit_amount} {self.unit_size}"
         if self.ingredient_group:
             return f"{self.ingredient_group.recipe.name}: {self.ingredient_group.name}: {self.name}, {self.unit_amount} {self.unit_size}"
         return f"?: {self.name}, {self.unit_amount} {self.unit_size}"

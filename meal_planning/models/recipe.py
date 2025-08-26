@@ -47,6 +47,41 @@ class Recipe(models.Model):
         avg_value = self.ratings.filter(value__isnull=False).aggregate(avg_value=models.Avg("value"))["avg_value"]
         return avg_value
 
+    def duplicate(self):
+        new_recipe = type(self)()
+
+        for field in self._meta.fields:
+            if field.primary_key:
+                continue  # Skip copying the primary key
+            if field.name == "name":
+                modified_name = f"{getattr(self, field.name)} (copied on {datetime.date.today()})"
+                setattr(new_recipe, field.name, modified_name)
+            else:
+                setattr(new_recipe, field.name, getattr(self, field.name))
+        new_recipe.save()
+
+        for ig in self.ingredient_groups.all():
+            new_ig = type(ig)()
+            for field in ig._meta.fields:
+                if field.primary_key:
+                    continue  # Skip copying the primary key
+                if field.name == "recipe":
+                    new_ig.recipe = new_recipe
+                else:
+                    setattr(new_ig, field.name, getattr(ig, field.name))
+            new_ig.save()
+            for i in ig.ingredients.all():
+                new_i = type(i)()
+                for field in i._meta.fields:
+                    if field.primary_key:
+                        continue  # Skip copying the primary key
+                    if field.name == "ingredient_group":
+                        new_i.ingredient_group = new_ig
+                    else:
+                        setattr(new_i, field.name, getattr(i, field.name))
+                new_i.save()
+        return new_recipe
+
     def get_pricing_data(self):
         return self.get_pricing_data_from_qs(self.ingredients.all())
 

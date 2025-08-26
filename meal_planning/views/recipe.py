@@ -6,7 +6,7 @@ from django import http, urls
 from django.views import generic
 from rest_framework import response, views
 
-from .. import models as mp_models
+from .. import models as mp_models, utils as mp_utils
 
 
 logger = logging.getLogger(__name__)
@@ -30,40 +30,9 @@ class RecipeDeleteView(generic.DeleteView):
 class RecipeDetailView(generic.DetailView):
     queryset = mp_models.Recipe.objects.all()
 
-    def duplicate_object(self):
-        new_recipe = type(self.object)()
-
-        for field in self.object._meta.fields:
-            if field.primary_key:
-                continue  # Skip copying the primary key
-            if field.name == "name":
-                modified_name = f"{getattr(self.object, field.name)} (copied on {datetime.date.today()})"
-                setattr(new_recipe, field.name, modified_name)
-            else:
-                setattr(new_recipe, field.name, getattr(self.object, field.name))
-        new_recipe.save()
-
-        for ig in self.object.ingredient_groups.all():
-            new_ig = type(ig)()
-            for field in ig._meta.fields:
-                if field.primary_key:
-                    continue  # Skip copying the primary key
-                if field.name == "recipe":
-                    new_ig.recipe = new_recipe
-                else:
-                    setattr(new_ig, field.name, getattr(ig, field.name))
-            new_ig.save()
-            for i in ig.ingredients.all():
-                new_i = type(i)()
-                for field in i._meta.fields:
-                    if field.primary_key:
-                        continue  # Skip copying the primary key
-                    if field.name == "ingredient_group":
-                        new_i.ingredient_group = new_ig
-                    else:
-                        setattr(new_i, field.name, getattr(i, field.name))
-                new_i.save()
-        return new_recipe
+    def duplicate_recipe(self):
+        duplicate_object = self.object.duplicate()
+        return http.HttpResponseRedirect(self.get_object_url(duplicate_object))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,13 +54,19 @@ class RecipeDetailView(generic.DetailView):
         return context
 
     @staticmethod
-    def get_duplicate_success_url(duplicate_recipe):
+    def get_object_url(duplicate_recipe):
         return urls.reverse("meal_planning:recipe_detail", args=(duplicate_recipe.id,))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        duplicate_object = self.duplicate_object()
-        return http.HttpResponseRedirect(self.get_duplicate_success_url(duplicate_object))
+        if request.POST.get("duplicate"):
+            return self.duplicate_recipe()
+        if request.POST.get("multiply"):
+            base_multiplier_str = request.POST.get("base_multiplier")
+            base_multiplier = float(base_multiplier_str)
+            logger.critical(f"base_multiplier_str={base_multiplier_str!r}, base_multiplier={base_multiplier!r}")
+            multiplied_recipe = mp_utils.add_recipe_multiplier(self.object, base_multiplier)
+        return http.HttpResponseRedirect(self.get_object_url(self.object))
 
 
 class RecipeListView(generic.ListView):
