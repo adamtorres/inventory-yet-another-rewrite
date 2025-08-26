@@ -20,7 +20,9 @@ class IngredientMultiplier(models.Model):
     recipe_multiplier = models.ForeignKey(
         "meal_planning.RecipeMultiplier", on_delete=models.CASCADE, related_name="ingredients",
         related_query_name="ingredients")
-    ingredient = models.ForeignKey("meal_planning.Ingredient", on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(
+        "meal_planning.Ingredient", on_delete=models.CASCADE, related_name="multipliers",
+        related_query_name="multipliers")
 
     # actual unit_amount is base recipe * RecipeMultiplier
     unit_amount_adjustment = models.DecimalField(

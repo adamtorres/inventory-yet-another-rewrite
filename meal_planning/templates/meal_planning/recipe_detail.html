@@ -47,7 +47,20 @@
     <th>Price per unit</th>
     <th>Price per purchase unit</th>
     <th>Order Date</th>
+    {% for rm in recipe.multipliers.all %}
+        <th colspan="3">{{ rm.base_multiplier|floatformat:-2|intcomma }}x</th>
+    {% endfor %}
 </tr>
+{% if recipe.multipliers.count %}
+<tr>
+<th colspan="6"></th>
+    {% for rm in recipe.multipliers.all %}
+        <th>Amount</th>
+        <th>Price</th>
+        <th>Adjustment</th>
+    {% endfor %}
+</tr>
+{% endif %}
 </thead>
 <tbody>
 {% for ig_name, ingredient_group_detail in ingredient_groups_with_price.items %}
@@ -68,6 +81,15 @@
                 <td>${{ ingredient.per_unit_price|floatformat:2|intcomma }} per {{ ingredient.unit_size }}</td>
                 <td>${{ ingredient.per_original_unit_price|floatformat:2|intcomma }} per {{ ingredient.original_unit_size }}</td>
                 <td>{{ ingredient.order_date }}</td>
+                {% for mb in ingredient.multiplied_bits %}
+                    <td style="border-left: black solid 2px;">{% display_fraction mb.unit_amount limit_denominator=16 coerce_thirds=True %} {{ ingredient.unit_size }}</td>
+                    <td>${{ mb.ingredient_price|floatformat:2|intcomma }}</td>
+                    <td>
+                        {% if mb.adjustment %}
+                            {% display_fraction mb.adjustment limit_denominator=16 coerce_thirds=True %} {{ ingredient.unit_size }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
             {% endif %}
         </tr>
     {% endfor %}

@@ -39,9 +39,20 @@ class Recipe(models.Model):
             i.original_unit_size = pd["unit_size"]
             i.order_date = pd["order_date"]
             i.per_unit_price = pd["per_other_unit_price"]
-            logger.critical(f"{pd["name"]}: (float({i.unit_amount})={float(i.unit_amount)}) * {i.per_unit_price}")
+            # logger.critical(f"{pd["name"]}: (float({i.unit_amount})={float(i.unit_amount)}) * {i.per_unit_price}")
             i.ingredient_price = float(i.unit_amount) * i.per_unit_price
             i.no_pricing_data = pd["per_unit_price"] is None
+            i.multiplied_bits = []
+            for im in i.multipliers.all():
+                multiplied_ingredient_price = i.ingredient_price * float(im.recipe_multiplier.base_multiplier)
+                adjustment_price = i.per_unit_price * float(im.unit_amount_adjustment)
+                adjusted_multiplied_ingredient_price = multiplied_ingredient_price + adjustment_price
+                i.multiplied_bits.append({
+                    "multiplier": im.recipe_multiplier.base_multiplier,
+                    "ingredient_price": adjusted_multiplied_ingredient_price,
+                    "unit_amount": i.unit_amount * im.recipe_multiplier.base_multiplier + im.unit_amount_adjustment,
+                    "adjustment": im.unit_amount_adjustment,
+                })
 
     def average_rating(self):
         avg_value = self.ratings.filter(value__isnull=False).aggregate(avg_value=models.Avg("value"))["avg_value"]
