@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meal Planning : {% if object.id %}Edit{% else %}New{% endif %} Recipe Multiplier{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+</form>
+
+{% if object.id %}
+<div>
+    <a href="{% url "meal_planning:recipe_multiplier_detail" recipe_pk=recipe_pk pk=object.id %}">Cancel</a>
+</div>
+{% endif %}
+{% endblock %}

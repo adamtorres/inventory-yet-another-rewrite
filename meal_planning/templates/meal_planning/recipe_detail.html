@@ -48,7 +48,11 @@
     <th>Price per purchase unit</th>
     <th>Order Date</th>
     {% for rm in recipe.multipliers.all %}
-        <th colspan="3">{% display_fraction rm.base_multiplier limit_denominator=16 coerce_thirds=True %}x</th>
+        <th colspan="3">
+            <a href="{% url "meal_planning:recipe_multiplier_detail" recipe_pk=recipe.id pk=rm.id %}">
+                {% display_fraction rm.base_multiplier limit_denominator=16 coerce_thirds=True %}x
+            </a>
+        </th>
     {% endfor %}
 </tr>
 {% if recipe.multipliers.count %}

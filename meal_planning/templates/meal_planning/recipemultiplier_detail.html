@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meal Planning : Recipe Multiplier{% endblock %}
+
+{% block content %}
+<div>Recipe: {{ object.recipe }}</div>
+<div>Multiplier: {{ object.base_multiplier }}</div>
+<div>Comment: {{ object.comment }}</div>
+<ul>
+    <li><a href="{% url "meal_planning:recipe_multiplier_update" recipe_pk=recipe_pk pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "meal_planning:recipe_multiplier_delete" recipe_pk=recipe_pk pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "meal_planning:recipe_detail"  pk=recipe_pk %}">Back to recipe</a></li>
+</ul>
+{% endblock %}

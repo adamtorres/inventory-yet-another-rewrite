@@ -38,6 +38,7 @@ from .ingredient_group import (
     IngredientGroupUpdateView)
 from .recipe import (
     RecipeCreateView, RecipeDeleteView, RecipeDetailView, RecipeListView, RecipeUpdateView)
+from .recipe_multiplier import RecipeMultiplierDeleteView, RecipeMultiplierDetailView, RecipeMultiplierUpdateView
 
 
 class IngredientHomepageView(generic.TemplateView):
