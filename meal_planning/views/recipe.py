@@ -39,9 +39,10 @@ class RecipeDetailView(generic.DetailView):
         as_of_date = self.request.GET.get("as_of_date")
         if as_of_date:
             as_of_date = dateparser.parse(as_of_date).date()
-        context["ingredient_groups_with_price"], recipe_total = self.object.get_pricing_data_for_groups(
+        context["ingredient_groups_with_price"], recipe_total, multiplier_totals = self.object.get_pricing_data_for_groups(
             as_of_date=as_of_date)
         context["total_price"] = recipe_total
+        context["multiplier_totals"] = multiplier_totals
         context["date_options"] = {
             "6 months ago": datetime.date.today() - datetime.timedelta(days=365*0.5),
             "1 year ago": datetime.date.today() - datetime.timedelta(days=365),

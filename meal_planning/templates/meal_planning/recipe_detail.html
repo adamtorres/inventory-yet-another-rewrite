@@ -48,7 +48,7 @@
     <th>Price per purchase unit</th>
     <th>Order Date</th>
     {% for rm in recipe.multipliers.all %}
-        <th colspan="3">{{ rm.base_multiplier|floatformat:-2|intcomma }}x</th>
+        <th colspan="3">{% display_fraction rm.base_multiplier limit_denominator=16 coerce_thirds=True %}x</th>
     {% endfor %}
 </tr>
 {% if recipe.multipliers.count %}
@@ -69,6 +69,11 @@
             <a href="{% url "meal_planning:recipe_ingredient_group_detail" recipe_pk=object.id pk=ingredient_group_detail.ingredient_group.id %}">{{ ig_name }}</a>
             Group Total: ${{ ingredient_group_detail.total|floatformat:2|intcomma }}
         </td>
+        {% for multiplier_total in ingredient_group_detail.multiplier_totals %}
+            <td colspan="3">
+                Group Total: ${{ multiplier_total|floatformat:2|intcomma }}
+            </td>
+        {% endfor %}
     </tr>
     {% for ingredient in ingredient_group_detail.ingredients %}
         <tr>
@@ -94,9 +99,14 @@
         </tr>
     {% endfor %}
 {% endfor %}
+<tr>
+    <td colspan="6">Total Price: ${{ total_price|floatformat:2|intcomma }}</td>
+    {% for multiplier, multiplier_total in multiplier_totals.items %}
+        <td colspan="3">Total Price: ${{ multiplier_total|floatformat:2|intcomma }}</td>
+    {% endfor %}
+</tr>
 </tbody>
 </table>
-<div>Total Price: ${{ total_price|floatformat:2|intcomma }}</div>
 </div>
 <div>
 <form method="post">
