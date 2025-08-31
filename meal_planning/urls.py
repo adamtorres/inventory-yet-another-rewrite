@@ -52,5 +52,12 @@ urlpatterns = [
         "recipe/<int:recipe_pk>/multiplier/<int:pk>/edit", mp_views.RecipeMultiplierUpdateView.as_view(),
         name="recipe_multiplier_update"),
 
+    urls.path(
+        "recipe/<int:recipe_pk>/multiplier/<int:multiplier_pk>/new_serving_count",
+        mp_views.ServingCountCreateView.as_view(), name="serving_count_create"),
+    urls.path(
+        "recipe/<int:recipe_pk>/multiplier/<int:multiplier_pk>/serving_count/<int:pk>",
+        mp_views.ServingCountDetailView.as_view(), name="serving_count_detail"),
+
     urls.path("", mp_views.IngredientHomepageView.as_view(), name="homepage"),
 ]

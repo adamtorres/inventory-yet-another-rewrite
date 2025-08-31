@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Meal Planning : Serving Counter{% endblock %}
+
+{% block content %}
+<div>Recipe: <a href="{% url "meal_planning:recipe_detail" pk=recipe_pk %}">{{ object.recipe }}</a></div>
+<div>Multiplier: <a href="{% url "meal_planning:recipe_multiplier_detail" recipe_pk=recipe_pk pk=object.recipe_multiplier.id %}">{{ object.recipe_multiplier }}</a></div>
+<div>Date Made: {{ object.date_made }}</div>
+<div>Serving Size: {{ object.serving_size }}</div>
+<div>Count: {{ object.count }}</div>
+<ul>
+{#    <li><a href="{% url "meal_planning:recipe_ingredient_update" recipe_pk=recipe_pk pk=object.pk %}">Edit</a></li>#}
+{#    <li><a href="{% url "meal_planning:recipe_ingredient_delete" recipe_pk=recipe_pk pk=object.pk %}">Delete</a></li>#}
+    <li><a href="{% url "meal_planning:recipe_detail"  pk=recipe_pk %}">Back to recipe</a></li>
+</ul>
+{% endblock %}

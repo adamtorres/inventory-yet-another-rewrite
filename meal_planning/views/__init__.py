@@ -39,6 +39,7 @@ from .ingredient_group import (
 from .recipe import (
     RecipeCreateView, RecipeDeleteView, RecipeDetailView, RecipeListView, RecipeUpdateView)
 from .recipe_multiplier import RecipeMultiplierDeleteView, RecipeMultiplierDetailView, RecipeMultiplierUpdateView
+from .serving_count import ServingCountCreateView, ServingCountDetailView
 
 
 class IngredientHomepageView(generic.TemplateView):

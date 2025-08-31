@@ -1,6 +1,12 @@
 from django.db import models
 
 
+class ServingCountManager(models.Manager):
+    def average(self):
+        return self.values("serving_size").annotate(
+            average=models.Avg("count"), last_made=models.Max("date_made"))
+
+
 class ServingCount(models.Model):
     """
     Tracks the times a recipe was made and how much it made.
@@ -15,3 +21,8 @@ class ServingCount(models.Model):
     date_made = models.DateField()
     serving_size = models.CharField(max_length=1024, help_text="Describe the scoop used or piece size")
     count = models.DecimalField(max_digits=9, decimal_places=4)
+
+    objects = ServingCountManager()
+
+    def __str__(self):
+        return f"{self.recipe_multiplier}\{self.date_made}\{self.serving_size}\{self.count}"
