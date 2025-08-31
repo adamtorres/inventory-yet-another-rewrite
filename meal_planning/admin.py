@@ -35,8 +35,22 @@ class RatingAdmin(admin.ModelAdmin):
 
 @admin.register(mp_models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'goes_with')
+    list_display = ('id', 'name', 'description', 'goes_with', 'recipe_type')
     search_fields = ('name',)
+    list_filter = ('recipe_type',)
+    actions = ["make_cookie", "make_entree", "make_side"]
+
+    @admin.action(description="Mark selected recipes as cookie")
+    def make_cookie(self, request, queryset):
+        queryset.update(recipe_type=mp_models.RecipeType.objects.get(name="Cookie"))
+
+    @admin.action(description="Mark selected recipes as entree")
+    def make_entree(self, request, queryset):
+        queryset.update(recipe_type=mp_models.RecipeType.objects.get(name="Entree"))
+
+    @admin.action(description="Mark selected recipes as side")
+    def make_side(self, request, queryset):
+        queryset.update(recipe_type=mp_models.RecipeType.objects.get(name="Side"))
 
 
 @admin.register(mp_models.RecipeMultiplier)
@@ -54,3 +68,7 @@ class IngredientMultiplierAdmin(admin.ModelAdmin):
         'ingredient',
         'unit_amount_adjustment',
     )
+
+
+admin.site.register(mp_models.RecipeType)
+admin.site.register(mp_models.ServingCount)

@@ -19,8 +19,8 @@ class Recipe(models.Model):
     description = models.TextField(help_text="General description of this recipe.")
     goes_with = models.TextField(
         help_text="ideas on entrees, sides, or desserts this recipe would normally be paired with")
-    # TODO: Add a type field for entree, side, dessert, bread, cookie, cake, other
-    # This type would be used to show cookie:dz, 1/2dz pricing.  Or entree:just count pricing, maybe steam table pan?
+    recipe_type = models.ForeignKey(
+        "meal_planning.RecipeType", on_delete=models.CASCADE, related_name="recipes", related_query_name="recipes")
 
     objects = RecipeManager()
 
@@ -28,7 +28,7 @@ class Recipe(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} / {self.recipe_type}"
 
     def append_pricing_to_dict(self, pricing_data, ingredient_dict):
         multiplier_totals = {m.base_multiplier: {} for m in self.multipliers.all()}
