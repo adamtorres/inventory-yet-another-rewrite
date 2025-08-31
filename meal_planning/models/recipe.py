@@ -53,6 +53,7 @@ class Recipe(models.Model):
                     "ingredient_price": adjusted_multiplied_ingredient_price,
                     "unit_amount": i.unit_amount * base_multiplier + im.unit_amount_adjustment,
                     "adjustment": im.unit_amount_adjustment,
+                    "average_serving_count": im.average_serving_count(),
                 })
                 if i.ingredient_group.name not in multiplier_totals[base_multiplier]:
                     multiplier_totals[base_multiplier][i.ingredient_group.name] = 0.0

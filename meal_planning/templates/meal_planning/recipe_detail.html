@@ -52,6 +52,9 @@
             <a href="{% url "meal_planning:recipe_multiplier_detail" recipe_pk=recipe.id pk=rm.id %}">
                 {% display_fraction rm.base_multiplier limit_denominator=16 coerce_thirds=True %}x
             </a>
+            {% if rm.average_serving_count %}
+            {{ rm.average_serving_count.0.average|floatformat:"0" }}ct
+            {% endif %}
         </th>
     {% endfor %}
 </tr>

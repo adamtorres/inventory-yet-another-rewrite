@@ -2,8 +2,15 @@ from django.db import models
 
 
 class ServingCountManager(models.Manager):
-    def average(self):
-        return self.values("serving_size").annotate(
+    def average(self, serving_size=None):
+        """
+        Returns the average and most recent date made for the specified serving size.
+        If no serving size provided, returns averages for all serving sizes.
+        """
+        if not serving_size:
+            return self.values("serving_size").annotate(
+                average=models.Avg("count"), last_made=models.Max("date_made"))
+        return self.filter(serving_size=serving_size).aggregate(
             average=models.Avg("count"), last_made=models.Max("date_made"))
 
 

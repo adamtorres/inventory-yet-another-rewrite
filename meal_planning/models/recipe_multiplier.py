@@ -15,6 +15,9 @@ class RecipeMultiplier(models.Model):
     def __str__(self):
         return f"{self.recipe.name} x{self.base_multiplier}"
 
+    def average_serving_count(self, serving_size=None):
+        return self.serving_counts.average(serving_size)
+
 
 class IngredientMultiplier(models.Model):
     recipe_multiplier = models.ForeignKey(
