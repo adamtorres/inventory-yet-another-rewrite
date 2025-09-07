@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'djfractions',
     'inventory.apps.InventoryConfig',
     'meal_planning.apps.MealPlanningConfig',
+    'user.apps.UserConfig',
     'rest_framework',
     'widget_tweaks',
 ]
@@ -188,3 +189,7 @@ REST_FRAMEWORK = {
 }
 
 SITE_ID = 1
+
+LOGIN_REDIRECT_URL = "inventory:homepage"
+LOGIN_URL = "user:login"
+LOGOUT_REDIRECT_URL = "user:logout"

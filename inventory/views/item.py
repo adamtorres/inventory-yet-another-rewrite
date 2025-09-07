@@ -9,7 +9,7 @@ from ..models import utils as model_utils
 from . import utils as inv_utils
 
 
-class ItemCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
+class ItemCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Item
     fields = ["name", "description", "category"]
 
@@ -17,14 +17,14 @@ class ItemCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
         return urls.reverse("inventory:item_detail", args=(self.object.id,))
 
 
-class ItemDeleteView(generic.DeleteView):
+class ItemDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.Item
 
     def get_success_url(self):
         return urls.reverse("inventory:item_list")
 
 
-class ItemDetailView(generic.DetailView):
+class ItemDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.Item.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -37,7 +37,7 @@ class ItemDetailView(generic.DetailView):
         return context
 
 
-class ItemListCurrentView(generic.ListView):
+class ItemListCurrentView(inv_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Item
     template_name = "inventory/item_list_current.html"
 
@@ -53,7 +53,7 @@ class ItemListCurrentView(generic.ListView):
         return qs.order_by().order_by("category__name", "name")
 
 
-class ItemListView(generic.ListView):
+class ItemListView(inv_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Item
 
     def get_queryset(self):
@@ -61,7 +61,7 @@ class ItemListView(generic.ListView):
         return qs.order_by().order_by("category__name", "name")
 
 
-class ItemUpdateView(generic.UpdateView):
+class ItemUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.Item
     fields = ["name", "description", "category"]
 
@@ -69,8 +69,9 @@ class ItemUpdateView(generic.UpdateView):
         return urls.reverse("inventory:item_detail", args=(self.object.id,))
 
 
-class ItemSearchView(generic.TemplateView):
+class ItemSearchView(inv_mixins.UserAccessMixin, generic.TemplateView):
     template_name = "inventory/item_search.html"
+    model = inv_models.Item
 
 
 class APIItemView(inv_utils.APISearchView):

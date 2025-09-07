@@ -4,13 +4,13 @@ from django import http, urls
 from django.views import generic
 from rest_framework import response, views
 
-from .. import models as mp_models
+from .. import mixins as mp_mixins, models as mp_models
 
 
 logger = logging.getLogger(__name__)
 
 
-class IngredientCreateView(generic.CreateView):
+class IngredientCreateView(mp_mixins.UserAccessMixin, generic.CreateView):
     model = mp_models.Ingredient
     fields = ["ingredient_group", "name", "category", "unit_size", "unit_amount"]
 
@@ -35,7 +35,7 @@ class IngredientCreateView(generic.CreateView):
         return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))
 
 
-class IngredientDeleteView(generic.DeleteView):
+class IngredientDeleteView(mp_mixins.UserAccessMixin, generic.DeleteView):
     model = mp_models.Ingredient
 
     def get_context_data(self, **kwargs):
@@ -47,7 +47,7 @@ class IngredientDeleteView(generic.DeleteView):
         return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))
 
 
-class IngredientDetailView(generic.DetailView):
+class IngredientDetailView(mp_mixins.UserAccessMixin, generic.DetailView):
     queryset = mp_models.Ingredient.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -56,12 +56,12 @@ class IngredientDetailView(generic.DetailView):
         return context
 
 
-class IngredientListView(generic.ListView):
+class IngredientListView(mp_mixins.UserAccessMixin, generic.ListView):
     model = mp_models.Ingredient
     ordering = ["ingredient_group", "category", "name", "unit_size", "unit_amount"]
 
 
-class IngredientUpdateView(generic.UpdateView):
+class IngredientUpdateView(mp_mixins.UserAccessMixin, generic.UpdateView):
     model = mp_models.Ingredient
     fields = ["ingredient_group", "name", "category", "unit_size", "unit_amount"]
 

@@ -22,5 +22,8 @@ from .source_item import (
 from .unit_size import (
     UnitSizeUpdateView, UnitSizeListView, UnitSizeDetailView, UnitSizeDeleteView, UnitSizeCreateView, APIUnitSizeView)
 
-class InventoryHomepageView(generic.TemplateView):
+from .. import mixins as inv_mixins
+
+
+class InventoryHomepageView(inv_mixins.UserAccessMixin, generic.TemplateView):
     template_name = "inventory/homepage.html"

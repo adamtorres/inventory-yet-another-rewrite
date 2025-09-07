@@ -5,7 +5,7 @@ from rest_framework import response, views
 from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 
 
-class UnitSizeCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
+class UnitSizeCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.UnitSize
     fields = ["unit"]
 
@@ -13,22 +13,22 @@ class UnitSizeCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
         return urls.reverse("inventory:unitsize_detail", args=(self.object.id,))
 
 
-class UnitSizeDeleteView(generic.DeleteView):
+class UnitSizeDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.UnitSize
 
     def get_success_url(self):
         return urls.reverse("inventory:unitsize_list")
 
-class UnitSizeDetailView(generic.DetailView):
+class UnitSizeDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.UnitSize.objects.all()
 
 
-class UnitSizeListView(generic.ListView):
+class UnitSizeListView(inv_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.UnitSize
     ordering = ["unit"]
 
 
-class UnitSizeUpdateView(generic.UpdateView):
+class UnitSizeUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.UnitSize
     fields = ["unit", "amount"]
 

@@ -10,7 +10,7 @@ from .. import mixins as inv_mixins, models as inv_models, serializers as inv_se
 logger = logging.getLogger(__name__)
 
 
-class CategoryCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
+class CategoryCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Category
     fields = ["name", "ingredient"]
 
@@ -18,22 +18,22 @@ class CategoryCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
         return urls.reverse("inventory:category_detail", args=(self.object.id,))
 
 
-class CategoryDeleteView(generic.DeleteView):
+class CategoryDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.Category
 
     def get_success_url(self):
         return urls.reverse("inventory:category_list")
 
-class CategoryDetailView(generic.DetailView):
+class CategoryDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.Category.objects.all()
 
 
-class CategoryListView(generic.ListView):
+class CategoryListView(inv_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Category
     ordering = ["name"]
 
 
-class CategoryUpdateView(generic.UpdateView):
+class CategoryUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.Category
     fields = ["name", "ingredient"]
 
@@ -63,7 +63,7 @@ class APICategoryReportView(views.APIView):
         return self.model.objects.total_ordered().order_by("name")
 
 
-class ReportCategoryView(generic.TemplateView):
+class ReportCategoryView(inv_mixins.UserAccessMixin,    generic.TemplateView):
     template_name = "inventory/category_report.html"
 
     def get_context_data(self, **kwargs):

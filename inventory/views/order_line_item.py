@@ -3,11 +3,11 @@ import json
 from django import http, urls
 from django.views import generic
 
-from .. import forms as inv_forms, models as inv_models, serializers as inv_serializers
+from .. import forms as inv_forms, mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 from . import utils as inv_utils
 
 
-class OrderLineItemCreateView(generic.CreateView):
+class OrderLineItemCreateView(inv_mixins.UserAccessMixin, generic.CreateView):
     model = inv_models.OrderLineItem
     fields = [
         "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
@@ -31,7 +31,7 @@ class OrderLineItemCreateView(generic.CreateView):
         return urls.reverse("inventory:orderlineitem_detail", args=(self.object.order.pk, self.object.id,))
 
 
-class OrderLineItemDeleteView(generic.DeleteView):
+class OrderLineItemDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.OrderLineItem
 
     def get_context_data(self, **kwargs):
@@ -42,7 +42,7 @@ class OrderLineItemDeleteView(generic.DeleteView):
     def get_success_url(self):
         return urls.reverse("inventory:order_detail", args=(self.object.order.pk,))
 
-class OrderLineItemDetailView(generic.DetailView):
+class OrderLineItemDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.OrderLineItem.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -52,11 +52,12 @@ class OrderLineItemDetailView(generic.DetailView):
         return context
 
 
-class OrderLineItemSearchView(generic.TemplateView):
+class OrderLineItemSearchView(inv_mixins.UserAccessMixin, generic.TemplateView):
     template_name = "inventory/orderlineitem_search.html"
+    model = inv_models.OrderLineItem
 
 
-class OrderLineItemUpdateView(generic.UpdateView):
+class OrderLineItemUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.OrderLineItem
     fields = [
         "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
@@ -72,7 +73,7 @@ class OrderLineItemUpdateView(generic.UpdateView):
         return urls.reverse("inventory:orderlineitem_detail", args=(self.object.order.pk, self.object.id,))
 
 
-class OrderLineItemFormsetView(generic.detail.SingleObjectMixin, generic.FormView):
+class OrderLineItemFormsetView(inv_mixins.UserAccessMixin, generic.detail.SingleObjectMixin, generic.FormView):
     # TODO: https://django-autocomplete-light.readthedocs.io/en/master/tutorial.html
     # Or, scrap.forms.widgets.autocomplete to avoid a dependency and possibly allow more customization.
     model = inv_models.Order

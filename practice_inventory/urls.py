@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('inventory/', urls.include('inventory.urls', namespace="inventory")),
     path('meal_planning/', urls.include('meal_planning.urls', namespace="meal_planning")),
+    path('user/', urls.include('user.urls', namespace="user")),
 
     path('', generic.RedirectView.as_view(
         pattern_name="inventory:homepage", permanent=False), name="homepage"),

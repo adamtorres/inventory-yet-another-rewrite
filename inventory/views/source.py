@@ -5,7 +5,7 @@ from rest_framework import response, views
 from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 
 
-class SourceCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
+class SourceCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Source
     fields = ["name", "customer_number"]
 
@@ -13,22 +13,22 @@ class SourceCreateView(inv_mixins.PopupCreateMixin, generic.CreateView):
         return urls.reverse("inventory:source_detail", args=(self.object.id,))
 
 
-class SourceDeleteView(generic.DeleteView):
+class SourceDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.Source
 
     def get_success_url(self):
         return urls.reverse("inventory:source_list")
 
-class SourceDetailView(generic.DetailView):
+class SourceDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.Source.objects.all()
 
 
-class SourceListView(generic.ListView):
+class SourceListView(inv_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Source
     ordering = ["name", "customer_number"]
 
 
-class SourceUpdateView(generic.UpdateView):
+class SourceUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.Source
     fields = ["name", "active", "customer_number"]
 

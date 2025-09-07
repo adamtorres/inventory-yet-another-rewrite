@@ -41,6 +41,12 @@
         .date-cell {
             text-align: right;
         }
+        #top-nav {
+            height: auto;
+        }
+        #top-nav>div {
+            display: inline-block;
+        }
     </style>
     {% block styles %}
     {% endblock %}
@@ -50,6 +56,22 @@
 </head>
 <body>
 <main>
+        <div id="top-nav">
+            <div>
+                <form method="post" action="{% url "user:logout" %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Logout">
+                </form>
+            </div>
+            |
+            <div>
+                <a href="{% url "inventory:homepage" %}">Inventory</a>
+            </div>
+            |
+            <div>
+                <a href="{% url "meal_planning:homepage" %}">Meal Planning</a>
+            </div>
+        </div>
         <div id="main-content" class="">
             {% block content %}
                 {# main content #}
