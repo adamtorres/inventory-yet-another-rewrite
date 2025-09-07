@@ -31,7 +31,8 @@ class Recipe(models.Model):
         return f"{self.name} / {self.recipe_type}"
 
     def append_pricing_to_dict(self, pricing_data, ingredient_dict):
-        multiplier_totals = {m.base_multiplier: {} for m in self.multipliers.all()}
+        multiplier_totals = {
+            m.base_multiplier: {"average_serving_count": m.average_serving_count()} for m in self.multipliers.all()}
         for pd in pricing_data:
             # name, category, other_unit
             i = ingredient_dict[f"{pd["name"]}~{pd["category"]}~{pd["other_unit"]}"]
@@ -53,7 +54,6 @@ class Recipe(models.Model):
                     "ingredient_price": adjusted_multiplied_ingredient_price,
                     "unit_amount": i.unit_amount * base_multiplier + im.unit_amount_adjustment,
                     "adjustment": im.unit_amount_adjustment,
-                    "average_serving_count": im.average_serving_count(),
                 })
                 if i.ingredient_group.name not in multiplier_totals[base_multiplier]:
                     multiplier_totals[base_multiplier][i.ingredient_group.name] = 0.0
@@ -123,6 +123,7 @@ class Recipe(models.Model):
                 "total": sum([i.ingredient_price for i in ingredients]),
                 "multiplier_totals": [multiplier_totals[multiplier][ingredient_group.name] for multiplier in sorted(multiplier_totals.keys())],
             }
+            # TODO: multiplier_totals[multiplier]["average_serving_count"]
             total += ingredient_group_pricing[ingredient_group.name]["total"]
             for multiplier in multiplier_totals.keys():
                 total_per_multiplier[multiplier] += multiplier_totals[multiplier][ingredient_group.name]

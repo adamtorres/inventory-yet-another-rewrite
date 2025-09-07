@@ -5,11 +5,16 @@ class ServingCountManager(models.Manager):
     def average(self, serving_size=None):
         """
         Returns the average and most recent date made for the specified serving size.
-        If no serving size provided, returns averages for all serving sizes.
+        If no serving size provided, returns averages for the most recent serving size.
         """
         if not serving_size:
-            return self.values("serving_size").annotate(
-                average=models.Avg("count"), last_made=models.Max("date_made"))
+            last_made_date = self.aggregate(last_made=models.Max("date_made"))["last_made"]
+            if not last_made_date:
+                return {"average": None, "last_made": None}
+            last_made_serving_size = self.filter(date_made=last_made_date).first().serving_size
+            qs = self.filter(serving_size=last_made_serving_size)
+            qs = qs.values("serving_size").annotate(average=models.Avg("count"), last_made=models.Max("date_made"))
+            return qs[0]
         return self.filter(serving_size=serving_size).aggregate(
             average=models.Avg("count"), last_made=models.Max("date_made"))
 
