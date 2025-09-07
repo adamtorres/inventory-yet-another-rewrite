@@ -32,4 +32,4 @@ class ServingCount(models.Model):
     objects = ServingCountManager()
 
     def __str__(self):
-        return f"{self.recipe_multiplier} \ {self.date_made} \ {self.serving_size} \ {self.count}"
+        return f"{self.recipe_multiplier} / {self.date_made} / {self.serving_size} / {self.count}"
