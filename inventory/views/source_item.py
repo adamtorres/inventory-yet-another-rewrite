@@ -4,9 +4,10 @@ from django.views import generic
 from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 from ..models import utils as model_utils
 from . import utils as inv_utils
+from user import mixins as u_mixins
 
 
-class SourceItemCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
+class SourceItemCreateView(u_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.SourceItem
     fields = [
         "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
@@ -17,14 +18,14 @@ class SourceItemCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMix
         return urls.reverse("inventory:sourceitem_detail", args=(self.object.id,))
 
 
-class SourceItemDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
+class SourceItemDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.SourceItem
 
     def get_success_url(self):
         return urls.reverse("inventory:sourceitem_list")
 
 
-class SourceItemDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
+class SourceItemDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.SourceItem.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -35,7 +36,7 @@ class SourceItemDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
         return context
 
 
-class SourceItemListView(inv_mixins.UserAccessMixin, generic.ListView):
+class SourceItemListView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.SourceItem
 
     def get_queryset(self):
@@ -43,7 +44,7 @@ class SourceItemListView(inv_mixins.UserAccessMixin, generic.ListView):
         return qs.order_by().order_by(
             "source__name", "item__category__name", "common_name", "expanded_name", "cryptic_name")
 
-class SourceItemUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
+class SourceItemUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.SourceItem
     fields = [
         "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
@@ -54,7 +55,7 @@ class SourceItemUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
         return urls.reverse("inventory:sourceitem_detail", args=(self.object.id,))
 
 
-class SourceItemSearchView(inv_mixins.UserAccessMixin, generic.TemplateView):
+class SourceItemSearchView(u_mixins.UserAccessMixin, generic.TemplateView):
     template_name = "inventory/sourceitem_search.html"
     model = inv_models.SourceItem
 

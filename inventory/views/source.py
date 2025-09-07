@@ -3,9 +3,10 @@ from django.views import generic
 from rest_framework import response, views
 
 from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
+from user import mixins as u_mixins
 
 
-class SourceCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
+class SourceCreateView(u_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Source
     fields = ["name", "customer_number"]
 
@@ -13,22 +14,22 @@ class SourceCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, 
         return urls.reverse("inventory:source_detail", args=(self.object.id,))
 
 
-class SourceDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
+class SourceDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.Source
 
     def get_success_url(self):
         return urls.reverse("inventory:source_list")
 
-class SourceDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
+class SourceDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.Source.objects.all()
 
 
-class SourceListView(inv_mixins.UserAccessMixin, generic.ListView):
+class SourceListView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Source
     ordering = ["name", "customer_number"]
 
 
-class SourceUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
+class SourceUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.Source
     fields = ["name", "active", "customer_number"]
 

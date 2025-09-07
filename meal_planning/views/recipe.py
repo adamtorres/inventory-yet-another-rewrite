@@ -6,13 +6,14 @@ from django import http, urls
 from django.views import generic
 from rest_framework import response, views
 
-from .. import mixins as mp_mixins, models as mp_models, utils as mp_utils
+from .. import models as mp_models, utils as mp_utils
+from user import mixins as u_mixins
 
 
 logger = logging.getLogger(__name__)
 
 
-class RecipeCreateView(mp_mixins.UserAccessMixin, generic.CreateView):
+class RecipeCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     model = mp_models.Recipe
     fields = ["name", "description", "goes_with"]
 
@@ -20,14 +21,14 @@ class RecipeCreateView(mp_mixins.UserAccessMixin, generic.CreateView):
         return urls.reverse("meal_planning:recipe_detail", args=(self.object.id,))
 
 
-class RecipeDeleteView(mp_mixins.UserAccessMixin, generic.DeleteView):
+class RecipeDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     model = mp_models.Recipe
 
     def get_success_url(self):
         return urls.reverse("meal_planning:recipe_list")
 
 
-class RecipeDetailView(mp_mixins.UserAccessMixin, generic.DetailView):
+class RecipeDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = mp_models.Recipe.objects.all()
 
     def duplicate_recipe(self):
@@ -70,12 +71,12 @@ class RecipeDetailView(mp_mixins.UserAccessMixin, generic.DetailView):
         return http.HttpResponseRedirect(self.get_object_url(self.object))
 
 
-class RecipeListView(mp_mixins.UserAccessMixin, generic.ListView):
+class RecipeListView(u_mixins.UserAccessMixin, generic.ListView):
     model = mp_models.Recipe
     fields = ["name"]
 
 
-class RecipeUpdateView(mp_mixins.UserAccessMixin, generic.UpdateView):
+class RecipeUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = mp_models.Recipe
     fields = ["name", "description", "goes_with"]
 

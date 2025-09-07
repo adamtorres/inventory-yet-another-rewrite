@@ -1,10 +1,11 @@
 from django import http, urls
 from django.views import generic
 
-from .. import mixins as mp_mixins, models as mp_models
+from .. import models as mp_models
+from user import mixins as u_mixins
 
 
-class IngredientGroupCreateView(mp_mixins.UserAccessMixin, generic.CreateView):
+class IngredientGroupCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     model = mp_models.IngredientGroup
     fields = ["recipe", "name"]
 
@@ -23,7 +24,7 @@ class IngredientGroupCreateView(mp_mixins.UserAccessMixin, generic.CreateView):
         return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))
 
 
-class IngredientGroupDeleteView(mp_mixins.UserAccessMixin, generic.DeleteView):
+class IngredientGroupDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     model = mp_models.IngredientGroup
 
     def get_context_data(self, **kwargs):
@@ -35,7 +36,7 @@ class IngredientGroupDeleteView(mp_mixins.UserAccessMixin, generic.DeleteView):
         return urls.reverse("meal_planning:recipe_detail", args=(self.kwargs['recipe_pk'],))
 
 
-class IngredientGroupDetailView(mp_mixins.UserAccessMixin, generic.DetailView):
+class IngredientGroupDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = mp_models.IngredientGroup.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -44,12 +45,12 @@ class IngredientGroupDetailView(mp_mixins.UserAccessMixin, generic.DetailView):
         return context
 
 
-class IngredientGroupListView(mp_mixins.UserAccessMixin, generic.ListView):
+class IngredientGroupListView(u_mixins.UserAccessMixin, generic.ListView):
     model = mp_models.IngredientGroup
     ordering = ["recipe", "name"]
 
 
-class IngredientGroupUpdateView(mp_mixins.UserAccessMixin, generic.UpdateView):
+class IngredientGroupUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = mp_models.IngredientGroup
     fields = ["recipe", "name"]
 

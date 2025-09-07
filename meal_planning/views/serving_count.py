@@ -1,10 +1,11 @@
 from django import http, urls
 from django.views import generic
 
-from .. import mixins as mp_mixins, models as mp_models, utils as mp_utils
+from .. import models as mp_models, utils as mp_utils
+from user import mixins as u_mixins
 
 
-class ServingCountCreateView(mp_mixins.UserAccessMixin, generic.CreateView):
+class ServingCountCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     model = mp_models.ServingCount
     fields = ["recipe", "recipe_multiplier", "date_made", "serving_size", "count"]
 
@@ -27,7 +28,7 @@ class ServingCountCreateView(mp_mixins.UserAccessMixin, generic.CreateView):
                 self.object.recipe.id, self.object.recipe_multiplier_id, self.object.id))
 
 
-class ServingCountDetailView(mp_mixins.UserAccessMixin, generic.DetailView):
+class ServingCountDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = mp_models.ServingCount.objects.all()
 
     def get_context_data(self, **kwargs):

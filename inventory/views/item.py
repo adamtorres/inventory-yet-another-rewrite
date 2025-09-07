@@ -7,9 +7,10 @@ from rest_framework import generics
 from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 from ..models import utils as model_utils
 from . import utils as inv_utils
+from user import mixins as u_mixins
 
 
-class ItemCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
+class ItemCreateView(u_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Item
     fields = ["name", "description", "category"]
 
@@ -17,14 +18,14 @@ class ItemCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, ge
         return urls.reverse("inventory:item_detail", args=(self.object.id,))
 
 
-class ItemDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
+class ItemDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.Item
 
     def get_success_url(self):
         return urls.reverse("inventory:item_list")
 
 
-class ItemDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
+class ItemDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.Item.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -37,7 +38,7 @@ class ItemDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
         return context
 
 
-class ItemListCurrentView(inv_mixins.UserAccessMixin, generic.ListView):
+class ItemListCurrentView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Item
     template_name = "inventory/item_list_current.html"
 
@@ -53,7 +54,7 @@ class ItemListCurrentView(inv_mixins.UserAccessMixin, generic.ListView):
         return qs.order_by().order_by("category__name", "name")
 
 
-class ItemListView(inv_mixins.UserAccessMixin, generic.ListView):
+class ItemListView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Item
 
     def get_queryset(self):
@@ -61,7 +62,7 @@ class ItemListView(inv_mixins.UserAccessMixin, generic.ListView):
         return qs.order_by().order_by("category__name", "name")
 
 
-class ItemUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
+class ItemUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.Item
     fields = ["name", "description", "category"]
 
@@ -69,7 +70,7 @@ class ItemUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
         return urls.reverse("inventory:item_detail", args=(self.object.id,))
 
 
-class ItemSearchView(inv_mixins.UserAccessMixin, generic.TemplateView):
+class ItemSearchView(u_mixins.UserAccessMixin, generic.TemplateView):
     template_name = "inventory/item_search.html"
     model = inv_models.Item
 

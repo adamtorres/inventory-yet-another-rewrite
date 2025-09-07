@@ -5,12 +5,13 @@ from django.views import generic
 from rest_framework import response, views
 
 from .. import forms as inv_forms, mixins as inv_mixins, models as inv_models, serializers as inv_serializers
+from user import mixins as u_mixins
 
 
 logger = logging.getLogger(__name__)
 
 
-class ConversionCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
+class ConversionCreateView(u_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Conversion
     form_class = inv_forms.ConversionForm
 
@@ -18,17 +19,17 @@ class ConversionCreateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMix
         return urls.reverse("inventory:conversion_detail", args=(self.object.id,))
 
 
-class ConversionDeleteView(inv_mixins.UserAccessMixin, generic.DeleteView):
+class ConversionDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.Conversion
 
     def get_success_url(self):
         return urls.reverse("inventory:conversion_list")
 
-class ConversionDetailView(inv_mixins.UserAccessMixin, generic.DetailView):
+class ConversionDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.Conversion.objects.all()
 
 
-class ConversionDuplicateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
+class ConversionDuplicateView(u_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.Conversion
     form_class = inv_forms.ConversionForm
 
@@ -61,12 +62,12 @@ class ConversionDuplicateView(inv_mixins.UserAccessMixin, inv_mixins.PopupCreate
         return urls.reverse("inventory:conversion_detail", args=(self.object.id,))
 
 
-class ConversionListView(inv_mixins.UserAccessMixin, generic.ListView):
+class ConversionListView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Conversion
     ordering = ["item__name", "from_unit__unit", "to_unit__unit"]
 
 
-class ConversionUpdateView(inv_mixins.UserAccessMixin, generic.UpdateView):
+class ConversionUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.Conversion
     form_class = inv_forms.ConversionForm
 

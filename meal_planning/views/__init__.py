@@ -41,8 +41,8 @@ from .recipe import (
 from .recipe_multiplier import RecipeMultiplierDeleteView, RecipeMultiplierDetailView, RecipeMultiplierUpdateView
 from .serving_count import ServingCountCreateView, ServingCountDetailView
 
-from .. import mixins as mp_mixins
+from user import mixins as u_mixins
 
 
-class IngredientHomepageView(mp_mixins.UserAccessMixin, generic.TemplateView):
+class IngredientHomepageView(u_mixins.UserAccessMixin, generic.TemplateView):
     template_name = "meal_planning/homepage.html"
