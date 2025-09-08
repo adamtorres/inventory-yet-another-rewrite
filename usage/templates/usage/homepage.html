@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block content %}
+<ul>
+<li><a href="{% url "usage:usage_group_create" %}">Create Usage Group</a></li>
+<li><a href="{% url "usage:usage_group_list" %}">List Usage Groups</a></li>
+<li><a href="{% url "usage:usage_by_for_date" %}?months_back=12">Usage By For Date</a></li>
+<li><a href="{% url "usage:usage_by_recorded_date" %}?months_back=12">Usage By Recorded Date</a></li>
+</ul>
+{% endblock %}

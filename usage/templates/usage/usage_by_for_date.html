@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}By Date{% endblock %}
+
+{% block styles %}
+<style>
+table tr th {
+    background-color: lightgrey;
+}
+table tr :is(th, td) {
+    border-bottom: 1px solid black;
+    padding: 0.2em;
+}
+.row-week {
+    width: 100%;
+}
+.col-day {
+    display: inline-block;
+    margin: 0;
+    width: 13%;
+    height: 5em;
+    border: 1px solid black;
+    vertical-align: top;
+}
+.detail-day {
+    width: 100%;
+    background-color: lightgray;
+}
+.detail-category {
+
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div>Date Range: {{ start_date }} - {{ end_date }}</div>
+    <div>Days with usage reported: {{ totals.count }}</div>
+    <div>Total: ${{ totals.total|floatformat:2|intcomma }}</div>
+<table>
+<thead>
+<tr>
+    <th class="right-align">Date</th>
+    <th class="right-align">Count</th>
+    <th class="right-align">Total</th>
+</tr>
+</thead>
+<tbody>
+{% for bd in by_date %}
+    <tr>
+        <td class="right-align">{{ bd.for_date|date:"l" }} {{ bd.for_date }}</td>
+        <td class="right-align">{{ bd.count }}</td>
+        <td class="right-align">${{ bd.total|floatformat:2|intcomma }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<form id="isolate_form" method="post">
+    {% csrf_token %}
+    <div>
+        <label for="start_date">Start Date:</label>
+        <input type="text" name="start_date" id="start_date" placeholder="start date" required>
+    </div>
+    <div>
+        <label for="end_date">End Date:</label>
+        <input type="text" name="end_date" id="end_date" placeholder="end date" required>
+    </div>
+    <div>
+        <input type="submit" value="Mark as recorded" name="mark_as_recorded">
+    </div>
+</form>
+<div>
+{% for week in calendar_grid %}
+    <div class="row-week">
+    {% for weekday in week %}
+        <div class="col-day" data-date="{{ weekday.date|date:"Y-m-d" }}">
+            <div class="detail-day">{{ weekday.date }}</div>
+            {% if not weekday.empty %}
+                <div class="detail-category">Cong: ${{ weekday.congregate.total|floatformat:2|intcomma }}</div>
+                <div class="detail-category">Bakery: ${{ weekday.bakery.total|floatformat:2|intcomma }}</div>
+                <div class="detail-category">NonFood: ${{ weekday.nonfood.total|floatformat:2|intcomma }}</div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    </div>
+{% endfor %}
+</div>
+<ul>
+    <li><a href="{% url "usage:usage_by_for_date" %}?exclude_recorded=no">Include recorded usages</a></li>
+    <li><a href="{% url "usage:usage_by_for_date" %}?exclude_recorded=yes">Exclude recorded usages</a></li>
+    <li><a href="{% url "usage:homepage" %}">Homepage</a></li>
+</ul>
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+function date_clicked(e) {
+    let date_str = this.dataset["date"];
+    let url = "{{request.scheme}}://{{request.get_host}}{% url "usage:usage_on_given_date" given_date="____" %}";
+    window.open(url.replace("____", date_str), '_blank').focus();
+}
+function setup_events() {
+    let elements = document.getElementsByClassName("col-day");
+    Array.from(elements).forEach(function(element) {
+        element.addEventListener('click', date_clicked);
+    });
+}
+(function() {
+    // onload based on https://stackoverflow.com/a/9899701
+    setup_events();
+})();
+</script>
+{% endblock %}

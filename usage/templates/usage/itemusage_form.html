@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if object.id %}Edit{% else %}Create{% endif %} Item{% endblock %}
+
+{% block styles %}
+<style>
+.left-side {
+    width: 40%;
+    display: inline-block;
+}
+.right-side {
+    vertical-align: top;
+    display: inline-block;
+}
+.highlight {
+    background-color: yellow;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="side-by-side">
+    <div class="left-side">
+    <p>Other items on the usage form:</p>
+    <ul>
+    {% for iu in siblings %}
+        <li class="{% if iu.id == object.id %} highlight {% endif %}">
+            {% if iu.id == object.id %}
+                {{ iu }}
+            {% else %}
+                <a href="{% url "usage:item_usage_update" group_pk=iu.usage_group.pk pk=iu.pk %}">{{ iu }}</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+    </div>
+    <div class="right-side">
+        <p>Press <code>Alt+Shift+A</code> to go to the "For DOW" field.  Press <code>Alt+Shift+S</code> to go to the "Description" field.</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if object.id %}
+            <input type="submit" value="Save and edit next item" name="save_and_edit_next_item">
+            {% endif %}
+            <input type="submit" value="Save">
+        </form>
+        {% if object.for_date %}
+        <div>
+        Used on <a href="{% url "usage:usage_on_given_date" given_date=object.for_date %}">{{ object.for_date }}</a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+<ul>
+{% if object.id %}
+    <li><a href="{% url "usage:usage_group_detail" pk=group_pk %}">Cancel and go to group detail</a></li>
+{% else %}
+    <li><a href="{% url "usage:usage_group_detail" pk=group_pk %}">Cancel and go back to group</a></li>
+{% endif %}
+    <li><a href="{% url "usage:homepage" %}">Homepage</a></li>
+</ul>
+
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+function filter_keydown(e) {
+    if ((e.key === "A") && (e.altKey) && (e.shiftKey)) {
+        set_focus("id_for_dow");
+    }
+    if ((e.key === "S") && (e.altKey) && (e.shiftKey)) {
+        set_focus("id_description");
+    }
+    if ((e.key === "D") && (e.altKey) && (e.shiftKey)) {
+        set_focus("id_quantity");
+    }
+}
+function key_is_not_visible(e) {
+    let ignore = [
+        'ShiftLeft', 'MetaLeft', 'AltLeft', 'ControlLeft',
+        'ShiftRight', 'MetaRight', 'AltRight', 'ControlRight',
+        'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+        'Enter', 'Tab', 'CapsLock',
+        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"
+    ]
+    return ignore.includes(e.code);
+}
+function key_is_visible(e) {
+    let donot_ignore = [
+        "Backspace", "Space", "Backquote", "Equal", "Minus", "Backslash", "BracketRight", "BracketLeft", "Quote",
+        "Semicolon", "Slash", "Period", "Comma",
+        "KeyA", "KeyB", "KeyC", "KeyD", "KeyE", "KeyF", "KeyG", "KeyH", "KeyI", "KeyJ", "KeyK", "KeyL", "KeyM",
+        "KeyN", "KeyO", "KeyP", "KeyQ", "KeyR", "KeyS", "KeyT", "KeyU", "KeyV", "KeyW", "KeyX", "KeyY", "KeyZ",
+        "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", "Digit0",
+    ]
+    return donot_ignore.includes(e.code);
+}
+function set_focus(element_id) {
+    document.getElementById(element_id).focus();
+}
+function setup_events() {
+    document.addEventListener('keydown', (event) => {
+        filter_keydown(event);
+    });
+}
+(function() {
+    // onload based on https://stackoverflow.com/a/9899701
+    setup_events();
+    set_focus("id_for_dow");
+})();
+
+</script>
+{% endblock %}

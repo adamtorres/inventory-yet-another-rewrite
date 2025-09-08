@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}By Date{% endblock %}
+
+{% block styles %}
+<style>
+table {
+    {#border: black 1px solid;#}
+}
+td {
+    border-left: lightgrey 1px solid;
+    border-top: black 1px solid;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+Given date: {{ given_date }}
+</div>
+<div>
+<table>
+<thead>
+<tr>
+    <th>Price</th>
+    <th>Description</th>
+    <th>Meal part</th>
+    <th>Category</th>
+    <th>Usage Form</th>
+</tr>
+</thead>
+<tbody>
+{% for ui in used_items %}
+    <tr>
+        <td class="right-align">${{ ui.price|floatformat:2|intcomma }}</td>
+        <td><a href="{% url "usage:item_usage_detail" group_pk=ui.usage_group.pk pk=ui.pk %}">{{ ui.description }}</a></td>
+        <td>{{ ui.meal_part }}</td>
+        <td>{{ ui.category }}</td>
+        <td><a href="{% url "usage:usage_group_detail" pk=ui.usage_group.pk %}">{{ ui.usage_group }}</a></td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<div>Total: ${{ total|floatformat:2|intcomma }}</div>
+<div>
+<table>
+<thead>
+<tr>
+    <th>Meal Part</th>
+    <th>Total</th>
+</tr>
+</thead>
+<tbody>
+    {% for mp in total_by_meal_part %}
+        <tr>
+        <td>{{ mp.meal_part }}</td>
+        <td>${{ mp.total|floatformat:2|intcomma }}</td>
+        </tr>
+    {% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+    <li><a href="{% url "usage:homepage" %}">Homepage</a></li>
+</ul>
+{% endblock %}

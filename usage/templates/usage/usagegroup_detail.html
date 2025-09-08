@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Group{% endblock %}
+
+{% block content %}
+    <p>Date range: {{ object }}</p>
+<div>
+<table>
+<thead>
+<tr>
+    <th class="right-align">For Date</th>
+    <th>Description</th>
+    <th class="right-align">Price</th>
+    <th>Category</th>
+    <th class="right-align">Quantity</th>
+    <th>Used size</th>
+    <th>Comment</th>
+    <th>Meal part</th>
+</tr>
+</thead>
+<tbody>
+    {% for iu in object.used_items.all %}
+        <tr>
+            <td class="right-align"><a href="{% url "usage:usage_on_given_date" given_date=iu.for_date %}">{{ iu.for_date }}</a></td>
+            <td><a href="{% url "usage:item_usage_update" group_pk=object.pk pk=iu.pk %}">{{ iu.description }}</a></td>
+            <td class="right-align"><a href="{% url "usage:item_usage_update" group_pk=object.pk pk=iu.pk %}">${{ iu.price|floatformat:2|intcomma }}</a></td>
+            <td>{{ iu.category }}</td>
+            <td class="right-align">{{ iu.quantity }}</td>
+            <td>{{ iu.used_size|default_if_none:"" }}</td>
+            <td>{{ iu.comment|default_if_none:"" }}</td>
+            <td>{{ iu.meal_part }}</td>
+        </tr>
+    {% endfor %}
+</tbody>
+</table>
+</div>
+<ul>
+    <li><a href="{% url "usage:usage_group_detail" pk=next_usage_group_pk %}">Next usage group by date/name</a></li>
+    <li><a href="{% url "usage:usage_group_detail" pk=prev_usage_group_pk %}">Previous usage group by date/name</a></li>
+    <li><a href="{% url "usage:item_usage_create" group_pk=object.pk %}">Add item</a></li>
+    <li><a href="{% url "usage:usage_group_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "usage:usage_group_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "usage:usage_group_list" %}">Group list</a></li>
+    <li><a href="{% url "usage:homepage" %}">Homepage</a></li>
+</ul>
+{% endblock %}

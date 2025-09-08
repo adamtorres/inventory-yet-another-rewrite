@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Group{% endblock %}
+
+{% block content %}
+    <ul>
+    <li><a href="{% url "usage:homepage" %}">Homepage</a></li>
+    <li><a href="{% url "usage:usage_group_create" %}">Create Usage Group</a></li>
+    {% for ug_details in usage_groups %}
+        <li>{{ ug_details.ug.form_order }}: <a href="{% url "usage:usage_group_detail" pk=ug_details.ug.pk %}">{{ ug_details.ug }} ${{ ug_details.total|floatformat:2|intcomma }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}

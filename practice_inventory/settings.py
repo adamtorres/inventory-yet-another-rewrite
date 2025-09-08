@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'inventory.apps.InventoryConfig',
     'meal_planning.apps.MealPlanningConfig',
     'user.apps.UserConfig',
+    'usage.apps.UsageConfig',
     'rest_framework',
     'widget_tweaks',
 ]

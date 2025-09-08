@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}By Date{% endblock %}
+
+{% block styles %}
+<style>
+table tr th {
+    background-color: lightgrey;
+}
+table tr :is(th, td) {
+    border-bottom: 1px solid black;
+    padding: 0.2em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div>Date Range: {{ start_date }} - {{ end_date }}</div>
+    <div>Days with usage reported: {{ totals.count }}</div>
+    <div>Total: ${{ totals.total|floatformat:2|intcomma }}</div>
+<table>
+<thead>
+<tr>
+    <th class="right-align">Date</th>
+    <th class="right-align">Count</th>
+    <th class="right-align">Total</th>
+</tr>
+</thead>
+<tbody>
+{% for o in by_date.overall %}
+    <tr>
+        <td class="right-align">{{ o.recorded_date|date:"l" }} {{ o.recorded_date }}</td>
+        <td class="right-align">{{ o.count }}</td>
+        <td class="right-align">${{ o.total|floatformat:2|intcomma }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+    <th>Category</th>
+    <th class="right-align">Date</th>
+    <th class="right-align">Count</th>
+    <th class="right-align">Total</th>
+</tr>
+</thead>
+<tbody>
+{% for bd in by_date.categories %}
+    <tr>
+        <td>{{ bd.category }}</td>
+        <td class="right-align">{{ bd.recorded_date|date:"l" }} {{ bd.recorded_date }}</td>
+        <td class="right-align">{{ bd.count }}</td>
+        <td class="right-align">${{ bd.total|floatformat:2|intcomma }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<ul>
+    <li><a href="{% url "usage:homepage" %}">Homepage</a></li>
+</ul>
+{% endblock %}

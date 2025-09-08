@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Item{% endblock %}
+
+{% block content %}
+    {{ object }}
+    {% if object.for_date %}
+        <div>
+        Used on <a href="{% url "usage:usage_on_given_date" given_date=object.for_date %}">{{ object.for_date }}</a>
+        </div>
+    {% endif %}
+<ul>
+    <li><a href="{% url "usage:item_usage_update" group_pk=group_pk pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "usage:usage_group_detail" pk=group_pk %}">Back to group</a></li>
+    <li><a href="{% url "usage:homepage" %}">Homepage</a></li>
+</ul>
+{% endblock %}
