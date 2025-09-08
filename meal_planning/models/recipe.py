@@ -139,12 +139,12 @@ class Recipe(models.Model):
 
     @staticmethod
     def make_api_call(prepared_ingredient_list, as_of_date: datetime.date=None) -> dict:
+        # TODO: Cannot do this on PythonAnywhere's free tier as it allows only 1 concurrent request.
         ugly_domain = Site.objects.get_current().domain
         url = f"{settings.SITE_SCHEME}://{ugly_domain}{urls.reverse("inventory:api_selected_items")}"
         params = {"item_category_unit": prepared_ingredient_list}
         if as_of_date:
             params["as_of_date"] = as_of_date
-        logger.critical(f"make_api_call: url={url!r}")
         api_response = requests.get(url, params=params)
         return api_response.json()
 
