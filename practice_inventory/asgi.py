@@ -7,10 +7,13 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
+import logging
 import os
 
 from django.core.asgi import get_asgi_application
 
+logger = logging.getLogger(__name__)
+logger.critical(f"asgi.main: '.' = {os.path.abspath(".")}")
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'practice_inventory.settings')
 
 application = get_asgi_application()
