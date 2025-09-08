@@ -1,11 +1,19 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+import logging
 import os
 import sys
+
+import dotenv
+
+
+logger = logging.getLogger(__name__)
 
 
 def main():
     """Run administrative tasks."""
+    # project_folder = os.path.expanduser('~/my-project-dir')  # adjust as appropriate
+    logger.critical(f"manage.main: '.' = {os.path.abspath(".")}")
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'practice_inventory.settings')
     try:
         from django.core.management import execute_from_command_line

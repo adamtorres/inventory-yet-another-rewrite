@@ -31,3 +31,6 @@ requests
 # template tags to show nice fractions on recipes
 django-fractions
 typing-extensions
+
+# Allows .env files to separate prod/dev settings
+python-dotenv
