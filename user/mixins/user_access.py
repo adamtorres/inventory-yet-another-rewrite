@@ -15,10 +15,13 @@ class UserAccessMixin(mixins.PermissionRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if (not self.request.user.is_authenticated):
+            # logger.critical(f"UserAccessMixin:{self.request.get_full_path()}, failed is_authenticated")
             return views.redirect_to_login(
                 self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
         if not self.has_permission():
+            # logger.critical(f"UserAccessMixin:{self.request.get_full_path()}, failed has_permission")
             return shortcuts.redirect(self.get_missing_permission_redirect_url())
+        # logger.critical(f"UserAccessMixin:{self.request.get_full_path()}, dispatching")
         return super().dispatch(request, *args, **kwargs)
 
     def get_missing_permission_redirect_url(self):
@@ -62,6 +65,8 @@ class UserAccessMixin(mixins.PermissionRequiredMixin):
         if self.permission_required is None:
             model_name = self.get_model_name()
             app_label = self.get_app_label()
+            if model_name is None:
+                return []
             default_permission_list = [
                 f"{app_label}.{perm}_{model_name}" for perm in self.get_permission_required_list()]
             # logger.critical(f"default_permission_list = {default_permission_list!r}")
