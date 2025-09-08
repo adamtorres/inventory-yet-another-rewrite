@@ -95,32 +95,11 @@ class APISelectedItemDetailView(generics.ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        qs = self.model.objects.all()
-        criteria = models.Q()
-        to_unit_values = {}
+        item_category_unit_list = []
         for item_category_unit in self.request.GET.getlist("item_category_unit"):
-            item_name, category_name, to_unit = item_category_unit.split("~", 2)
-            criteria |= models.Q(category__name=category_name, name=item_name)
-            to_unit_values[f"{item_name}~{category_name}"] = to_unit
-        if not criteria:
-            return self.model.objects.none()
-        data = []
-        as_of_date = self.request.GET.get("as_of_date")
-        if as_of_date:
-            as_of_date = dateparser.parse(as_of_date).date()
-        for item in qs.filter(criteria):
-            to_unit = to_unit_values[f"{item.name}~{item.category.name}"]
-            item.price_in_unit_value = item.price_in_unit(to_unit, as_of_date=as_of_date)
-            item.order_date = item.latest_order(as_of_date=as_of_date).get("order_date")
-            item.per_unit_price = item.latest_order(as_of_date=as_of_date).get("per_unit_price")
-            if item.latest_order(as_of_date=as_of_date).get("subunit_size"):
-                item.subunit_size = item.latest_order(as_of_date=as_of_date)["subunit_size"].unit
-            else:
-                item.subunit_size = None
-            if item.latest_order(as_of_date=as_of_date).get("unit_size"):
-                item.unit_size = item.latest_order(as_of_date=as_of_date)["unit_size"].unit
-            else:
-                item.unit_size = None
-            item.to_unit = to_unit
-            data.append(item)
-        return data
+            item_category_unit_list.append(item_category_unit.split("~", 2))
+        if self.request.GET.get("as_of_date"):
+            as_of_date = dateparser.parse(self.request.GET.get("as_of_date")).date()
+        else:
+            as_of_date = None
+        return self.model.objects.selected_item_detail(item_category_unit_list, as_of_date)

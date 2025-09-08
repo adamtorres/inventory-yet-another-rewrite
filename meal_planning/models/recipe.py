@@ -43,13 +43,13 @@ class Recipe(models.Model):
             i.order_date = pd["order_date"]
             i.per_unit_price = pd["per_other_unit_price"]
             # logger.critical(f"{pd["name"]}: (float({i.unit_amount})={float(i.unit_amount)}) * {i.per_unit_price}")
-            i.ingredient_price = float(i.unit_amount) * i.per_unit_price
+            i.ingredient_price = float(i.unit_amount) * float(i.per_unit_price)
             i.no_pricing_data = pd["per_unit_price"] is None
             i.multiplied_bits = []
             for im in i.multipliers.all():
                 base_multiplier = im.recipe_multiplier.base_multiplier
-                multiplied_ingredient_price = i.ingredient_price * float(base_multiplier)
-                adjustment_price = i.per_unit_price * float(im.unit_amount_adjustment)
+                multiplied_ingredient_price = float(i.ingredient_price) * float(base_multiplier)
+                adjustment_price = float(i.per_unit_price) * float(im.unit_amount_adjustment)
                 adjusted_multiplied_ingredient_price = multiplied_ingredient_price + adjustment_price
                 i.multiplied_bits.append({
                     "multiplier": base_multiplier,
@@ -133,20 +133,15 @@ class Recipe(models.Model):
 
     def get_pricing_data_from_qs(self, ingredient_group_qs, as_of_date: datetime.date=None):
         ingredient_dict = self.prepare_ingredient_dict(ingredient_group_qs)
-        pricing_data = self.make_api_call(list(ingredient_dict.keys()), as_of_date=as_of_date)
+        pricing_data = self.make_api_call(
+            [(i.name, i.category, i.unit_size) for i in ingredient_dict.values()], as_of_date=as_of_date)
         multiplier_totals = self.append_pricing_to_dict(pricing_data, ingredient_dict)
         return list(ingredient_dict.values()), multiplier_totals
 
     @staticmethod
     def make_api_call(prepared_ingredient_list, as_of_date: datetime.date=None) -> dict:
-        # TODO: Cannot do this on PythonAnywhere's free tier as it allows only 1 concurrent request.
-        ugly_domain = Site.objects.get_current().domain
-        url = f"{settings.SITE_SCHEME}://{ugly_domain}{urls.reverse("inventory:api_selected_items")}"
-        params = {"item_category_unit": prepared_ingredient_list}
-        if as_of_date:
-            params["as_of_date"] = as_of_date
-        api_response = requests.get(url, params=params)
-        return api_response.json()
+        from inventory import models as inv_models
+        return inv_models.Item.objects.selected_item_detail(prepared_ingredient_list, as_of_date, as_dict=True)
 
     @staticmethod
     def prepare_ingredient_dict(qs) -> dict:

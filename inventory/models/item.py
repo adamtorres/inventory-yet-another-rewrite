@@ -40,6 +40,46 @@ class ItemManager(models.Manager):
             criteria |= models.Q(**ifd)
         return self.filter(criteria)
 
+    def selected_item_detail(self, item_category_unit_list, as_of_date=None, as_dict=False):
+        """
+        Converts pricing for a list of items to the requested unit size.
+
+        :param item_category_unit_list: list of tuples (item name, category name, unit to convert to)
+        :param as_of_date: If supplied, will be used to limit the most recent order used for pricing.
+        :return: list of Item with added fields.  obj.price_in_unit_value=price of the item in the requested unit.
+        obj.order_date=the date of the order used for pricing. obj.per_unit_price=price of the item in its natural unit.
+        subunit_size=if available, the subunit of the item.  unit_size=unit size of the order used.  to_unit=requested
+        unit size.
+        """
+        criteria = models.Q()
+        to_unit_values = {}
+        for item_name, category_name, to_unit in item_category_unit_list:
+            criteria |= models.Q(category__name=category_name, name=item_name)
+            to_unit_values[f"{item_name}~{category_name}"] = to_unit
+        if not criteria:
+            return self.model.objects.none()
+        data = []
+        for item in self.filter(criteria):
+            to_unit = to_unit_values[f"{item.name}~{item.category.name}"]
+            item.price_in_unit_value = item.price_in_unit(to_unit, as_of_date=as_of_date)
+            item.order_date = item.latest_order(as_of_date=as_of_date).get("order_date")
+            item.per_unit_price = item.latest_order(as_of_date=as_of_date).get("per_unit_price")
+            if item.latest_order(as_of_date=as_of_date).get("subunit_size"):
+                item.subunit_size = item.latest_order(as_of_date=as_of_date)["subunit_size"].unit
+            else:
+                item.subunit_size = None
+            if item.latest_order(as_of_date=as_of_date).get("unit_size"):
+                item.unit_size = item.latest_order(as_of_date=as_of_date)["unit_size"].unit
+            else:
+                item.unit_size = None
+            item.to_unit = to_unit
+            data.append(item)
+        if as_dict:
+            from .. import serializers as inv_serializers
+            return inv_serializers.APISelectedItemSerializer(data, many=True).data
+        return data
+
+
 
 class Item(models.Model):
     name = models.CharField(max_length=255)
