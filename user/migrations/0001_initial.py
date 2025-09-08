@@ -54,5 +54,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(create_default_user, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(create_default_users, reverse_code=migrations.RunPython.noop),
     ]
