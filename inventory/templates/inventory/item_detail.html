@@ -4,6 +4,10 @@
 
 {% block title %}Inventory : Item{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:item_search" %}">Item Search</a></div>
+{% endblock %}
+
 {% block content %}
 <div>Name: {{ object.name }}</div>
 <div>Description: {{ object.description }}</div>

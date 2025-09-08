@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : Delete Conversion{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:conversion_list" %}">Conversion list</a></div>
+{% endblock %}
+
 {% block content %}
 <form method="post">
     {% csrf_token %}

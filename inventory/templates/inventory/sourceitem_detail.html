@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : Source Item{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:sourceitem_search" %}">Search Source Item</a></div>
+{% endblock %}
+
 {% block content %}
 <div>Source: {{ object.source }}</div>
 <div>Status: {% if not object.active %}Discontinued{% else %}Should be available{% endif %}</div>

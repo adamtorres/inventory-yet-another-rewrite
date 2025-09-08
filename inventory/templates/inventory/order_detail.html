@@ -4,6 +4,10 @@
 
 {% block title %}Inventory : Order{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:order_search" %}">Order Search</a></div>
+{% endblock %}
+
 {% block content %}
 <div>source: {{ object.source }}</div>
 <div>delivered date: {{ object.delivered_date }}</div>

@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : Delete Source Item{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:sourceitem_search" %}">Search Source Item</a></div>
+{% endblock %}
+
 {% block content %}
 <form method="post">
     {% csrf_token %}

@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Conversion{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:conversion_list" %}">Conversion list</a></div>
+{% endblock %}
+
 {% block content %}
 {% if other_conversions %}
 Other conversions for {{ filter_item|default_if_none:"[no specific item]" }} / {{ filter_from_unit }}:

@@ -4,6 +4,10 @@
 
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Item{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:item_search" %}">Item Search</a></div>
+{% endblock %}
+
 {% block content %}
 {# TODO: Popup to create missing Category without leaving this page. #}
 {# http://localhost:8000/static/admin/js/admin/RelatedObjectLookups.js #}

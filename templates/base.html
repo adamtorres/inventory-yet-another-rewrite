@@ -71,6 +71,9 @@
             <div>
                 <a href="{% url "meal_planning:homepage" %}">Meal Planning</a>
             </div>
+            |
+            {% block breadcrumb %}
+            {% endblock %}
         </div>
         <div id="main-content" class="">
             {% block content %}

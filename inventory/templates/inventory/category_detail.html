@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : Category{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:category_list" %}">Category list</a></div>
+{% endblock %}
+
 {% block content %}
 Name: {{ object.name }}
 <ul>

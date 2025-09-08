@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : Unit Size{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:unitsize_list" %}">Unit Size List</a></div>
+{% endblock %}
+
 {% block content %}
 Unit Size: {{ object.unit }}
 <ul>

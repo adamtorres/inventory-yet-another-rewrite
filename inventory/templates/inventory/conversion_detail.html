@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : Conversion{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:conversion_list" %}">Conversion list</a></div>
+{% endblock %}
+
 {% block content %}
 {{ object }}
 <ul>

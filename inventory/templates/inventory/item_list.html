@@ -3,6 +3,10 @@
 
 {% block title %}Inventory : Item List{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:item_search" %}">Item Search</a></div>
+{% endblock %}
+
 {% block content %}
 <ul>
 {% for item in item_list %}

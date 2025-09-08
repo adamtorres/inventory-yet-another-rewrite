@@ -4,6 +4,10 @@
 
 {% block title %}Inventory : Category Report{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:category_list" %}">Category list</a></div>
+{% endblock %}
+
 {% block content %}
 Orders from {{ start_date }} to {{ end_date }}.
 <table>

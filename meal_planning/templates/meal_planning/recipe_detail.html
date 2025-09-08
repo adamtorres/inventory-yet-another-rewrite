@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "meal_planning/recipe_base.html" %}
 {% load static %}
 {% load humanize %}
 {% load fractions %}
@@ -134,7 +134,6 @@
     <li><a href="{% url "meal_planning:recipe_ingredient_group_create" recipe_pk=object.pk %}">Add ingredient group</a></li>
     <li><a href="{% url "meal_planning:recipe_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "meal_planning:recipe_delete" pk=object.pk %}">Delete</a></li>
-    {# TODO: Add Multiplier: Should be able to set a base multiplier then add a per-ingredient adjustment.  Reason: Adjusting the base recipe would have all the multipliers automagically adjust.  #}
     <li><a href="{% url "meal_planning:recipe_list" %}">Recipe List</a></li>
 </ul>
 {% endblock %}

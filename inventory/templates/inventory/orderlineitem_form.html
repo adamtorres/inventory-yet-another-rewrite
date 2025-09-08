@@ -3,6 +3,12 @@
 
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Order Line Item{% endblock %}
 
+{% block breadcrumb %}
+    <div><a href="{% url "inventory:order_search" %}">Order Search</a></div>
+    |
+    <div><a href="{% url "inventory:order_detail" pk=order_pk %}">Order</a></div>
+{% endblock %}
+
 {% block content %}
 <form method="post">
     {% csrf_token %}
