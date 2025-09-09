@@ -14,8 +14,8 @@ class Migration(migrations.Migration):
             name='Setting',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('group', models.CharField(max_length=1024)),
-                ('name', models.CharField(max_length=1024)),
+                ('group', models.CharField(max_length=100)),
+                ('name', models.CharField(max_length=100)),
                 ('value', models.JSONField()),
             ],
             options={

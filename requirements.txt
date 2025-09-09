@@ -34,3 +34,6 @@ typing-extensions
 
 # Allows .env files to separate prod/dev settings
 python-dotenv
+
+# MySQL client
+mysqlclient

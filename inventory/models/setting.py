@@ -21,8 +21,8 @@ class SettingManager(models.Manager):
 
 
 class Setting(models.Model):
-    group = models.CharField(max_length=1024)
-    name = models.CharField(max_length=1024)
+    group = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     value = models.JSONField()
 
     objects = SettingManager()
