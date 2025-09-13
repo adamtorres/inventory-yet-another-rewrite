@@ -1,6 +1,7 @@
 import json
 import logging
 
+import dateparser
 from django.db import models
 
 from rest_framework import response, views
@@ -64,8 +65,12 @@ class APISearchView(views.APIView):
                     else:
                         modifier = "__icontains"
                     pile_of_tokens = models.Q()
-                    for token in value.strip().split(" "):
-                        pile_of_tokens &= models.Q(**{field_name + modifier: token})
+                    if st_key.endswith("_date"):
+                        date_value = dateparser.parse(value).date()
+                        pile_of_tokens &= models.Q(**{field_name + modifier: date_value})
+                    else:
+                        for token in value.strip().split(" "):
+                            pile_of_tokens &= models.Q(**{field_name + modifier: token})
                     one_value_q = one_value_q | pile_of_tokens
                 match and_or_ex:
                     case "|": q_dict[st_key]["|"] |= one_value_q

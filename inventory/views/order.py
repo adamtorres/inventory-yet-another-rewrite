@@ -63,4 +63,5 @@ class APIOrderView(inv_utils.APISearchView):
         'source': ["line_items__source_item__source__name", "line_items__source_item__source__id"],
         'category': ["line_items__source_item__source_category", "line_items__source_item__item__category__name"],
         'order_number': ["order_number"],
+        'delivered_date': ["delivered_date"],
     }
