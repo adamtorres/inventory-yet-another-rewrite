@@ -56,9 +56,19 @@ class ItemListCurrentView(u_mixins.UserAccessMixin, generic.ListView):
 
 class ItemListView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Item
+    paginate_by = 20
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["category"] = self.request.GET.get('category')
+        context["categories"] = inv_models.Category.objects.all().order_by('name')
+        return context
 
     def get_queryset(self):
         qs = super().get_queryset()
+        category = self.request.GET.get('category')
+        if category:
+            qs = qs.filter(category__name__iexact=category)
         return qs.order_by().order_by("category__name", "name")
 
 

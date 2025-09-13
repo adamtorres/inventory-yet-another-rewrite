@@ -19,6 +19,7 @@ class OrderDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     def get_success_url(self):
         return urls.reverse("inventory:order_list")
 
+
 class OrderDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     queryset = inv_models.Order.objects.prefetch_related('line_items').all()
 
@@ -26,6 +27,7 @@ class OrderDetailView(u_mixins.UserAccessMixin, generic.DetailView):
 class OrderListView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Order
     ordering = ["-delivered_date", "source__name"]
+    paginate_by = 20
 
 
 class OrderSearchView(u_mixins.UserAccessMixin, generic.TemplateView):

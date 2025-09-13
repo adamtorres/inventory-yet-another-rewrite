@@ -9,12 +9,38 @@
 
 {% block content %}
 <ul>
-{% for order in order_list %}
-    <li><a href="{% url "inventory:order_detail" pk=order.pk %}">{{ order }}</a></li>
+{% if is_paginated %}
+{% for order in page_obj %}
+    {% include "inventory/order_list_item.html" with order=order %}
 {% endfor %}
+{% else %}
+{% for order in object_list %}
+    {% include "inventory/order_list_item.html" with order=order %}
+{% endfor %}
+{% endif %}
 </ul>
+{% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="{% url "inventory:order_list" %}?page=1">&laquo; first</a>
+                <a href="{% url "inventory:order_list" %}?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="{% url "inventory:order_list" %}?page={{ page_obj.next_page_number }}">next</a>
+                <a href="{% url "inventory:order_list" %}?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
 <ul>
 <li><a href="{% url "inventory:order_create" %}">New Order</a></li>
+<li><a href="{% url "inventory:order_search" %}">Search Order</a></li>
 <li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
 </ul>
 {% endblock %}

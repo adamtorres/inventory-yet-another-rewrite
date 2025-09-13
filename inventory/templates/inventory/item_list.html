@@ -8,11 +8,42 @@
 {% endblock %}
 
 {% block content %}
-<ul>
-{% for item in item_list %}
-    <li><a href="{% url "inventory:item_detail" pk=item.pk %}">{{ item.category.name }} - {{ item.name }}</a></li>
+<select>
+<option {% if not category %}selected{% endif %}>No Category Filter</option>
+{% for category_obj in categories %}
+    <option {% if category == category_obj.name %}selected{% endif %}>{{ category_obj.name }}</option>
 {% endfor %}
+</select>
+<ul>
+{% if is_paginated %}
+{% for item in page_obj %}
+    {% include "inventory/item_list_item.html" with item=item %}
+{% endfor %}
+{% else %}
+{% for item in object_list %}
+    {% include "inventory/item_list_item.html" with item=order %}
+{% endfor %}
+{% endif %}
 </ul>
+{% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="{% url "inventory:item_list" %}?page=1{% if category %}&category={{ category|urlencode }}{% endif %}">&laquo; first</a>
+                <a href="{% url "inventory:item_list" %}?page={{ page_obj.previous_page_number }}{% if category %}&category={{ category|urlencode }}{% endif %}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="{% url "inventory:item_list" %}?page={{ page_obj.next_page_number }}{% if category %}&category={{ category|urlencode }}{% endif %}">next</a>
+                <a href="{% url "inventory:item_list" %}?page={{ page_obj.paginator.num_pages }}{% if category %}&category={{ category|urlencode }}{% endif %}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
 <ul>
 <li><a href="{% url "inventory:item_create" %}">New Item</a></li>
 <li><a href="{% url "inventory:item_search" %}">Search Item</a></li>
