@@ -8,12 +8,15 @@
 {% endblock %}
 
 {% block content %}
-<select>
-<option {% if not category %}selected{% endif %}>No Category Filter</option>
+<form id="filter_form">
+<label for="category_filter">Category Filter:</label>
+<select id="category_filter" data-select-field="category">
+<option {% if not category %}selected{% endif %} value="all">No Category Filter</option>
 {% for category_obj in categories %}
-    <option {% if category == category_obj.name %}selected{% endif %}>{{ category_obj.name }}</option>
+    <option {% if category == category_obj.name or category_id == category_obj.id %}selected{% endif %} value="{{ category_obj.id }}">{{ category_obj.name }}</option>
 {% endfor %}
 </select>
+</form>
 <ul>
 {% if is_paginated %}
 {% for item in page_obj %}
@@ -49,4 +52,29 @@
 <li><a href="{% url "inventory:item_search" %}">Search Item</a></li>
 <li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
 </ul>
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+function category_filter_change(event) {
+    let value = event.target.value;
+    let text = event.target.options[event.target.selectedIndex].text;
+    url = `{% url "inventory:item_list" %}?category_id=${value}&category_name=${encodeURIComponent(text)}`;
+    window.location.assign(url);
+}
+function list_get_search_elements() {
+    const form = document.getElementById("filter_form");
+    return form.querySelectorAll("[data-select-field]");
+}
+function list_setup_events() {
+    const element = document.getElementById("category_filter");
+    element.addEventListener('change', (event) => {
+        category_filter_change(event);
+    });
+}
+(function() {
+    // onload based on https://stackoverflow.com/a/9899701
+    list_setup_events();
+})();
+</script>
 {% endblock %}

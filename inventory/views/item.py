@@ -61,14 +61,24 @@ class ItemListView(u_mixins.UserAccessMixin, generic.ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["category"] = self.request.GET.get('category')
+        context["category_id"] = self.request.GET.get('category_id')
+        if context["category_id"] is not None:
+            if context["category_id"] == "all":
+                context["category_id"] = None
+            else:
+                context["category_id"] = int(context["category_id"])
         context["categories"] = inv_models.Category.objects.all().order_by('name')
         return context
 
     def get_queryset(self):
         qs = super().get_queryset()
         category = self.request.GET.get('category')
+        category_id = self.request.GET.get('category_id')
         if category:
             qs = qs.filter(category__name__iexact=category)
+        if category_id and category_id != "all":
+            qs = qs.filter(category__id__iexact=category_id)
+        # categories which cause an error: grocery, dni, misc charge, premade, seafood
         return qs.order_by().order_by("category__name", "name")
 
 
@@ -96,6 +106,7 @@ class APIItemView(inv_utils.APISearchView):
         'name': [
             "name", "source_items__cryptic_name", "source_items__expanded_name", "source_items__common_name"],
         'category': ["category__name"],
+        'category_id': ["category__id"],
     }
 
 
