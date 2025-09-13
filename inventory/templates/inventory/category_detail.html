@@ -10,6 +10,7 @@
 {% block content %}
 Name: {{ object.name }}
 <ul>
+    <li><a href="{% url "inventory:item_list" %}?category_id={{ object.pk }}">Item List</a></li>
     <li><a href="{% url "inventory:category_update" pk=object.pk %}">Edit</a></li>
     <li><a href="{% url "inventory:category_delete" pk=object.pk %}">Delete</a></li>
     <li><a href="{% url "inventory:category_list" %}">Category List</a></li>

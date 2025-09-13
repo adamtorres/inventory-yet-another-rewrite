@@ -17,17 +17,26 @@
 {% endfor %}
 </select>
 </form>
-<ul>
+<table class="table_of_stuff">
+<thead>
+<tr>
+    <th>Category</th>
+    <th>Name</th>
+    <th>Description</th>
+</tr>
+</thead>
+<tbody>
 {% if is_paginated %}
 {% for item in page_obj %}
     {% include "inventory/item_list_item.html" with item=item %}
 {% endfor %}
 {% else %}
 {% for item in object_list %}
-    {% include "inventory/item_list_item.html" with item=order %}
+    {% include "inventory/item_list_item.html" with item=item %}
 {% endfor %}
 {% endif %}
-</ul>
+</tbody>
+</table>
 {% if is_paginated %}
     <div class="pagination">
         <span class="step-links">
