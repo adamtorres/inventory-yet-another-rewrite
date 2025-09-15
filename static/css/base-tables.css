@@ -1,0 +1,7 @@
+.table_of_stuff th {
+    background-color: lightgray;
+    border-bottom: black solid 2px;
+}
+.table_of_stuff td {
+    border-bottom: black solid 1px;
+}

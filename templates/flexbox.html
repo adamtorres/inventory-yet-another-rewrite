@@ -1,0 +1,51 @@
+{% extends "plain-base.html" %}
+{% load static %}
+
+{% block title %}
+    Flexbox Examples
+{% endblock %}
+
+{% block styles %}
+    <link rel='stylesheet' href='{% static "/css/flexbox.css" %}'/>
+{% endblock %}
+
+{% block content %}
+    <div class='menu-container'>
+        <div class='menu'>
+            <div class='date'>Aug 14, 2016</div>
+            <div class='signup'>Sign Up</div>
+            <div class='login'>Login</div>
+        </div>
+    </div>
+    <div class='header-container'>
+        <div class='header'>
+            <div class='subscribe'>Subscribe &#9662;</div>
+            <div class='logo'><img alt="logo" src="{% static "images/awesome-logo.svg" %}"/></div>
+            <div class='social'><img alt="social icons" src="{% static "images/social-icons.svg" %}"/></div>
+        </div>
+    </div>
+    <div class='photo-grid-container'>
+        <div class='photo-grid'>
+            <div class='photo-grid-item first-item'>
+                <img alt="some image" src="{% static "/images/one.svg" %}"/>
+            </div>
+            <div class='photo-grid-item'>
+                <img alt="some image" src="{% static "/images/two.svg" %}"/>
+            </div>
+            <div class='photo-grid-item'>
+                <img alt="some image" src="{% static "/images/three.svg" %}"/>
+            </div>
+            <div class='photo-grid-item'>
+                <img alt="some image" src="{% static "/images/four.svg" %}"/>
+            </div>
+            <div class='photo-grid-item last-item'>
+                <img alt="some image" src="{% static "/images/five.svg" %}"/>
+            </div>
+        </div>
+    </div>
+    <div class='footer'>
+        <div class='footer-item footer-one'></div>
+        <div class='footer-item footer-two'></div>
+        <div class='footer-item footer-three'></div>
+    </div>
+{% endblock %}

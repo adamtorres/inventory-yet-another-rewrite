@@ -1,0 +1,10 @@
+.right-align {
+    text-align: right;
+}
+.dollar-cell::before {
+    content: "$ ";
+    color: lightgreen;
+}
+.date-cell {
+    text-align: right;
+}

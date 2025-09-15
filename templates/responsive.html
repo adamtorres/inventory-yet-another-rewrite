@@ -1,0 +1,46 @@
+{% extends 'plain-base.html' %}
+{% load static %}
+
+{% block title %}Responsive CSS Example{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static "css/responsive.css" %}" />
+{% endblock %}
+
+{% block content %}
+
+<div class='page'>
+    <div class='section menu'></div>
+    <div class='section header'>
+        <div class='photo'>
+            <picture>
+                <source media='(min-width: 601px)'
+                        srcset='{% static "images/photo-big.jpg" %}'/>
+                <source media='(max-width: 600px)'
+                        srcset='{% static "images/photo-tall.jpg" %}'/>
+                <img alt="header photo" src='{% static "images/photo-small.jpg" %}'/>
+            </picture>
+        </div>
+    </div>
+    <div class='section content'>
+        <div class="illustration">
+            <img alt="content" src="{% static "images/illustration-small.png" %}"
+                 srcset="{% static "images/illustration-small.png" %} 1x,{% static "images/illustration-big.png" %} 2x"
+                 style="max-width: 500px;"/>
+        </div>
+    </div>
+    <div class='section sign-up'>
+        <img alt="sign up" src="{% static "images/sign-up.svg" %}"/>
+    </div>
+    <div class='section feature-1'>
+        <img alt="feature" src="{% static "images/feature.svg" %}"/>
+    </div>
+    <div class='section feature-2'>
+        <img alt="feature" src="{% static "images/feature.svg" %}"/>
+    </div>
+    <div class='section feature-3'>
+        <img alt="feature" src="{% static "images/feature.svg" %}"/>
+    </div>
+</div>
+
+{% endblock %}

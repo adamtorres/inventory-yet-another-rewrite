@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.urls import path
 from django.views import generic
 
+from . import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -10,6 +12,10 @@ urlpatterns = [
     path('meal_planning/', urls.include('meal_planning.urls', namespace="meal_planning")),
     path('usage/', urls.include('usage.urls', namespace="usage")),
     path('user/', urls.include('user.urls', namespace="user")),
+
+    path('htmlcss/flexbox', views.FlexboxView.as_view(), name="flexbox"),
+    path('htmlcss/responsive_css', views.ResponsiveCSSView.as_view(), name="responsive_css"),
+    path('htmlcss/semantic', views.SemanticHTMLView.as_view(), name="semantic_html"),
 
     path('', generic.RedirectView.as_view(
         pattern_name="inventory:homepage", permanent=False), name="homepage"),

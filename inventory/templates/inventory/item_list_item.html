@@ -1,4 +1,3 @@
-{#    <li><a href="{% url "inventory:item_detail" pk=item.pk %}">{{ item.category.name }} - {{ item.name }}</a></li>#}
     <tr>
         <td>{{ item.category }}</td>
         <td><a href="{% url "inventory:item_detail" pk=item.pk %}">{{ item.name }}</a></td>

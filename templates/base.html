@@ -7,54 +7,10 @@
     <link rel="icon" href="data:,">
 
     <title>{% block title %}Page title{% endblock %}</title>
-    <style>
-        @media print
-        {
-            body {
-                font-size: 4pt;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            @page {
-                size: landscape;
-            }
-            .no-print, .no-print *
-            {
-                display: none !important;
-            }
-        }
-        body>main>div {
-            height: 100vh;
-            width: 100%;
-            border: green 1px solid;
-        }
-        #main-content {
-            overflow: scroll;
-        }
-        .right-align {
-            text-align: right;
-        }
-        .dollar-cell::before {
-            content: "$ ";
-            color: lightgreen;
-        }
-        .date-cell {
-            text-align: right;
-        }
-        #top-nav {
-            height: auto;
-        }
-        #top-nav>div {
-            display: inline-block;
-        }
-        .table_of_stuff th {
-            background-color: lightgray;
-            border-bottom: black solid 2px;
-        }
-        .table_of_stuff td {
-            border-bottom: black solid 1px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static "/css/base.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "/css/base-formatting.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "/css/base-tables.css" %}" />
+
     {% block styles %}
     {% endblock %}
 
