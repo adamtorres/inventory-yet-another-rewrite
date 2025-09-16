@@ -1,0 +1,98 @@
+/* #n+# makes a repeating pattern.  The first # is the total number and the second is the nth of that group. */
+.property-example:nth-child(4n+1) {
+    background-color: #B2D6FF;
+    border: #0077ff solid 2px;
+}
+.property-example:nth-child(4n+2) {
+    background-color: #F5CF8E;
+    border: #f39b02 solid 2px;
+}
+.property-example:nth-child(4n+3) {
+    background-color: #C8C6FA;
+    border: purple solid 2px;
+}
+.property-example:nth-child(4n+4) {
+    background-color: #F09A9D;
+    border: #ea020a solid 2px;
+}
+
+.jc-stretch {
+    justify-content: stretch;
+}
+.jc-space-between {
+    justify-content: space-between;
+}
+.jc-space-around {
+    justify-content: space-around;
+}
+.jc-space-evenly {
+    justify-content: space-evenly;
+}
+.jc-flex-start {
+    justify-content: flex-start;
+}
+.jc-flex-end {
+    justify-content: flex-end;
+}
+.jc-center {
+    justify-content: center;
+}
+
+.ai-stretch {
+    align-items: stretch;
+}
+.ai-self-start {
+    align-items: self-start;
+}
+.ai-self-end {
+    align-items: self-end;
+}
+.ai-baseline {
+    align-items: baseline;
+}
+.ai-first-baseline {
+    align-items: first baseline;
+}
+.ai-last-baseline {
+    align-items: last baseline;
+}
+.ai-flex-start {
+    align-items: flex-start;
+}
+.ai-flex-end {
+    align-items: flex-end;
+}
+.ai-center {
+    align-items: center;
+}
+
+.group {
+    width: 100%;
+    height: 3em;
+    display: flex;
+    border: red solid 1px;
+    margin-bottom: 1em;
+}
+.group-item {
+    border: lightcoral solid 1px;
+}
+
+.item1 {
+    background-color: #5995DA;
+}
+.item2 {
+    background-color: #F5CF8E;
+}
+.item3 {
+    background-color: chartreuse;
+}
+.item4 {
+    background-color: blueviolet;
+}
+
+.i-flex {
+    flex: 1 1 auto;
+}
+.group-flex > .item4 {
+    flex: 2 0 auto;
+}

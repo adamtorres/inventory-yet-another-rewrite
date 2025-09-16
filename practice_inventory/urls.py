@@ -14,6 +14,7 @@ urlpatterns = [
     path('user/', urls.include('user.urls', namespace="user")),
 
     path('htmlcss/flexbox', views.FlexboxView.as_view(), name="flexbox"),
+    path('htmlcss/flexbox-examples', views.FlexboxExamplesView.as_view(), name="flexbox_examples"),
     path('htmlcss/responsive_css', views.ResponsiveCSSView.as_view(), name="responsive_css"),
     path('htmlcss/semantic', views.SemanticHTMLView.as_view(), name="semantic_html"),
 

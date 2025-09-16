@@ -311,6 +311,7 @@ Object.prototype.toString
 ### CSS
 
 [CSS Flexbox](https://internetingishard.netlify.app/html-and-css/flexbox/)
+[Aligning items in a flex container](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Aligning_items_in_a_flex_container)
 
 * Use display: flex; to create a flex container.
 * Use justify-content to define the horizontal alignment of items.

@@ -11,35 +11,36 @@
 {% endblock %}
 
 {% block content %}
-<div>order: {{ object.order }}</div>
-<div>source_item: {{ object.source_item }}</div>
-<div>si.quantity: {{ object.source_item.quantity }}</div>
-<div>si.unit_amount: {{ object.source_item.unit_amount }}</div>
-<div>si.unit_amount_text: {{ object.source_item.unit_amount_text }}</div>
-<div>si.unit_size: {{ object.source_item.unit_size }}</div>
-<div>si.subunit_amount: {{ object.source_item.subunit_amount }}</div>
-<div>si.subunit_amount_text: {{ object.source_item.subunit_amount_text }}</div>
-<div>si.subunit_size: {{ object.source_item.subunit_size }}</div>
-<div>line_item_number: {{ object.line_item_number }}</div>
-<div>quantity_ordered: {{ object.quantity_ordered }}</div>
-<div>quantity_delivered: {{ object.quantity_delivered }}</div>
-<div>remote_stock: {{ object.remote_stock }}</div>
-<div>expect_backorder_delivery: {{ object.expect_backorder_delivery }}</div>
-<div>per_pack_price: {{ object.per_pack_price|floatformat:2|intcomma }}</div>
-<div>extended_price: {{ object.extended_price|floatformat:2|intcomma }}</div>
-<div>per_unit_price: {{ object.per_unit_price|floatformat:2|intcomma }}</div>
-<div>tax: {{ object.tax|floatformat:2|intcomma }}</div>
-<div>per_weight_price: {{ object.per_weight_price|floatformat:2|intcomma }}</div>
-<div>per_pack_weights: {{ object.per_pack_weights }}</div>
-<div>total_weight: {{ object.total_weight }}</div>
-<div>notes: {{ object.notes }}</div>
-<div>damaged: {{ object.damaged }}</div>
-<div>rejected: {{ object.rejected }}</div>
-<div>rejected_reason: {{ object.rejected_reason }}</div>
-<div><a href="http://localhost:9000/admin/inventory/sourceitem/{{ import_id }}/change/">Link to previous site</a></div>
-<ul>
-    <li><a href="{% url "inventory:orderlineitem_update" order_pk=object.order.pk pk=object.pk %}">Edit</a></li>
-    <li><a href="{% url "inventory:orderlineitem_delete" order_pk=object.order.pk pk=object.pk %}">Delete</a></li>
-    <li><a href="{% url "inventory:order_detail" pk=object.order.pk %}">Order</a></li>
-</ul>
+    <div>order: {{ object.order }}</div>
+    <div>source_item: <a href="{% url "inventory:sourceitem_detail" pk=object.source_item.id %}">{{ object.source_item }}</a></div>
+    <div>si.quantity: {{ object.source_item.quantity }}</div>
+    <div>si.unit_amount: {{ object.source_item.unit_amount }}</div>
+    <div>si.unit_amount_text: {{ object.source_item.unit_amount_text }}</div>
+    <div>si.unit_size: {{ object.source_item.unit_size }}</div>
+    <div>si.subunit_amount: {{ object.source_item.subunit_amount }}</div>
+    <div>si.subunit_amount_text: {{ object.source_item.subunit_amount_text }}</div>
+    <div>si.subunit_size: {{ object.source_item.subunit_size }}</div>
+    <div>line_item_number: {{ object.line_item_number }}</div>
+    <div>quantity_ordered: {{ object.quantity_ordered }}</div>
+    <div>quantity_delivered: {{ object.quantity_delivered }}</div>
+    <div>remote_stock: {{ object.remote_stock }}</div>
+    <div>expect_backorder_delivery: {{ object.expect_backorder_delivery }}</div>
+    <div>per_pack_price: {{ object.per_pack_price|floatformat:2|intcomma }}</div>
+    <div>extended_price: {{ object.extended_price|floatformat:2|intcomma }}</div>
+    <div>per_unit_price: {{ object.per_unit_price|floatformat:2|intcomma }}</div>
+    <div>tax: {{ object.tax|floatformat:2|intcomma }}</div>
+    <div>per_weight_price: {{ object.per_weight_price|floatformat:2|intcomma }}</div>
+    <div>per_pack_weights: {{ object.per_pack_weights }}</div>
+    <div>total_weight: {{ object.total_weight }}</div>
+    <div>notes: {{ object.notes }}</div>
+    <div>damaged: {{ object.damaged }}</div>
+    <div>rejected: {{ object.rejected }}</div>
+    <div>rejected_reason: {{ object.rejected_reason }}</div>
+    <div><a href="http://localhost:9000/admin/inventory/sourceitem/{{ import_id }}/change/">Link to previous site</a>
+    </div>
+    <ul>
+        <li><a href="{% url "inventory:orderlineitem_update" order_pk=object.order.pk pk=object.pk %}">Edit</a></li>
+        <li><a href="{% url "inventory:orderlineitem_delete" order_pk=object.order.pk pk=object.pk %}">Delete</a></li>
+        <li><a href="{% url "inventory:order_detail" pk=object.order.pk %}">Order</a></li>
+    </ul>
 {% endblock %}

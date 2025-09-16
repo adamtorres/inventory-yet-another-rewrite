@@ -8,9 +8,20 @@
 <li><a href="{% url "inventory:conversion_create" %}">New Conversion</a></li>
 <li><a href="{% url "inventory:homepage" %}">Inventory Homepage</a></li>
 </ul>
-<ul>
+<div class="object_list">
+<div class="object_container object_list_header">
+    <div class="object_item">Item</div>
+    <div class="object_item">From Unit</div>
+    <div class="object_item">Multiplier</div>
+    <div class="object_item">To Unit</div>
+</div>
 {% for conversion in conversion_list %}
-    <li><a href="{% url "inventory:conversion_detail" pk=conversion.pk %}">{{ conversion }}</a></li>
+    <div class="object_container">
+        <div class="object_item{% if not conversion.item %} text-muted{% endif %}">{{ conversion.item|default_if_none:"&lt;unspecified&gt;" }}</div>
+        <div class="object_item"><a href="{% url "inventory:conversion_detail" pk=conversion.pk %}">{{ conversion.from_unit }}</a></div>
+        <div class="object_item">{{ conversion.multiplier }}</div>
+        <div class="object_item">{{ conversion.to_unit }}</div>
+    </div>
 {% endfor %}
-</ul>
+</div>
 {% endblock %}

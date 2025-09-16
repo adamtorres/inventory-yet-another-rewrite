@@ -1,0 +1,19 @@
+.object_list {
+    width: 100%;
+    max-width: 50em;
+}
+.object_list_header {
+    border-bottom: black solid 2px;
+    background-color: lightgray;
+}
+.object_container {
+    width: 100%;
+    display: flex;
+}
+.object_item {
+    border-bottom: black solid 1px;
+    flex: 1 1 100px;
+}
+.text-muted {
+    color: gray;
+}

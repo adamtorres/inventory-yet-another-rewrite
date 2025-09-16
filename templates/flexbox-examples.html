@@ -1,0 +1,159 @@
+{% extends "plain-base.html" %}
+{% load static %}
+
+{% block title %}
+    Flexbox Examples
+{% endblock %}
+
+{% block styles %}
+    <link rel='stylesheet' href='{% static "/css/flexbox-examples.css" %}'/>
+{% endblock %}
+
+{% block content %}
+    <div class="examples">
+        <div class="property-example">
+            <code>justify-content</code>
+            <div>Stretch</div>
+            <div class="group jc-stretch">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Space Around</div>
+            <div class="group jc-space-around">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Space Between</div>
+            <div class="group jc-space-between">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Space Evenly</div>
+            <div class="group jc-space-evenly">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Flex Start</div>
+            <div class="group jc-flex-start">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Flex End</div>
+            <div class="group jc-flex-end">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+        </div>
+        <div class="property-example">
+            <code>align-items</code>
+            <div>Stretch</div>
+            <div class="group ai-stretch">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Self Start</div>
+            <div class="group ai-self-start">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Self End</div>
+            <div class="group ai-self-end">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Flex Start</div>
+            <div class="group ai-flex-start">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Flex End</div>
+            <div class="group ai-flex-end">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Baseline</div>
+            <div class="group ai-baseline">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>First Baseline</div>
+            <div class="group ai-first-baseline">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Last Baseline</div>
+            <div class="group ai-last-baseline">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+            <div>Center</div>
+            <div class="group ai-center">
+                <div class="group-item item1">Item 1</div>
+                <div class="group-item item2">Item 2a<br />Item 2b</div>
+                <div class="group-item item3">Item 3</div>
+                <div class="group-item item4">Item 4</div>
+            </div>
+        </div>
+        <div class="property-example">
+            <code>justify-self</code>
+        </div>
+        <div class="property-example">
+            <code>flex (on the individual items)</code>
+            <div>Center</div>
+            <div class="group jc-center">
+                <div class="group-item i-flex item1">Item 1</div>
+                <div class="group-item i-flex item2">Item 2a<br />Item 2b</div>
+                <div class="group-item i-flex item3">Item 3</div>
+                <div class="group-item i-flex item4">Item 4</div>
+            </div>
+            <div>Flex Start - item 4 has double the space</div>
+            <div class="group group-flex jc-flex-start">
+                <div class="group-item i-flex item1">Item 1</div>
+                <div class="group-item i-flex item2">Item 2a<br />Item 2b</div>
+                <div class="group-item i-flex item3">Item 3</div>
+                <div class="group-item i-flex item4">Item 4</div>
+            </div>
+            <div>No justify content value - item 4 has double the space</div>
+            <div class="group group-flex">
+                <div class="group-item i-flex item1">Item 1</div>
+                <div class="group-item i-flex item2">Item 2a<br />Item 2b</div>
+                <div class="group-item i-flex item3">Item 3</div>
+                <div class="group-item i-flex item4">Item 4</div>
+            </div>
+        </div>
+        <div class="property-example">
+            <code>?</code>
+        </div>
+        <div class="property-example">
+            <code>?</code>
+        </div>
+    </div>
+{% endblock %}

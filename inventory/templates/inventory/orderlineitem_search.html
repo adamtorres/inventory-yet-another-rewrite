@@ -20,6 +20,25 @@
     display: none;
 }
 
+.flex-container {
+    display: flex;
+    width: 100%;
+    border: red solid 1px;
+    flex-wrap: wrap;
+}
+.flex-container div {
+    border: blue solid 1px;
+}
+.flex-small {
+    flex: 1 1 100px;
+}
+.flex-normal {
+    flex: 3 1 100px;
+}
+.flex-wide {
+    flex: 5 1 100px;
+}
+
 </style>
 {% endblock %}
 
@@ -69,6 +88,58 @@
 <div id="results_in_div">
 <hr />
 <div id="templates" style="display: none;">
+    <div id="search_result_template_flex" class="flex-container">
+        <div class="hidden-cell">
+            <span data-field="id">__id__</span>
+        </div>
+        <div class="order-cell order-date flex-small">
+            <span data-field="delivered_date">__delivered_date__</span>
+        </div>
+        <div class="order-cell order-info flex-normal">
+            <span data-field="source">__source__</span>
+            <a href="" data-href-fn="get_order_url" data-href-arg-order="order_id">
+            <span data-field="order_number">__order_number__</span>
+            </a>
+            <a href="" data-href-fn="get_orderlineitem_url" data-href-arg-line-item="id" data-href-arg-order="order_id">
+            <span data-field="line_item_number">__line_item_number__</span>
+            </a>
+        </div>
+        <div class="order-cell order-name flex-wide">
+            <div>
+                <span data-field="source_item_name">__source_item_name__</span>
+            </div>
+            <div>
+                <span data-field="category">__category__</span>:
+                <span data-field="item_number">__item_number__</span>:
+                <span data-field="extra_number">__extra_number__</span>
+            </div>
+        </div>
+        <div class="order-cell order-weight flex-small">
+            <span data-field="total_weight">__total_weight__</span>
+        </div>
+        <div class="order-cell order-quantity flex-small">
+            <span data-field="quantity_delivered">__quantity_delivered__</span>
+        </div>
+        <div class="order-cell order-unit flex-small">
+            <span data-field="unit_amount">__unit_amount__</span>
+            <span data-field="unit_amount_text">__unit_amount_text__</span>
+            <span data-field="unit_size">__unit_size__</span>
+            <span data-field="subunit_amount">__subunit_amount__</span>
+            <span data-field="subunit_amount_text">__subunit_amount_text__</span>
+            <span data-field="subunit_size">__subunit_size__</span>
+        </div>
+        <div class="order-cell order-per-price flex-small">
+            <div data-field="per_pack_price">__per_pack_price__</div>
+            <div data-field="per_weight_price">__per_weight_price__</div>
+        </div>
+        <div class="order-cell order-price flex-small">
+            <div data-field="tax">__tax__</div>
+            <div data-field="extended_price">__extended_price__</div>
+        </div>
+        <div class="order-cell order-per-use-price flex-small">
+            <span data-field="per_unit_price">__per_unit_price__</span>
+        </div>
+    </div>
     <div id="search_result_template_div" class="orders-row">
         <div class="hidden-cell">
             <span data-field="id">__id__</span>
@@ -125,7 +196,53 @@
         Nope.
     </div>
 </div>
-<div class="orders-row">
+<div class="flex-container">
+    <div class="order-cell order-date flex-small">
+        <span>delivered date</span>
+    </div>
+    <div class="order-cell order-info flex-normal">
+        <span>source</span>
+        <span>order number</span>
+        <span>line item number</span>
+    </div>
+    <div class="order-cell order-name flex-wide">
+        <div>
+            <span>source item name</span>
+        </div>
+        <div>
+            <span>category</span>:
+            <span>item number</span>:
+            <span>extra number</span>
+        </div>
+    </div>
+    <div class="order-cell order-weight flex-small">
+        <span>total weight</span>
+    </div>
+    <div class="order-cell order-quantity flex-small">
+        <span>quantity delivered</span>
+    </div>
+    <div class="order-cell order-unit flex-small">
+        <span>unit amount</span>
+        <span>unit amount text</span>
+        <span>unit size</span>
+        <span>subunit amount</span>
+        <span>subunit amount text</span>
+        <span>subunit size</span>
+    </div>
+    <div class="order-cell order-per-price flex-small">
+        <div>per pack price</div>
+        <div>per weight price</div>
+    </div>
+    <div class="order-cell order-price flex-small">
+        <div>tax</div>
+        <div>extended price</div>
+    </div>
+    <div class="order-cell order-per-use-price flex-small">
+        <span>per unit price</span>
+    </div>
+</div>
+
+<div class="orders-row hidden-cell">
     <div class="order-cell order-date">
         Delivered Date
     </div>
@@ -186,7 +303,8 @@ result_style_ids = {
     "div": {
         "container": "results_in_div",
         "results": "search_results_div",
-        "template": "search_result_template_div",
+        {#"template": "search_result_template_div",#}
+        "template": "search_result_template_flex",
         "no_results_template": "search_no_result_template_div",
     },
 }
