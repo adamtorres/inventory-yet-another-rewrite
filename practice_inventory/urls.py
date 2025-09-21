@@ -7,7 +7,7 @@ from . import views
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('certainly/not/admin/', admin.site.urls),
     path('inventory/', urls.include('inventory.urls', namespace="inventory")),
     path('meal_planning/', urls.include('meal_planning.urls', namespace="meal_planning")),
     path('usage/', urls.include('usage.urls', namespace="usage")),
