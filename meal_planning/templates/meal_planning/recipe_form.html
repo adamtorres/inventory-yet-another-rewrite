@@ -21,3 +21,12 @@
 </div>
 {% endif %}
 {% endblock %}
+
+{% block body_scripts %}
+<script>
+(function() {
+    // onload based on https://stackoverflow.com/a/9899701
+    document.getElementById("id_name").focus();
+})();
+</script>
+{% endblock %}

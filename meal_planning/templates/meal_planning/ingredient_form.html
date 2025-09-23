@@ -19,9 +19,13 @@
 <div>
     <a href="{% url "meal_planning:recipe_detail" pk=recipe_pk %}">Cancel and go back to recipe</a>
 </div>
-{% if not popup %}
-<div>
-    <a href="{% url "meal_planning:ingredient_list" %}">Cancel and go back to list</a>
-</div>
-{% endif %}
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+(function() {
+    // onload based on https://stackoverflow.com/a/9899701
+    document.getElementById("id_name").focus();
+})();
+</script>
 {% endblock %}

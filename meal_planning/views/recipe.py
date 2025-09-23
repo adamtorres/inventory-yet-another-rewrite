@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class RecipeCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     model = mp_models.Recipe
-    fields = ["name", "description", "goes_with"]
+    fields = ["name", "description", "goes_with", "recipe_type"]
 
     def get_success_url(self):
         return urls.reverse("meal_planning:recipe_detail", args=(self.object.id,))
@@ -78,7 +78,7 @@ class RecipeListView(u_mixins.UserAccessMixin, generic.ListView):
 
 class RecipeUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = mp_models.Recipe
-    fields = ["name", "description", "goes_with"]
+    fields = ["name", "description", "goes_with", "recipe_type"]
 
     def get_success_url(self):
         return urls.reverse("meal_planning:recipe_detail", args=(self.object.id,))

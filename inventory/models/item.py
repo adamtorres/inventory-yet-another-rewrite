@@ -19,6 +19,7 @@ class ItemManager(models.Manager):
             {"category__name": "canned & dry", "name": "all purpose flour"},
             {"category__name": "canned & dry", "name": "granulated sugar"},
             {"category__name": "canned & dry", "name": "instant dry yeast"},
+            {"category__name": "canned & dry", "name": "peanut butter"},
             {"category__name": "canned & dry", "name": "pork gravy mix"},
             {"category__name": "canned & dry", "name": "pumpkin puree"},
             {"category__name": "canned & dry", "name": "semisweet chocolate chip"},
@@ -61,18 +62,7 @@ class ItemManager(models.Manager):
         data = []
         for item in self.filter(criteria):
             to_unit = to_unit_values[f"{item.name}~{item.category.name}"]
-            item.price_in_unit_value = item.price_in_unit(to_unit, as_of_date=as_of_date)
-            item.order_date = item.latest_order(as_of_date=as_of_date).get("order_date")
-            item.per_unit_price = item.latest_order(as_of_date=as_of_date).get("per_unit_price")
-            if item.latest_order(as_of_date=as_of_date).get("subunit_size"):
-                item.subunit_size = item.latest_order(as_of_date=as_of_date)["subunit_size"].unit
-            else:
-                item.subunit_size = None
-            if item.latest_order(as_of_date=as_of_date).get("unit_size"):
-                item.unit_size = item.latest_order(as_of_date=as_of_date)["unit_size"].unit
-            else:
-                item.unit_size = None
-            item.to_unit = to_unit
+            item.add_attrs_for_price_in_unit(to_unit, as_of_date)
             data.append(item)
         if as_dict:
             from .. import serializers as inv_serializers
@@ -97,6 +87,28 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
+
+    def add_attrs_for_price_in_unit(self, to_unit=None, as_of_date: datetime.date=None):
+        """
+        Adds the attributes needed for pricing this item in the specified unit size.
+
+        :param to_unit: str or UnitSize object.
+        :param as_of_date: Used to limit pricing to a maximum date.
+        :return: Nothing.  Modifies the Item object by adding attributes.
+        price_in_unit_value, order_date, per_unit_price, subunit_size, unit_size, to_unit
+        """
+        self.price_in_unit_value = self.price_in_unit(to_unit, as_of_date=as_of_date)
+        self.order_date = self.latest_order(as_of_date=as_of_date).get("order_date")
+        self.per_unit_price = self.latest_order(as_of_date=as_of_date).get("per_unit_price")
+        if self.latest_order(as_of_date=as_of_date).get("subunit_size"):
+            self.subunit_size = self.latest_order(as_of_date=as_of_date)["subunit_size"].unit
+        else:
+            self.subunit_size = None
+        if self.latest_order(as_of_date=as_of_date).get("unit_size"):
+            self.unit_size = self.latest_order(as_of_date=as_of_date)["unit_size"].unit
+        else:
+            self.unit_size = None
+        self.to_unit = to_unit
 
     def get_orders(self, duration: datetime.timedelta=None, end_date: datetime.date=None):
         start_date, end_date = utils.calculate_start_and_end_dates(duration=duration, end_date=end_date)
@@ -182,6 +194,10 @@ class Item(models.Model):
             "per_pack_price": latest_order_line_item.per_pack_price,
             "per_unit_price": latest_order_line_item.per_unit_price,
             "per_something_price": latest_order_line_item.per_unit_price / latest_source_item.unit_amount,
+            # "_per_quantity_price": latest_order_line_item.per_quantity_price(),
+            "_per_unitsize_price": latest_order_line_item.per_unitsize_price(),
+            "_per_subunitsize_price": latest_order_line_item.per_subunitsize_price(),
+            "_sourceitem_quantity": latest_order_line_item.source_item.quantity,
         }
         return self._latest_order
 

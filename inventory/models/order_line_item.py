@@ -41,11 +41,74 @@ class OrderLineItem(models.Model):
     @property
     def per_unit_price(self):
         try:
-            # pack = 6x #10 cans.  unit_amount = 6
-            # pack = 1x 50lb.  unit_amount = 50
-            # pack = 6x 5lb tubs of pb.  unit_amount = 5, quantity = 6
-            if self.source_item.quantity:
-                return self.per_pack_price / self.source_item.quantity / self.source_item.unit_amount
-            return self.per_pack_price / self.source_item.unit_amount
+            # pack = 6x #10 cans.  quantity = 6, unit_amount = 1, subunit_amount = None
+            # pack = 1x 50lb APF.  quantity = 1, unit_amount = 50, subunit_amount = None
+            # pack = 6x 5lb tubs of pb.  quantity = 6, unit_amount = 5, subunit_amount = None
+            # pack = 6x 8pk pudding cups.  quantity 6, unit_amount = 8, subunit_amount = 3oz
+            tmp_val = self.per_pack_price / self.source_item.quantity
+            print(f"OLI.per_unit_price: tmp_val({tmp_val}) = per_pack_price({self.per_pack_price}) / source_item.quantity({self.source_item.quantity})")
+            if not self.source_item.unit_amount:
+                print(f"OLI.per_unit_price: no unit_amount. Using tmp_val = '{tmp_val}'")
+                return tmp_val
+            print(
+                f"OLI.per_unit_price: tmp_val({tmp_val / self.source_item.unit_amount}) = tmp_val({tmp_val}) / "
+                f"source_item.unit_amount({self.source_item.unit_amount})")
+            tmp_val /= self.source_item.unit_amount
+            if not self.source_item.subunit_amount:
+                print(f"OLI.per_unit_price: no subunit_amount. Using tmp_val = '{tmp_val}'")
+                return tmp_val
+            print(
+                f"OLI.per_unit_price: subunit_amount available.  Using {tmp_val / self.source_item.subunit_amount} = "
+                f"tmp_val({tmp_val}) / source_item.subunit_amount({self.source_item.subunit_amount})")
+            return tmp_val / self.source_item.subunit_amount
         except ZeroDivisionError:
             return 0.0
+
+    # def per_quantity_price(self):
+    #     """
+    #         pack = 6x #10 cans.  quantity = 6, unit_amount = 1(why? there are 6 #10 cans), subunit_amount = None
+    #             returns a single #10 can price
+    #         pack = 1x 50lb APF.  quantity = 1, unit_amount = 50, subunit_amount = None
+    #             returns a single 50# bag of APF price
+    #         pack = 6x 5lb tubs of pb.  quantity = 6, unit_amount = 5, subunit_amount = None
+    #             returns a single 5lb tub price
+    #         pack = 6x 8pk pudding cups.  quantity 6, unit_amount = 8, subunit_amount = 3oz
+    #             returns a single 8pk price
+    #
+    #     :return:
+    #     """
+    #     return self.per_pack_price / self.source_item.quantity
+
+    def per_subunitsize_price(self):
+        """
+            pack = 6x #10 cans.  quantity = 6, unit_amount = 1, subunit_amount = None
+                returns None?  per_quantity_price is a #10 can.  what smaller default division is there?
+            pack = 1x 50lb APF.  quantity = 1, unit_amount = 50, subunit_amount = None
+                returns None?
+            pack = 6x 5lb tubs of pb.  quantity = 6, unit_amount = 5, subunit_amount = None
+                returns None?
+            pack = 6x 8pk pudding cups.  quantity 6, unit_amount = 8, subunit_amount = 3oz
+                returns a single oz pudding price
+
+        :return:
+        """
+        if not self.source_item.subunit_amount:
+            return None
+        return self.per_unitsize_price() / self.source_item.subunit_amount
+
+    def per_unitsize_price(self):
+        """
+            pack = 6x #10 cans.  quantity = 6, unit_amount = 1, subunit_amount = None
+                returns None?  per_quantity_price is a #10 can.  what smaller default division is there?
+            pack = 1x 50lb APF.  quantity = 1, unit_amount = 50, subunit_amount = None
+                returns a single pound of APF price
+            pack = 6x 5lb tubs of pb.  quantity = 6, unit_amount = 5, subunit_amount = None
+                returns a single pound of pb price
+            pack = 6x 8pk pudding cups.  quantity 6, unit_amount = 8, subunit_amount = 3oz
+                returns a single pudding cup price
+
+        :return:
+        """
+        if not self.source_item.unit_amount:
+            return None
+        return self.per_pack_price / self.source_item.unit_amount
