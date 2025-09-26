@@ -45,8 +45,8 @@ class TestSourceItemSearch(TestCase):
         include_q_objects, exclude_q_objects = self.apple_view.build_search_filter(self.apple_search_terms)
         name_field_names = ["item__name", "cryptic_name", "expanded_name", "common_name"]
         unit_field_names = [
-            "unit_amount", "unit_amount_text", "unit_size__unit", "subunit_amount", "subunit_amount_text",
-            "subunit_size__unit"]
+            "delivered_package_amount", "delivered_package_amount_text", "delivered_package_unit_size__unit",
+            "level_one_amount", "level_one_amount_text", "level_one_unit_size__unit"]
 
         # inclusions
         apple = self.q_up(name_field_names, "apple", "|")

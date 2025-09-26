@@ -13,7 +13,7 @@ class APISelectedItemSerializer(serializers.Serializer):
     per_unit_price = serializers.SerializerMethodField()
     unit_size = serializers.SerializerMethodField()
     subunit_size = serializers.SerializerMethodField()
-    per_other_unit_price = serializers.SerializerMethodField()
+    converted_unit_price = serializers.SerializerMethodField()
     other_unit = serializers.SerializerMethodField()
     order_date = serializers.SerializerMethodField()
 
@@ -21,7 +21,7 @@ class APISelectedItemSerializer(serializers.Serializer):
 
     class Meta:
         fields = [
-            "id", "name", "category", "per_unit_price", "unit_size", "subunit_size", "per_other_unit_price",
+            "id", "name", "category", "per_unit_price", "unit_size", "subunit_size", "converted_unit_price",
             "other_unit", "order_date"]
 
     def get_id(self, obj):
@@ -42,11 +42,11 @@ class APISelectedItemSerializer(serializers.Serializer):
     def get_per_unit_price(self, obj):
         return obj.per_unit_price
 
-    def get_per_other_unit_price(self, obj):
-        return obj.price_in_unit_value
+    def get_converted_unit_price(self, obj):
+        return obj.converted_unit_price
 
     def get_subunit_size(self, obj):
-        return obj.subunit_size
+        return obj.level_one_unit_size
 
     def get_unit_size(self, obj):
-        return obj.unit_size
+        return obj.delivered_package_unit_size

@@ -94,27 +94,27 @@ class APIOrderLineItemSerializer(serializers.ModelSerializer):
     
     @staticmethod
     def get_subunit_amount(obj):
-        return obj.source_item.subunit_amount
+        return obj.source_item.level_one_amount
     
     @staticmethod
     def get_subunit_amount_text(obj):
-        return obj.source_item.subunit_amount_text
+        return obj.source_item.level_one_amount_text
     
     @staticmethod
     def get_subunit_size(obj):
-        return obj.source_item.subunit_size.unit if obj.source_item.subunit_size else None
+        return obj.source_item.level_one_unit_size.unit if obj.source_item.level_one_unit_size else None
     
     @staticmethod
     def get_unit_amount(obj):
-        return obj.source_item.unit_amount
+        return obj.source_item.delivered_package_amount
     
     @staticmethod
     def get_unit_amount_text(obj):
-        return obj.source_item.unit_amount_text
+        return obj.source_item.delivered_package_amount_text
     
     @staticmethod
     def get_unit_size(obj):
-        return obj.source_item.unit_size.unit if obj.source_item.unit_size else None
+        return obj.source_item.delivered_package_unit_size.unit if obj.source_item.delivered_package_unit_size else None
     
 
 class APISourceItemSerializer(serializers.ModelSerializer):
@@ -147,7 +147,7 @@ class APISourceItemSerializer(serializers.ModelSerializer):
         return obj.source.name
 
     def get_subunit_size_unit(self, obj):
-        return obj.subunit_size.unit if obj.subunit_size else None
+        return obj.level_one_unit_size.unit if obj.level_one_unit_size else None
 
     def get_unit_size_unit(self, obj):
-        return obj.unit_size.unit if obj.unit_size else None
+        return obj.delivered_package_unit_size.unit if obj.delivered_package_unit_size else None

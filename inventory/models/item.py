@@ -47,6 +47,7 @@ class ItemManager(models.Manager):
 
         :param item_category_unit_list: list of tuples (item name, category name, unit to convert to)
         :param as_of_date: If supplied, will be used to limit the most recent order used for pricing.
+        :param as_dict: Returns items already serialized into dicts.
         :return: list of Item with added fields.  obj.price_in_unit_value=price of the item in the requested unit.
         obj.order_date=the date of the order used for pricing. obj.per_unit_price=price of the item in its natural unit.
         subunit_size=if available, the subunit of the item.  unit_size=unit size of the order used.  to_unit=requested
@@ -97,7 +98,7 @@ class Item(models.Model):
         :return: Nothing.  Modifies the Item object by adding attributes.
         price_in_unit_value, order_date, per_unit_price, subunit_size, unit_size, to_unit
         """
-        self.price_in_unit_value = self.price_in_unit(to_unit, as_of_date=as_of_date)
+        self.converted_unit_price = self.price_in_unit(to_unit, as_of_date=as_of_date)
         self.order_date = self.latest_order(as_of_date=as_of_date).get("order_date")
         self.per_unit_price = self.latest_order(as_of_date=as_of_date).get("per_unit_price")
         if self.latest_order(as_of_date=as_of_date).get("subunit_size"):
@@ -173,8 +174,8 @@ class Item(models.Model):
                 "item": self,
                 "source_item": latest_source_item,
                 "item_name": self.name,
-                "unit_size": latest_source_item.unit_size,
-                "subunit_size": latest_source_item.subunit_size,
+                "unit_size": latest_source_item.delivered_package_unit_size,
+                "subunit_size": latest_source_item.level_one_unit_size,
             }
             return self._latest_order
         self._latest_order = {
@@ -185,15 +186,15 @@ class Item(models.Model):
 
             "order_date": latest_order_line_item.order.delivered_date,
             "item_name": self.name,
-            "unit_amount": latest_source_item.unit_amount,
-            "unit_size": latest_source_item.unit_size,
-            "subunit_amount": latest_source_item.subunit_amount,
-            "subunit_size": latest_source_item.subunit_size,
+            "unit_amount": latest_source_item.delivered_package_amount,
+            "unit_size": latest_source_item.delivered_package_unit_size,
+            "subunit_amount": latest_source_item.level_one_amount,
+            "subunit_size": latest_source_item.level_one_unit_size,
             "extended_price": latest_order_line_item.extended_price,
             "quantity_delivered": latest_order_line_item.quantity_delivered,
             "per_pack_price": latest_order_line_item.per_pack_price,
             "per_unit_price": latest_order_line_item.per_unit_price,
-            "per_something_price": latest_order_line_item.per_unit_price / latest_source_item.unit_amount,
+            "per_something_price": latest_order_line_item.per_unit_price / latest_source_item.delivered_package_amount,
             # "_per_quantity_price": latest_order_line_item.per_quantity_price(),
             "_per_unitsize_price": latest_order_line_item.per_unitsize_price(),
             "_per_subunitsize_price": latest_order_line_item.per_subunitsize_price(),
