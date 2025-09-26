@@ -209,7 +209,10 @@ class Item(models.Model):
         if not from_unit:
             return 0
         if isinstance(to_unit, str):
-            to_unit = UnitSize.objects.get(unit=to_unit)
+            try:
+                to_unit = UnitSize.objects.get(unit=to_unit)
+            except UnitSize.DoesNotExist:
+                return 0
         if from_unit == to_unit:
             # No conversion.  Same units.
             return latest_order["per_unit_price"]
