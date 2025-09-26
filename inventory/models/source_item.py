@@ -1,7 +1,6 @@
 import datetime
 from django.db import models
 
-from practice_inventory import utils as pi_utils
 from . import utils
 
 
@@ -17,27 +16,17 @@ class SourceItem(models.Model):
     brand = models.CharField(max_length=255)
     source_category = models.CharField(max_length=255, help_text="probably won't agree with Item.category")
 
-    delivered_package_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True)
-    delivered_package_amount_text = models.CharField(
-        max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
-    delivered_package_unit_size = models.ForeignKey(
-        "inventory.UnitSize", on_delete=models.CASCADE, related_name="l0_items", null=True, blank=True)
-    level_one_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True)
-    level_one_amount_text = models.CharField(
-        max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
-    level_one_unit_size = models.ForeignKey(
-        "inventory.UnitSize", on_delete=models.CASCADE, null=True, blank=True, related_name="l1_items")
-    level_two_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True)
-    level_two_amount_text = models.CharField(
-        max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
-    level_two_unit_size = models.ForeignKey(
-        "inventory.UnitSize", on_delete=models.CASCADE, null=True, blank=True, related_name="l2_items")
-    level_three_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True)
-    level_three_amount_text = models.CharField(
-        max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
-    level_three_unit_size = models.ForeignKey(
-        "inventory.UnitSize", on_delete=models.CASCADE, null=True, blank=True, related_name="l3_items")
+    unit_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True, help_text="the quantity of units.  The '15.5' in '15.5floz'")
+    unit_amount_text = models.CharField(max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
+    unit_size = models.ForeignKey("inventory.UnitSize", on_delete=models.CASCADE, null=True)
 
+    subunit_amount = models.DecimalField(max_digits=9, decimal_places=4, null=True, blank=True, help_text="the quantity of subunits.  The '15.5' in '15.5floz'")
+    subunit_amount_text = models.CharField(max_length=255, null=True, blank=True, help_text="An amount that isn't a single number.  Like '9-12#'.")
+    subunit_size = models.ForeignKey(
+        "inventory.UnitSize", on_delete=models.CASCADE, null=True, blank=True, help_text=(
+            "For when the box contains packs of multiple units.  Like a box with 8 packs of 6 pudding cups."),
+        related_name="bob", related_query_name="bob"
+    )
     active = models.BooleanField(
         default=True, help_text="Products sometimes change their packaging.  This option allows the unit size to remain"
                                 " tied to the source item but no longer selectable.")
@@ -74,22 +63,10 @@ class SourceItem(models.Model):
 
     def __str__(self):
         name = self.common_name or self.expanded_name or self.cryptic_name
-        return f"{self.source} {name} {self.quantity}x {self.get_unit_size_str()}"
-
-    def get_unit_size_str(self, split_pack: bool=False):
-        if not self.delivered_package_unit_size.splittable:
-            split_pack = False
-        if split_pack:
-            tmp = ""
-        else:
-            tmp = f"{pi_utils.minimal_number(self.delivered_package_amount)}{self.delivered_package_unit_size}"
-        if self.level_one_amount:
-            tmp += f" {pi_utils.minimal_number(self.level_one_amount)}{self.level_one_unit_size}"
-        if self.level_two_amount:
-            tmp += f" {pi_utils.minimal_number(self.level_two_amount)}{self.level_two_unit_size}"
-        if self.level_three_amount:
-            tmp += f" {pi_utils.minimal_number(self.level_three_amount)}{self.level_three_unit_size}"
-        return tmp
+        subunit_size = ""
+        if self.unit_size and self.unit_size.unit == "subunit":
+            subunit_size = f" {self.subunit_size}"
+        return f"{self.source} {name} {self.quantity}x {self.unit_size}{subunit_size}"
 
     def total_ordered(self, duration: datetime.timedelta=None, end_date: datetime.date=None) -> dict:
         """
