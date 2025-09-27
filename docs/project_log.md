@@ -1,4 +1,17 @@
 # Project Log
+## Repository
+
+If the repo loses its remote, try this:
+
+```shell
+git remote add origin git@github.com:adamtorres/inventory-yet-another-rewrite.git
+```
+
+This happened when I tried out the portable version of [Gitnuro](https://gitnuro.com/) via:
+
+```shell
+~/apps/android-studio/jbr/bin/java -jar Gitnuro-linux-x86_64-1.5.0.jar
+```
 
 ## Creation
 

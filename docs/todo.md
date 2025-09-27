@@ -1,0 +1,151 @@
+# Comparing the previous version to this version
+
+- [ ] Saved searches
+  - Where should the search be?  Item, SourceItem, OrderLineItem, all three?
+    - Item: Makes sense when doing general lookups
+    - SourceItem: Makes some sense when looking for a price as it would show all orders of the SourceItem.
+      - Makes more sense for when the actual counting inventory is working as the user wouldn't have to care about the
+      order date; the system would just pick oldest available item first.
+    - OrderLineItem: Makes sense currently when looking for a price as we could go directly to the correct order date.
+- [ ] Search by various fields
+  - /inventory/sourceitem/search/
+  - [ ] name
+  - [ ] unit size
+  - [ ] item code
+  - [ ] order number - how often is this actually used?
+  - [ ] source - needs to allow multiple?
+  - [ ] order date
+  - [ ] Populate test values - used in repeated manual testing
+  - [ ] Clear form button
+- [ ] Stats page
+  - /inventory/sourceitem/stats/
+  - [ ] first/last dates
+  - [ ] number of orders
+  - [ ] number of line items
+  - [ ] total spent
+- [ ] Item prices
+  - /inventory/reports/common_name_prices/
+  - /inventory/saved_search/current_prices
+  - Shows the name, info from most recent order, cost of box, cost of unit
+- [ ] Orders created in last 24hrs
+  - /inventory/reports/created_today/
+  - Useful when entering in a pile of orders which might go back in time a bit.
+- [ ] Order list with totals
+  - /inventory/reports/orders_created_range/
+  - Want the total from the order along with the order number, date, vendor and number of items.
+- [ ] Packaging costs
+  - /inventory/reports/packaging_costs/
+  - Report that shows the various kinds of packaging down to the individual bag/tray/container.
+- [ ] Price over time
+  - /inventory/reports/price_over_time/
+  - [ ] Somewhat interactive graph showing the unit price of the item over the given time
+    - Interactive means: hover over a dot shows date, unit price, source, source item name, package size and quantity, and extended price.
+- [ ] Duplicate items
+  - /inventory/reports/duplicate_items/
+  - Identify items which appear to be duplicated somehow
+- [ ] Conversions
+  - /conversion/
+  - [ ] Show a nice list of the conversions with min/max/avg and how much data supports it
+  - [ ] Detailed conversion list by item?
+    - Do we need this?  Might be too much data to show at once.
+
+- [ ] Market
+  - [ ] Items
+    - Simplistic listing of items including a static material cost
+    - Category: bread, cake, cookie, other
+- [ ] Orders
+    - [ ] Hide/show completed orders
+    - [ ] Add/Change/View/Delete items from the order
+    - [ ] Set arbitrary price per arbitrary group count (dz, 8ct, 6ct) of items
+    - [ ] Set a discount with a label
+      - should this be a special item or keep as a non-item?
+    - ?
+
+# New features not in the previous version
+
+- [ ] Metrics
+  - [ ] count usage of various pages
+  - [ ] count usage of how items are searched
+- [ ] Search by various fields
+  - /inventory/sourceitem/search/
+  - [ ] order date
+    - [ ] with a plus/minus some number of days
+  - [ ] Populate test values - have a list of different types of searches
+- [ ] Stats page
+  - /inventory/sourceitem/stats/
+  - /inventory/reports/source_categories/
+  - [ ] cost per month per source
+  - [ ] cost comparison to previous years
+  - [ ] cost by category per month/year/whatever
+- [ ] Price over time
+  - /inventory/reports/price_over_time/
+  - [ ] Clicky to copy the data from the chart into a table fit for pasting into a spreadsheet.
+    - Check `/conversion/` for the copy method as that page seems to work fine.
+- [ ] Conversions
+  - /conversion/
+  - [ ] X
+
+- [ ] Market
+  - [ ] Items for sale
+    - [ ] Include material cost?
+      - Eventually want this tied to a recipe so the cost is always current
+      - The recipe would need to know how to divide to get this unit size
+    - [ ] Tags
+      - what kind of item is this?  cookie/dessert
+    - Category: bread, cake, cookie, other
+      - Others: fudge, cupcake, roll(cinnamon, etc.), pastry 
+    - [ ] Specials?
+      - How to handle specials like Thanksgiving, Christmas platter, etc.
+      - These could add a group of items to an order as default with associated pricing and allow for customization
+      - Duplicate/deactivate these?
+        - Duplicate so we can see previous specials?  Or is the individual order/invoices enough of a history?
+        - Deactivate old specials with the option to reactivate so they don't clutter the list
+          - auto de/reactivate based on time of year?  Christmas specials only show in Nov/Dec?
+  - [ ] Orders
+    - [ ] Reformat the invoice.
+      - Plenty of bits are not used and were likely just there from a template
+        - [ ] The current/past due line other than the 'amount due' cell
+        - [ ] Remittance block
+        - [ ] "Statement #001"
+      - [ ] Add logo
+      - [ ] Move discount to below a total to better show the before/after discount amounts
+    - [ ] date search
+      - [ ] have a default date range of last couple of months
+    - [ ] search for order by name, item, phone, etc.
+      - search by special?
+    - [ ] duplicate order
+    - [ ] List allows for viewing invoice and easy marking of made/paid/picked up
+    - [ ] Adding item to order copies the current material cost so we have a snapshot in time
+- Recipes
+  - [ ] Add preparation steps
+    - Steps might just be "cookie method" to save space as most cookies go together the same way.
+    - [ ] Step groups
+      - topping, dough, filling, etc.
+  - [ ] baking hints
+    - temperature/time changes based on convection/conventional/number of pans/quantity on pan/scoop size/etc.
+  - [ ] yield based on scoop/portion size
+    - need to handle cookie, entrée, side, etc type recipes
+  - [ ] printable
+    - how to handle multipliers
+    - conversions?
+      - some sites have an imperial/metric switch.
+      - volume/weight switch?
+    - high altitude warning - most recipes will be entered in HA quantities.  warn that flour and possibly liquid would
+    need adjustment for sea-level.
+    - freezing tips
+      - packaging - bag/pan/wrap/spray
+      - freeze on pan then bag
+      - temperature - pump choc chip doesn't do well above 0F
+  - [ ] More details
+    - [ ] source url - most recipes have come from a site like cooks.com
+    - [ ] source text - some recipes come from an old cookbook, were made up here, or from someone's brother's aunt's cousin's former roommate.
+    - [ ] rating - need some details about the rating - when, was it for dessert or sale, weight (how trustworthy was the rater)
+    - [ ] make again - a recipe could be quite tasty and widely accepted when given as dessert or freebie but doesn't sell at all
+      - Or, just too expensive in time or material to make
+      - [ ] text to go with as an explanation
+    - [ ] Comments
+      - things to try for "next time"
+      - what happened this time
+        - track the multiplier and specific ingredients used (brands, low fat, dry milk vs liquid, etc.)
+        - track humidity/temperature/weather?
+          - would be neat to have the site hit up a weather site api to get this
