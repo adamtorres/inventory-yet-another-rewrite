@@ -31,6 +31,7 @@ class OrderManager(models.Manager):
             order_extended_price = models.Sum("line_items__extended_price"),
             order_tax = models.Sum("line_items__tax"),
             order_line_item_count=models.Count("line_items__id"),
+            # TODO: Account for backorders or out of stock items. https://github.com/adamtorres/inventory-yet-another-rewrite/issues/35
             order_rejected_price=models.Sum(models.Case(
                 models.When(
                     models.Q(line_items__rejected=True),
@@ -49,7 +50,8 @@ class OrderManager(models.Manager):
 
 
 class Order(models.Model):
-    source = models.ForeignKey("inventory.Source", on_delete=models.DO_NOTHING)
+    source = models.ForeignKey(
+        "inventory.Source", on_delete=models.DO_NOTHING, related_name="orders", related_query_name="orders")
     delivered_date = models.DateField()
     order_number = models.CharField(max_length=1024, blank=True, default="")
     po_text = models.CharField(max_length=255, null=True, blank=True)
