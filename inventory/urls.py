@@ -77,6 +77,8 @@ urlpatterns = [
     urls.path("source_item/new", i_views.SourceItemCreateView.as_view(), name="sourceitem_create"),
     urls.path("source_item/search", i_views.SourceItemSearchView.as_view(), name="sourceitem_search"),
 
+    urls.path("stats", i_views.StatsView.as_view(), name="stats"),
+
     urls.path("unit_sizes/", i_views.UnitSizeListView.as_view(), name="unitsize_list"),
     urls.path("unit_size/<int:pk>", i_views.UnitSizeDetailView.as_view(), name="unitsize_detail"),
     urls.path("unit_size/<int:pk>/delete", i_views.UnitSizeDeleteView.as_view(), name="unitsize_delete"),

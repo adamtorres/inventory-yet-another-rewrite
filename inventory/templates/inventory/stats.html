@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Inventory : Stats{% endblock %}
+
+{% block styles %}
+<style>
+.stat-label, .stat-value {
+    display: inline-block;
+}
+.stat-label {
+    width: 10em;
+    padding-right: 0.5em;
+    text-align: right;
+    border-bottom: black 1px solid;
+}
+.stat-value {
+    width: 10em;
+    text-align: right;
+    border-bottom: black 1px solid;
+}
+</style>
+
+{% endblock %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <div class="stat-label">first delivered date</div><div class="stat-value">{{ order_stats.first_delivered_date|date:"Y-m-d" }}</div>
+</div>
+<div>
+    <div class="stat-label">last delivered date</div><div class="stat-value">{{ order_stats.last_delivered_date|date:"Y-m-d" }}</div>
+</div>
+<div>
+    <div class="stat-label">order count</div><div class="stat-value">{{ order_stats.order_count|intcomma }}</div>
+</div>
+<div>
+    <div class="stat-label">total damaged price</div><div class="stat-value">${{ order_stats.total_damaged_price|floatformat:2|intcomma }}</div>
+</div>
+<div>
+    <div class="stat-label">total extended price</div><div class="stat-value">${{ order_stats.total_extended_price|floatformat:2|intcomma }}</div>
+</div>
+<div>
+    <div class="stat-label">total line item count</div><div class="stat-value">{{ order_stats.total_line_item_count|intcomma }}</div>
+</div>
+<div>
+    <div class="stat-label">total rejected price</div><div class="stat-value">${{ order_stats.total_rejected_price|floatformat:2|intcomma }}</div>
+</div>
+<div>
+    <div class="stat-label">total tax</div><div class="stat-value">${{ order_stats.total_tax|floatformat:2|intcomma }}</div>
+</div>
+
+{% endblock %}
