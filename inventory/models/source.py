@@ -40,13 +40,13 @@ class SourceManager(models.Manager):
         return qs.order_by("name")
 
     def order_totals_by_month(self, since_date: datetime.date=None):
-        qs = self.annotate(order_month=functions.TruncMonth("orders__delivered_date"))
+        qs = self.annotate(delivered_month=functions.TruncMonth("orders__delivered_date"))
         if since_date:
-            qs = qs.filter(order_month__gte=since_date.replace(day=1))
-        qs = qs.values("id", "name", "order_month")
+            qs = qs.filter(delivered_month__gte=since_date.replace(day=1))
+        qs = qs.values("id", "name", "delivered_month")
         fields_annotated, qs = self._add_annotations_for_order_totals(qs)
-        qs = qs.values("id", "name", "order_month", *fields_annotated)
-        return qs.order_by("name", "order_month")
+        qs = qs.values("id", "name", "delivered_month", *fields_annotated)
+        return qs.order_by("name", "delivered_month")
 
 
 class Source(models.Model):

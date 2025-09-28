@@ -53,4 +53,16 @@
     <div class="stat-label">total tax</div><div class="stat-value">${{ order_stats.total_tax|floatformat:2|intcomma }}</div>
 </div>
 
+<div>
+{% for one_month in totals_by_month %}
+<div>
+    <div class="stat-label">delivered month</div><div class="stat-value">{{ one_month.delivered_month|date:"Y-m" }}</div>
+    <div class="stat-label">damaged</div><div class="stat-value">${{ one_month.order_damaged_price|floatformat:2|intcomma }}</div>
+    <div class="stat-label">extended</div><div class="stat-value">${{ one_month.order_extended_price|floatformat:2|intcomma }}</div>
+    <div class="stat-label">line items</div><div class="stat-value">{{ one_month.order_line_item_count|intcomma }}</div>
+    <div class="stat-label">rejected</div><div class="stat-value">${{ one_month.order_rejected_price|floatformat:2|intcomma }}</div>
+    <div class="stat-label">tax</div><div class="stat-value">${{ one_month.order_tax|floatformat:2|intcomma }}</div>
+</div>
+{% endfor %}
+</div>
 {% endblock %}

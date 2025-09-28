@@ -1,4 +1,43 @@
+import datetime
+
 from django.db import models
+from django.db.models import functions
+
+
+class OrderLineItemManager(models.Manager):
+    @staticmethod
+    def _annotations_for_totals():
+        return {
+            # per_weight_price
+            "order_extended_price": models.Sum("extended_price"),
+            "order_tax": models.Sum("tax"),
+            "order_line_item_count": models.Count("id"),
+            # TODO: Account for backorders or out of stock items. https://github.com/adamtorres/inventory-yet-another-rewrite/issues/35
+            "order_rejected_price": models.Sum(models.Case(
+                models.When(
+                    models.Q(rejected=True),
+                    models.F("extended_price") + models.F("tax")),
+                default=models.Value(0),
+                output_field=models.DecimalField(max_digits=10, decimal_places=4)
+            )),
+            "order_damaged_price": models.Sum(models.Case(
+                models.When(
+                    models.Q(damaged=True),
+                    models.F("extended_price") + models.F("tax")),
+                default=models.Value(0),
+                output_field=models.DecimalField(max_digits=10, decimal_places=4)
+            )),
+        }
+
+    def totals_by_month(self, since_date: datetime.date=None):
+        qs = self.annotate(delivered_month=functions.TruncMonth("order__delivered_date"))
+        if since_date:
+            qs = qs.filter(delivered_month__gte=since_date.replace(day=1))
+        annotations_for_totals = self._annotations_for_totals()
+        qs = qs.values("delivered_month")
+        qs = qs.annotate(**annotations_for_totals)
+        qs = qs.order_by("-delivered_month")
+        return qs
 
 
 class OrderLineItem(models.Model):
@@ -31,6 +70,8 @@ class OrderLineItem(models.Model):
 
     raw_import_data = models.JSONField(
         null=True, blank=True, help_text="Raw JSON data that contributed to this object's creation.")
+
+    objects = OrderLineItemManager()
 
     class Meta:
         ordering = ["-order__delivered_date", "order__source", "line_item_number"]

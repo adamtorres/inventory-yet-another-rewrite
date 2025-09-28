@@ -10,4 +10,5 @@ class StatsView(u_mixins.UserAccessMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["order_stats"] = inv_models.Order.objects.get_stats()
+        context["totals_by_month"] = inv_models.OrderLineItem.objects.totals_by_month()
         return context
