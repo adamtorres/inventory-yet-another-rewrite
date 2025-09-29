@@ -14,4 +14,7 @@ class StatsView(u_mixins.UserAccessMixin, generic.TemplateView):
         pivoted_headers, pivoted_data = inv_models.OrderLineItem.objects.pivoted_totals_by_month_and_source()
         context["pivoted_totals_by_month_and_source_headers"] = pivoted_headers
         context["pivoted_totals_by_month_and_source"] = pivoted_data
+        pivoted_headers, pivoted_data = inv_models.OrderLineItem.objects.pivoted_totals_by_month_and_category()
+        context["pivoted_totals_by_month_and_category_headers"] = pivoted_headers
+        context["pivoted_totals_by_month_and_category"] = pivoted_data
         return context

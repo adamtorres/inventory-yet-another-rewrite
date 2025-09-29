@@ -20,8 +20,18 @@
     text-align: right;
     border-bottom: black 1px solid;
 }
+.by_month th {
+    background-color: lightgray;
+    font-weight: bold;
+}
+#by_month td {
+    border: green 1px solid;
+}
 #by_month_and_source td {
     border: black 1px solid;
+}
+#by_month_and_category td {
+    border: blue 1px solid;
 }
 </style>
 
@@ -56,19 +66,33 @@
     <div class="stat-label">total tax</div><div class="stat-value">${{ order_stats.total_tax|floatformat:2|intcomma }}</div>
 </div>
 
-<div>
+<table class="by_month" id="by_month">
+<thead>
+<tr>
+    <th>Date</th>
+    <th>orders</th>
+{#    <th>damaged price</th>#}
+    <th>extended price</th>
+{#    <th>line items</th>#}
+{#    <th>rejected price</th>#}
+{#    <th>tax</th>#}
+</tr>
+</thead>
+<tbody>
 {% for one_month in totals_by_month %}
-<div>
-    <div class="stat-label">delivered month</div><div class="stat-value">{{ one_month.delivered_month|date:"Y-m" }}</div>
-{#    <div class="stat-label">damaged</div><div class="stat-value">${{ one_month.order_damaged_price|floatformat:2|intcomma }}</div>#}
-    <div class="stat-label">extended</div><div class="stat-value">${{ one_month.order_extended_price|floatformat:2|intcomma }}</div>
-{#    <div class="stat-label">line items</div><div class="stat-value">{{ one_month.order_line_item_count|intcomma }}</div>#}
-{#    <div class="stat-label">rejected</div><div class="stat-value">${{ one_month.order_rejected_price|floatformat:2|intcomma }}</div>#}
-{#    <div class="stat-label">tax</div><div class="stat-value">${{ one_month.order_tax|floatformat:2|intcomma }}</div>#}
-</div>
+<tr>
+    <td>{{ one_month.delivered_month|date:"Y-m" }}</td>
+    <td>{{ one_month.order_count|intcomma }}</td>
+{#    <td>${{ one_month.order_damaged_price|floatformat:2|intcomma }}</td>#}
+    <td>${{ one_month.order_extended_price|floatformat:2|intcomma }}</td>
+{#    <td>{{ one_month.order_line_item_count|intcomma }}</td>#}
+{#    <td>${{ one_month.order_rejected_price|floatformat:2|intcomma }}</td>#}
+{#    <td>${{ one_month.order_tax|floatformat:2|intcomma }}</td>#}
+</tr>
 {% endfor %}
-</div>
-<table id="by_month_and_source">
+</tbody>
+</table>
+<table class="by_month" id="by_month_and_source">
 <thead>
 <tr>
 <th>Date</th>
@@ -79,6 +103,30 @@
 </thead>
 <tbody>
 {% for row_label, row in pivoted_totals_by_month_and_source.items %}
+    <tr>
+    <td>{{ row_label }}</td>
+    {% for cell in row %}
+        <td>
+        {% if cell %}
+            {{ cell.order_count }}, ${{ cell.order_extended_price|floatformat:2|intcomma }}
+        {% endif %}
+        </td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<table class="by_month" id="by_month_and_category">
+<thead>
+<tr>
+<th>Date</th>
+{% for header in pivoted_totals_by_month_and_category_headers %}
+<th>{{ header }}</th>
+{% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for row_label, row in pivoted_totals_by_month_and_category.items %}
     <tr>
     <td>{{ row_label }}</td>
     {% for cell in row %}

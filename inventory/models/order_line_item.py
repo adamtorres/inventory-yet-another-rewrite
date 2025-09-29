@@ -42,6 +42,20 @@ class OrderLineItemManager(models.Manager):
         qs = qs.order_by("-delivered_month")
         return qs
 
+    def totals_by_month_and_category(self, since_date: datetime.date=None):
+        qs = self.annotate(
+            delivered_month=functions.TruncMonth("order__delivered_date"),
+            category_id=models.F("source_item__item__category"),
+            category_name=models.F("source_item__item__category__name"),
+        )
+        if since_date:
+            qs = qs.filter(delivered_month__gte=since_date.replace(day=1))
+        annotations_for_totals = self._annotations_for_totals()
+        qs = qs.values("delivered_month", "category_name", "category_id")
+        qs = qs.annotate(**annotations_for_totals)
+        qs = qs.order_by("-delivered_month", "category_name")
+        return qs
+
     def totals_by_month_and_source(self, exclude_inactive=False, since_date: datetime.date=None):
         qs = self.annotate(
             delivered_month=functions.TruncMonth("order__delivered_date"),
@@ -58,6 +72,14 @@ class OrderLineItemManager(models.Manager):
         qs = qs.order_by("-delivered_month", "order_source_name")
         return qs
 
+    def pivoted_totals_by_month_and_category(self, since_date: datetime.date=None):
+        from .category import Category
+        totals_by_month_and_category = self.totals_by_month_and_category(since_date=since_date)
+        column_header = [f"{c.name}|{c.id}" for c in Category.objects.all().order_by("name")]
+        pivoted_order_totals = utils.pivot(
+            totals_by_month_and_category, "delivered_month", ["category_name", "category_id"], column_header)
+        return [ch.split("|", 1)[0] for ch in column_header], pivoted_order_totals
+
     def pivoted_totals_by_month_and_source(self, exclude_inactive=False, since_date: datetime.date=None):
         from .source import Source
         totals_by_month_and_source = self.totals_by_month_and_source(
@@ -65,7 +87,7 @@ class OrderLineItemManager(models.Manager):
         column_header = [f"{s.name}|{s.id}" for s in Source.objects.all().order_by("name")]
         pivoted_order_totals = utils.pivot(
             totals_by_month_and_source, "delivered_month", ["order_source_name", "order_source_id"], column_header)
-        return column_header, pivoted_order_totals
+        return [ch.split("|", 1)[0] for ch in column_header], pivoted_order_totals
 
 
 class OrderLineItem(models.Model):
