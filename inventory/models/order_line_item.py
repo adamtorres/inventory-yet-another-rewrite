@@ -3,6 +3,8 @@ import datetime
 from django.db import models
 from django.db.models import functions
 
+from . import utils
+
 
 class OrderLineItemManager(models.Manager):
     @staticmethod
@@ -55,6 +57,15 @@ class OrderLineItemManager(models.Manager):
         qs = qs.annotate(**annotations_for_totals)
         qs = qs.order_by("-delivered_month", "order_source_name")
         return qs
+
+    def pivoted_totals_by_month_and_source(self, exclude_inactive=False, since_date: datetime.date=None):
+        from .source import Source
+        totals_by_month_and_source = self.totals_by_month_and_source(
+            exclude_inactive=exclude_inactive, since_date=since_date)
+        column_header = [f"{s.name}|{s.id}" for s in Source.objects.all().order_by("name")]
+        pivoted_order_totals = utils.pivot(
+            totals_by_month_and_source, "delivered_month", ["order_source_name", "order_source_id"], column_header)
+        return column_header, pivoted_order_totals
 
 
 class OrderLineItem(models.Model):

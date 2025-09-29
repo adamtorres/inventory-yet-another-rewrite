@@ -20,6 +20,9 @@
     text-align: right;
     border-bottom: black 1px solid;
 }
+#by_month_and_source td {
+    border: black 1px solid;
+}
 </style>
 
 {% endblock %}
@@ -57,12 +60,36 @@
 {% for one_month in totals_by_month %}
 <div>
     <div class="stat-label">delivered month</div><div class="stat-value">{{ one_month.delivered_month|date:"Y-m" }}</div>
-    <div class="stat-label">damaged</div><div class="stat-value">${{ one_month.order_damaged_price|floatformat:2|intcomma }}</div>
+{#    <div class="stat-label">damaged</div><div class="stat-value">${{ one_month.order_damaged_price|floatformat:2|intcomma }}</div>#}
     <div class="stat-label">extended</div><div class="stat-value">${{ one_month.order_extended_price|floatformat:2|intcomma }}</div>
-    <div class="stat-label">line items</div><div class="stat-value">{{ one_month.order_line_item_count|intcomma }}</div>
-    <div class="stat-label">rejected</div><div class="stat-value">${{ one_month.order_rejected_price|floatformat:2|intcomma }}</div>
-    <div class="stat-label">tax</div><div class="stat-value">${{ one_month.order_tax|floatformat:2|intcomma }}</div>
+{#    <div class="stat-label">line items</div><div class="stat-value">{{ one_month.order_line_item_count|intcomma }}</div>#}
+{#    <div class="stat-label">rejected</div><div class="stat-value">${{ one_month.order_rejected_price|floatformat:2|intcomma }}</div>#}
+{#    <div class="stat-label">tax</div><div class="stat-value">${{ one_month.order_tax|floatformat:2|intcomma }}</div>#}
 </div>
 {% endfor %}
 </div>
+<table id="by_month_and_source">
+<thead>
+<tr>
+<th>Date</th>
+{% for header in pivoted_totals_by_month_and_source_headers %}
+<th>{{ header }}</th>
+{% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for row_label, row in pivoted_totals_by_month_and_source.items %}
+    <tr>
+    <td>{{ row_label }}</td>
+    {% for cell in row %}
+        <td>
+        {% if cell %}
+            {{ cell.order_count }}, ${{ cell.order_extended_price|floatformat:2|intcomma }}
+        {% endif %}
+        </td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</tbody>
+</table>
 {% endblock %}
