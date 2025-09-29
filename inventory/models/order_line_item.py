@@ -9,6 +9,7 @@ class OrderLineItemManager(models.Manager):
     def _annotations_for_totals():
         return {
             # per_weight_price
+            "order_count": models.Count("order__id", distinct=True),
             "order_extended_price": models.Sum("extended_price"),
             "order_tax": models.Sum("tax"),
             "order_line_item_count": models.Count("id"),
@@ -37,6 +38,22 @@ class OrderLineItemManager(models.Manager):
         qs = qs.values("delivered_month")
         qs = qs.annotate(**annotations_for_totals)
         qs = qs.order_by("-delivered_month")
+        return qs
+
+    def totals_by_month_and_source(self, exclude_inactive=False, since_date: datetime.date=None):
+        qs = self.annotate(
+            delivered_month=functions.TruncMonth("order__delivered_date"),
+            order_source_id=models.F("order__source"),
+            order_source_name=models.F("order__source__name"),
+        )
+        if since_date:
+            qs = qs.filter(delivered_month__gte=since_date.replace(day=1))
+        if exclude_inactive:
+            qs = qs.filter(order__source__active=True)
+        annotations_for_totals = self._annotations_for_totals()
+        qs = qs.values("delivered_month", "order_source_name", "order_source_id")
+        qs = qs.annotate(**annotations_for_totals)
+        qs = qs.order_by("-delivered_month", "order_source_name")
         return qs
 
 
