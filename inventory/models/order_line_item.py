@@ -1,4 +1,93 @@
+import datetime
+
 from django.db import models
+from django.db.models import functions
+
+from . import utils
+
+
+class OrderLineItemManager(models.Manager):
+    @staticmethod
+    def _annotations_for_totals():
+        return {
+            # per_weight_price
+            "order_count": models.Count("order__id", distinct=True),
+            "order_extended_price": models.Sum("extended_price"),
+            "order_tax": models.Sum("tax"),
+            "order_line_item_count": models.Count("id"),
+            # TODO: Account for backorders or out of stock items. https://github.com/adamtorres/inventory-yet-another-rewrite/issues/35
+            "order_rejected_price": models.Sum(models.Case(
+                models.When(
+                    models.Q(rejected=True),
+                    models.F("extended_price") + models.F("tax")),
+                default=models.Value(0),
+                output_field=models.DecimalField(max_digits=10, decimal_places=4)
+            )),
+            "order_damaged_price": models.Sum(models.Case(
+                models.When(
+                    models.Q(damaged=True),
+                    models.F("extended_price") + models.F("tax")),
+                default=models.Value(0),
+                output_field=models.DecimalField(max_digits=10, decimal_places=4)
+            )),
+        }
+
+    def totals_by_month(self, since_date: datetime.date=None):
+        qs = self.annotate(delivered_month=functions.TruncMonth("order__delivered_date"))
+        if since_date:
+            qs = qs.filter(delivered_month__gte=since_date.replace(day=1))
+        annotations_for_totals = self._annotations_for_totals()
+        qs = qs.values("delivered_month")
+        qs = qs.annotate(**annotations_for_totals)
+        qs = qs.order_by("-delivered_month")
+        return qs
+
+    def totals_by_month_and_category(self, since_date: datetime.date=None):
+        qs = self.annotate(
+            delivered_month=functions.TruncMonth("order__delivered_date"),
+            category_id=models.F("source_item__item__category"),
+            category_name=models.F("source_item__item__category__name"),
+        )
+        if since_date:
+            qs = qs.filter(delivered_month__gte=since_date.replace(day=1))
+        annotations_for_totals = self._annotations_for_totals()
+        qs = qs.values("delivered_month", "category_name", "category_id")
+        qs = qs.annotate(**annotations_for_totals)
+        qs = qs.order_by("-delivered_month", "category_name")
+        return qs
+
+    def totals_by_month_and_source(self, exclude_inactive=False, since_date: datetime.date=None):
+        qs = self.annotate(
+            delivered_month=functions.TruncMonth("order__delivered_date"),
+            order_source_id=models.F("order__source"),
+            order_source_name=models.F("order__source__name"),
+        )
+        if since_date:
+            qs = qs.filter(delivered_month__gte=since_date.replace(day=1))
+        if exclude_inactive:
+            qs = qs.filter(order__source__active=True)
+        annotations_for_totals = self._annotations_for_totals()
+        qs = qs.values("delivered_month", "order_source_name", "order_source_id")
+        qs = qs.annotate(**annotations_for_totals)
+        qs = qs.order_by("-delivered_month", "order_source_name")
+        return qs
+
+    def pivoted_totals_by_month_and_category(self, since_date: datetime.date=None):
+        from .category import Category
+        totals_by_month_and_category = self.totals_by_month_and_category(since_date=since_date)
+        column_header = [f"{c.name}|{c.id}" for c in Category.objects.all().order_by("name")]
+        pivoted_order_totals = utils.pivot(
+            totals_by_month_and_category, "delivered_month", ["category_name", "category_id"], column_header)
+        return [ch.split("|", 1)[0] for ch in column_header], pivoted_order_totals
+
+    def pivoted_totals_by_month_and_source(self, exclude_inactive=False, since_date: datetime.date=None):
+        from .source import Source
+        totals_by_month_and_source = self.totals_by_month_and_source(
+            exclude_inactive=exclude_inactive, since_date=since_date)
+        column_header = [f"{s.name}|{s.id}" for s in Source.objects.all().order_by("name")]
+        pivoted_order_totals = utils.pivot(
+            totals_by_month_and_source, "delivered_month", ["order_source_name", "order_source_id"], column_header)
+        return [ch.split("|", 1)[0] for ch in column_header], pivoted_order_totals
 
 
 class OrderLineItem(models.Model):
@@ -31,6 +120,8 @@ class OrderLineItem(models.Model):
 
     raw_import_data = models.JSONField(
         null=True, blank=True, help_text="Raw JSON data that contributed to this object's creation.")
+
+    objects = OrderLineItemManager()
 
     class Meta:
         ordering = ["-order__delivered_date", "order__source", "line_item_number"]
