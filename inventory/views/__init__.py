@@ -18,7 +18,7 @@ from .source import (
     SourceUpdateView, SourceListView, SourceDetailView, SourceDeleteView, SourceCreateView, APISourceView)
 from .source_item import (
     SourceItemUpdateView, SourceItemListView, SourceItemDetailView, SourceItemDeleteView, SourceItemCreateView,
-    SourceItemSearchView, APISourceItemView)
+    SourceItemSearchView, SourceItemTestDropDownView, APISourceItemView)
 from .stats import StatsView
 from .unit_size import (
     UnitSizeUpdateView, UnitSizeListView, UnitSizeDetailView, UnitSizeDeleteView, UnitSizeCreateView, APIUnitSizeView)

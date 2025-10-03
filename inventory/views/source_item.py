@@ -60,6 +60,11 @@ class SourceItemSearchView(u_mixins.UserAccessMixin, generic.TemplateView):
     model = inv_models.SourceItem
 
 
+class SourceItemTestDropDownView(u_mixins.UserAccessMixin, generic.TemplateView):
+    template_name = "inventory/sourceitem_test_dropdown.html"
+    model = inv_models.SourceItem
+
+
 class APISourceItemView(inv_utils.APISearchView):
     model = inv_models.SourceItem
     serializer = inv_serializers.APISourceItemSerializer
@@ -75,4 +80,5 @@ class APISourceItemView(inv_utils.APISearchView):
             "subunit_amount", "subunit_amount_text", "subunit_size__unit"],
         'source': ["source__name", "source__id"],
         'category': ["source_category", "item__category__name"],
+        'wider_search': ["item__name", "cryptic_name", "expanded_name", "common_name", "item_number", "extra_number"]
     }

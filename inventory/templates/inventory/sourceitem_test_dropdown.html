@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inventory : Source Item Search{% endblock %}
+
+{% block content %}
+<form id="search_form">
+<div>
+<label for="search_wider">Code:</label>
+<input type="text" id="search_wider" data-search-field="wider_search" placeholder="name or code">
+</div>
+</form>
+
+<div id="results_in_div" style="">
+<hr />
+Results in divs
+<div id="templates" style="display: none;">
+    <div id="search_result_template_div">
+        <a href="" data-href-fn=get_source_item_url>
+        <span data-field="id">__id__</span>
+        <span data-field="source">__source__</span>
+        <span data-field="item_category">__item_category__</span>
+        <span data-field="item_description">__item_description__</span>
+        <span data-field="item_name">__item_name__</span>
+        <span data-field="brand">__brand__</span>
+        <span data-field="source_category">__source_category__</span>
+        <span data-field="unit_size_unit">__unit_size_unit__</span>
+        <span data-field="unit_amount">__unit_amount__</span>
+        <span data-field="unit_amount_text">__unit_amount_text__</span>
+        <span data-field="subunit_size_unit">__subunit_size_unit__</span>
+        <span data-field="subunit_amount">__subunit_amount__</span>
+        <span data-field="subunit_amount_text">__subunit_amount_text__</span>
+        <span data-field="active">__active__</span>
+        <span data-field="quantity">__quantity__</span>
+        <span data-field="allow_split_pack">__allow_split_pack__</span>
+        <span data-field="cryptic_name">__cryptic_name__</span>
+        <span data-field="expanded_name">__expanded_name__</span>
+        <span data-field="common_name">__common_name__</span>
+        <span data-field="item_number">__item_number__</span>
+        <span data-field="extra_number">__extra_number__</span>
+        </a>
+    </div>
+    <div id="search_no_result_template_div">
+        Nope.
+    </div>
+</div>
+<div id="search_results_div">
+
+</div>
+</div>
+<hr />
+{% endblock %}
+
+{% block body_scripts %}
+<script src="{% static "js/search.js" %}"></script>
+<script>
+function get_source_item_url(source_item_id) {
+    let some_url = "{% url "inventory:sourceitem_detail" pk="9999" %}";
+    return some_url.replace("9999", `${source_item_id}`);
+}
+
+srch_url = "{% url "inventory:api_sourceitem" %}";
+
+result_style_ids = {
+    "div": {
+        "container": "results_in_div",
+        "results": "search_results_div",
+        "template": "search_result_template_div",
+        "no_results_template": "search_no_result_template_div",
+    },
+}
+active_result_styles = ["div"];
+
+function setup_events() {
+}
+
+(function() {
+    // onload based on https://stackoverflow.com/a/9899701
+    setup_events();
+})();
+</script>
+
+{% endblock %}
