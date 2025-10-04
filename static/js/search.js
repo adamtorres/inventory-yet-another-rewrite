@@ -4,8 +4,15 @@ var srch_url = "url for the json API";
 // Matches the keys in result_style_ids.  Only those in this list will be populated with search results.
 var active_result_styles = ["div"];
 
+const srch_post_populate_results_name = 'srch-post-popultate-results';
+
 // event triggered after the results are added to the page.
-const srch_post_popultate_results = new CustomEvent('srch-post-popultate-results');
+const srch_post_popultate_results = new CustomEvent(srch_post_populate_results_name);
+
+// custom click event attached to each new search result.
+const srch_result_onclick_name = "srch-result-onclick";
+
+let srch_abort_controller = new AbortController();
 
 var result_style_ids = {
     // The value of the key is arbitrary.  It just represents one of the output styles.
@@ -53,6 +60,12 @@ function srch_add_result(item_to_add, _result_style) {
         new_result.removeAttribute("id");
         srch_get_result_element(_result_style).appendChild(new_result);
         new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
+        for (const element of new_result.getElementsByClassName("search_result_clicky")) {
+            // elements are created and removed.  Using CustomEvent so the page has something permanent to listen for.
+            element.addEventListener("click", (event) => {
+                element.dispatchEvent(new CustomEvent(srch_result_onclick_name, {bubbles: true}));
+            }, {signal: srch_abort_controller.signal});
+        }
     }
 }
 function srch_convert_values_to_query_string(values_to_send) {
@@ -165,7 +178,12 @@ function srch_populate_results(data) {
     document.dispatchEvent(srch_post_popultate_results);
 }
 function srch_remove_all_results(_result_style) {
-    // Clear any existing search results in preparation for either "No results" or new elements.
+    // Clears any existing search results in preparation for either "No results" or new elements.
+
+    // remove any events added to search results.  Replaces the controller since it is a fire-once thing.
+    srch_abort_controller.abort();
+    srch_abort_controller = new AbortController();
+
     let _srch_results_element = srch_get_result_element(_result_style);
     if (_srch_results_element.firstChild === null) {
         return;

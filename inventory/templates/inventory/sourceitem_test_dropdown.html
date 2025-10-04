@@ -79,8 +79,6 @@
 </form>
 
 <div id="results_in_div" style="">
-<hr />
-Results in divs
 <div id="templates" style="display: none;">
     <div class="search_result" id="search_result_template_div">
         <a class="search_result_clicky">
@@ -143,12 +141,15 @@ function copy_to(el) {
 }
 
 function base_onclick(e) {
-    console.log("base_onclick");
     let closest = e.target.closest('.search_result_clicky');
     if (closest && document.getElementById("search_results_div").contains(closest)) {
         copy_to(closest);
         hide_dropdown();
     }
+}
+
+function delayed_hide_dropdown() {
+    setTimeout(hide_dropdown, 500);
 }
 
 function hide_dropdown() {
@@ -160,16 +161,10 @@ function show_dropdown() {
 }
 
 function setup_events() {
-    // Issue: The focusout event executes before the click event because the focusout is directly attached to the element that caused it.
-    // The click event is on a parent.  Events start at the element and work their way out to the window element.
-    // The result is the click event doesn't fire because it is hidden by the time the event manager gets to it.
-    document.getElementById("search_results_div").addEventListener('click', base_onclick);
-    document.getElementById("search_wider").addEventListener('focusout', hide_dropdown);
+    document.addEventListener(srch_result_onclick_name, base_onclick);
+    document.getElementById("search_wider").addEventListener('focusout', delayed_hide_dropdown);
     document.getElementById("search_wider").addEventListener('focusin', show_dropdown);
-    // once, passive, signal, capture
-    document.addEventListener('srch-post-popultate-results', (event) => {
-        show_dropdown();
-    });
+    document.addEventListener(srch_post_populate_results_name, show_dropdown);
 }
 
 (function() {
