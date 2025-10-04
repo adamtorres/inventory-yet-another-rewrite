@@ -4,6 +4,9 @@ var srch_url = "url for the json API";
 // Matches the keys in result_style_ids.  Only those in this list will be populated with search results.
 var active_result_styles = ["div"];
 
+// event triggered after the results are added to the page.
+const srch_post_popultate_results = new CustomEvent('srch-post-popultate-results');
+
 var result_style_ids = {
     // The value of the key is arbitrary.  It just represents one of the output styles.
     "div": {
@@ -159,6 +162,7 @@ function srch_populate_results(data) {
             srch_add_result(item, _result_style);
         }
     }
+    document.dispatchEvent(srch_post_popultate_results);
 }
 function srch_remove_all_results(_result_style) {
     // Clear any existing search results in preparation for either "No results" or new elements.

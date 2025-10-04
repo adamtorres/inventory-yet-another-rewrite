@@ -40,7 +40,7 @@
 }
 
 .dropdown:hover .dropdown-content {
-  display: block;
+  /* display: block; */
 }
 
 .dropdown:hover .dropbtn {
@@ -136,28 +136,40 @@ result_style_ids = {
 active_result_styles = ["div"];
 
 function copy_to(el) {
+    // Copy the selected item's information to the specified fields.
     for (const element of el.querySelectorAll("[data-copy-to]")) {
-        copy_to_element = document.getElementById(element.dataset.copyTo);
-        copy_to_element.value = element.innerText;
+        document.getElementById(element.dataset.copyTo).value = element.innerText;
     }
-    document.getElementsByClassName("dropdown-content")[0].style.display = "";
 }
 
 function base_onclick(e) {
-    console.log("click");
-    console.log(e);
-    let base = document.querySelector('#search_results_div'); // the container for the variable content
+    console.log("base_onclick");
     let closest = e.target.closest('.search_result_clicky');
-    if (closest && base.contains(closest)) {
+    if (closest && document.getElementById("search_results_div").contains(closest)) {
         copy_to(closest);
+        hide_dropdown();
     }
 }
 
+function hide_dropdown() {
+    document.getElementsByClassName("dropdown-content")[0].style.display = "";
+}
+
+function show_dropdown() {
+    document.getElementsByClassName("dropdown-content")[0].style.display = "block";
+}
+
 function setup_events() {
-    console.log("setup_events...");
-    // class=search_result_div
-    let base = document.querySelector('#search_results_div'); // the container for the variable content
-    base.addEventListener('click', base_onclick);
+    // Issue: The focusout event executes before the click event because the focusout is directly attached to the element that caused it.
+    // The click event is on a parent.  Events start at the element and work their way out to the window element.
+    // The result is the click event doesn't fire because it is hidden by the time the event manager gets to it.
+    document.getElementById("search_results_div").addEventListener('click', base_onclick);
+    document.getElementById("search_wider").addEventListener('focusout', hide_dropdown);
+    document.getElementById("search_wider").addEventListener('focusin', show_dropdown);
+    // once, passive, signal, capture
+    document.addEventListener('srch-post-popultate-results', (event) => {
+        show_dropdown();
+    });
 }
 
 (function() {
