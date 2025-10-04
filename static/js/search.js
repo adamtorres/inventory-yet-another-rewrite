@@ -44,6 +44,9 @@ function srch_add_result(item_to_add, _result_style) {
                 element.href = window[element.dataset.hrefFn](href_args);
             }
         }
+        if (item_to_add.hasOwnProperty("id")) {
+            new_result.dataset.id = item_to_add["id"];
+        }
         new_result.removeAttribute("id");
         srch_get_result_element(_result_style).appendChild(new_result);
         new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
