@@ -1,0 +1,8 @@
+<div class="dropdown">
+    <input
+        type="hidden" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}
+        {% include "django/forms/widgets/attrs.html" %}>
+
+    <input class="dropbtn model_picker" type="text" id="{{ widget.attrs.id }}-search-wider" data-search-field="wider_search" placeholder="{{ widget.attrs.placeholder }}">
+    <div class="dropdown-content" id="search_results_div"></div>
+</div>
