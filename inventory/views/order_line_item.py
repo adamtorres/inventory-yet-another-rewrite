@@ -10,10 +10,11 @@ from user import mixins as u_mixins
 
 class OrderLineItemCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     model = inv_models.OrderLineItem
-    fields = [
-        "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
-        "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price", "per_pack_weights",
-        "total_weight", "notes", "damaged", "rejected", "rejected_reason",]
+    form_class = inv_forms.OrderLineItemForm
+    # fields = [
+    #     "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
+    #     "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price", "per_pack_weights",
+    #     "total_weight", "notes", "damaged", "rejected", "rejected_reason",]
 
     def get_initial(self):
         initial = super().get_initial()

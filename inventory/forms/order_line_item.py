@@ -5,12 +5,14 @@ from email.policy import default
 from django import forms
 
 from inventory import models as inv_models
+from inventory.forms import widgets as inv_widgets
 
 
 class OrderLineItemForm(forms.ModelForm):
     template_name_table = "inventory/forms/order_line_item_form_table.html"
     template_name_div = "inventory/forms/order_line_item_form_div.html"
-    source_item = forms.ModelChoiceField(inv_models.SourceItem.objects.all())
+    order = forms.IntegerField(widget=forms.HiddenInput)
+    source_item = forms.IntegerField(widget=inv_widgets.ModelPickerWidget)
     line_item_number = forms.IntegerField()
     quantity_ordered = forms.IntegerField()
     quantity_delivered = forms.IntegerField()

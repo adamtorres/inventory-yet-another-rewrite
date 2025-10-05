@@ -3,6 +3,11 @@
 
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Order Line Item{% endblock %}
 
+{% block styles %}
+    <!-- hi -->
+{{ form.media.css }}
+{% endblock %}
+
 {% block breadcrumb %}
     <div><a href="{% url "inventory:order_search" %}">Order Search</a></div>
     |
@@ -10,11 +15,14 @@
 {% endblock %}
 
 {% block content %}
+{# TODO: OrderLineItemCreateView http://localhost:8000/inventory/order/5713/lineitem/testnew #}
 <form method="post">
     {% csrf_token %}
     {% for field in form %}
         <div class="custom-field-wrapper">
-            {{ field.label_tag }}
+            {% if not field.is_hidden %}
+                {{ field.label_tag }}
+            {% endif %}
             {{ field }}
             {% if field.id_for_label == "id_source_item" %}
                 <a class="my-pop-up" href="{% url "inventory:sourceitem_create" %}"
@@ -48,6 +56,7 @@
 {% block body_scripts %}
 <script src="{% static "js/not_jquery.js" %}"></script>
 <script src="{% static "js/popup_create.js" %}"></script>
+{{ form.media.js }}
 <script>
 // `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
 ready(popup_create_setup);
