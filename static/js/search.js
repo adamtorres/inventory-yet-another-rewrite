@@ -4,6 +4,8 @@ var srch_url = "url for the json API";
 // Matches the keys in result_style_ids.  Only those in this list will be populated with search results.
 var active_result_styles = ["div"];
 
+var srch_form_id = "search_form";
+
 const srch_post_populate_results_name = 'srch-post-popultate-results';
 
 // event triggered after the results are added to the page.
@@ -73,13 +75,16 @@ function srch_convert_values_to_query_string(values_to_send) {
     for (const pair of values_to_send.search_terms) {
         params.append(pair.key, pair.value);
     }
+    if (values_to_send.hasOwnProperty("echo")) {
+        params.append("echo", JSON.stringify(values_to_send.echo));
+    }
     return params.toString();
 }
 function srch_filter_keydown(e) {
     if (srch_key_is_visible(e)){
-        srch_start_timer();
+        srch_start_timer(e.target);
     } else if (!srch_key_is_not_visible(e)) {
-        srch_start_timer();
+        srch_start_timer(e.target);
     }
 }
 function srch_get_href_args(e) {
@@ -103,6 +108,7 @@ function srch_get_no_result_element_template(_result_style) {
 }
 function srch_get_result_element(_result_style) {
     // The root of the container element for search results.
+    // TODO: This needs to handle form-named fields.  "{{ widget.attrs.id }}-search-results-div"
     return document.getElementById(result_style_ids[_result_style]["results"]);
 }
 function srch_get_result_element_template(_result_style) {
@@ -117,7 +123,8 @@ function srch_get_result_element_template(_result_style) {
     return [document.getElementById(result_style_ids[_result_style]["template"])];
 }
 function srch_get_search_elements() {
-    const form = document.getElementById("search_form");
+    console.log(`srch_get_search_elements for srch_form_id = "${srch_form_id}"`);
+    const form = document.getElementById(srch_form_id);
     return form.querySelectorAll("[data-search-field]");
 }
 function srch_get_values_to_send() {
@@ -164,17 +171,20 @@ function srch_no_results() {
         new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
     }
 }
-function srch_populate_results(data) {
-    if (data.length === 0) {
+function srch_populate_results(data_packet) {
+    // console.log(`srch_populate_results(echo=...)`);
+    // console.log(data_packet.echo);
+    if (data_packet.data.length === 0) {
         srch_no_results();
         return;
     }
     for (const _result_style of active_result_styles) {
         srch_remove_all_results(_result_style);
-        for (const item of data) {
+        for (const item of data_packet.data) {
             srch_add_result(item, _result_style);
         }
     }
+    srch_post_popultate_results.detail = data_packet.echo;
     document.dispatchEvent(srch_post_popultate_results);
 }
 function srch_remove_all_results(_result_style) {
@@ -205,20 +215,26 @@ function srch_setup_events() {
         }
         if ((element.tagName === "INPUT") && (element.type === "checkbox")) {
             element.addEventListener('onclick', (event) => {
-                srch_start_timer();
+                srch_start_timer(event.target);
             });
         }
     }
 }
-function srch_start_timer() {
+function srch_start_timer(e) {
     window.clearTimeout(srch_keypress_timer);
-    srch_keypress_timer = setTimeout(srch_timer_elapsed_func, 750);
+    srch_keypress_timer = setTimeout(() => {
+        srch_timer_elapsed_func(e);
+    }, 750);
 }
 function srch_timer_elapsed_func(caller_obj) {
     let values_to_send = srch_get_values_to_send();
     if (values_to_send.empty) {
         srch_no_results();
         return;
+    }
+    console.log(caller_obj);
+    if (caller_obj.hasAttributes("id")) {
+        values_to_send["echo"] = {"id": caller_obj.id};
     }
     let query_string = srch_convert_values_to_query_string(values_to_send)
     const xhttp = new XMLHttpRequest();
@@ -229,9 +245,10 @@ function srch_timer_elapsed_func(caller_obj) {
     xhttp.open("GET", srch_url + "?" + query_string, true);
     xhttp.send();
 }
-
-(function() {
-    // onload based on https://stackoverflow.com/a/9899701
+// ready(...) is in not_jquery.js and replaces $( document ).ready(...).
+// Using (function() {...})(); doesn't wait for the rest of the page to load.  Setting srch_form_id in the page isn't
+// applied yet.
+ready(() => {
     srch_setup_events();
     srch_no_results();
-})();
+});

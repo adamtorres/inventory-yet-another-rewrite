@@ -116,11 +116,6 @@
 {% block body_scripts %}
 <script src="{% static "js/search.js" %}"></script>
 <script>
-function get_source_item_url(source_item_id) {
-    let some_url = "{% url "inventory:sourceitem_detail" pk="9999" %}";
-    return some_url.replace("9999", `${source_item_id}`);
-}
-
 srch_url = "{% url "inventory:api_sourceitem" %}";
 
 result_style_ids = {

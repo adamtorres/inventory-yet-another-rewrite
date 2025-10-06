@@ -4,5 +4,5 @@
         {% include "django/forms/widgets/attrs.html" %}>
 
     <input class="dropbtn model_picker" type="text" id="{{ widget.attrs.id }}-search-wider" data-search-field="wider_search" placeholder="{{ widget.attrs.placeholder }}">
-    <div class="dropdown-content" id="search_results_div"></div>
+    <div class="dropdown-content" id="{{ widget.attrs.id }}-search-results-div"></div>
 </div>

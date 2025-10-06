@@ -267,6 +267,7 @@ Results in divs
 {% endblock %}
 
 {% block body_scripts %}
+<script src="{% static "js/not_jquery.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
 <script>
 function get_source_item_url(source_item_id) {
@@ -314,10 +315,10 @@ function update_result_style() {
     for (const element of document.querySelectorAll("[name=result_style_selector]")) {
         if (element.checked) {
             active_result_styles.push(element.value);
-            console.log(`active element: "${element.name}" "${element.id}" "${element.value}"`);
+            {#console.log(`active element: "${element.name}" "${element.id}" "${element.value}"`);#}
             document.getElementById(result_style_ids[element.value]["container"]).style.display = "";
         } else {
-            console.log(`disabled element: "${element.name}" "${element.id}" "${element.value}"`);
+            {#console.log(`disabled element: "${element.name}" "${element.id}" "${element.value}"`);#}
             document.getElementById(result_style_ids[element.value]["container"]).style.display = "none";
             srch_remove_all_results(element.value);
         }

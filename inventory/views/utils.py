@@ -95,6 +95,7 @@ class APISearchView(views.APIView):
         # none = this included with the others
         # | = this or any of the other | values
         # - = this excluded from the others
+        echo = json.loads(request.GET.get("echo") or "")
         search_terms = self.get_search_terms_from_request(request)
         all_obj_requested = request.GET.get("all_objects", "0") == "1"
         if not search_terms and not all_obj_requested:
@@ -110,7 +111,11 @@ class APISearchView(views.APIView):
             qs = qs.order_by(*self.order_fields)
         qs = self.limit_result(qs, request)
         data = self.serializer(qs, many=True).data
-        return response.Response(data)
+        data_packet = {
+            "echo": echo,
+            "data": data
+        }
+        return response.Response(data_packet)
 
     def get_search_terms_from_request(self, request):
         """

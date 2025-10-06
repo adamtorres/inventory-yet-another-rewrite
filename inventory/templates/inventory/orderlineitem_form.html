@@ -16,7 +16,7 @@
 
 {% block content %}
 {# TODO: OrderLineItemCreateView http://localhost:8000/inventory/order/5713/lineitem/testnew #}
-<form method="post">
+<form method="post" id="order-line-item-create-form">
     {% csrf_token %}
     {% for field in form %}
         <div class="custom-field-wrapper">
@@ -51,6 +51,38 @@
 <div>
     <a href="{% url "inventory:order_detail" pk=order_pk %}">Cancel and go back to order</a>
 </div>
+<div id="results_in_div" style="">
+<div id="templates" style="display: none;">
+    <div class="search_result" id="search_result_template_div">
+        <a class="search_result_clicky">
+            <span data-copy-to="x_id" data-field="id">__id__</span>
+            <span data-copy-to="x_source" data-field="source">__source__</span>
+            <span data-copy-to="x_item_category" data-field="item_category">__item_category__</span>
+            <span data-copy-to="x_item_description" data-field="item_description">__item_description__</span>
+            <span data-copy-to="x_item_name" data-field="item_name">__item_name__</span>
+            <span data-copy-to="x_brand" data-field="brand">__brand__</span>
+            <span data-copy-to="x_source_category" data-field="source_category">__source_category__</span>
+            <span data-copy-to="x_unit_size_unit" data-field="unit_size_unit">__unit_size_unit__</span>
+            <span data-copy-to="x_unit_amount" data-field="unit_amount">__unit_amount__</span>
+            <span data-copy-to="x_unit_amount_text" data-field="unit_amount_text">__unit_amount_text__</span>
+            <span data-copy-to="x_subunit_size_unit" data-field="subunit_size_unit">__subunit_size_unit__</span>
+            <span data-copy-to="x_subunit_amount" data-field="subunit_amount">__subunit_amount__</span>
+            <span data-copy-to="x_subunit_amount_text" data-field="subunit_amount_text">__subunit_amount_text__</span>
+            <span data-copy-to="x_active" data-field="active">__active__</span>
+            <span data-copy-to="x_quantity" data-field="quantity">__quantity__</span>
+            <span data-copy-to="x_allow_split_pack" data-field="allow_split_pack">__allow_split_pack__</span>
+            <span data-copy-to="x_cryptic_name" data-field="cryptic_name">__cryptic_name__</span>
+            <span data-copy-to="x_expanded_name" data-field="expanded_name">__expanded_name__</span>
+            <span data-copy-to="x_common_name" data-field="common_name">__common_name__</span>
+            <span data-copy-to="x_item_number" data-field="item_number">__item_number__</span>
+            <span data-copy-to="x_extra_number" data-field="extra_number">__extra_number__</span>
+        </a>
+    </div>
+    <div id="search_no_result_template_div">
+        Nope.
+    </div>
+</div>
+</div>
 {% endblock %}
 
 {% block body_scripts %}
@@ -60,6 +92,19 @@
 <script>
 // `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
 ready(popup_create_setup);
+
+srch_form_id = "order-line-item-create-form";
+srch_url = "{% url "inventory:api_sourceitem" %}";
+result_style_ids = {
+    "div": {
+        // "container": "results_in_div",  // TODO: result_style_ids["div"]["container"] Does not appear used.
+        "results": "search_results_div",  // TODO: this is set as "{{ widget.attrs.id }}-search-results-div"
+        "template": "search_result_template_div",  // static - assuming only one type of search is done on the page.
+        "no_results_template": "search_no_result_template_div",  // also static.
+    },
+}
+active_result_styles = ["div"];
+
 popup_properties = "height=500,width=800,resizable=yes,scrollbars=yes";
 function format_source_item(e) {
     let formatted = "";
