@@ -103,6 +103,17 @@ function srch_filter_keydown(e) {
     }
 }
 
+function srch_get_attributes_from_caller_obj(caller_obj) {
+    let caller_attributes = {};
+    if (caller_obj.hasAttributes("id")) {
+        caller_attributes["id"] = caller_obj.id;
+    }
+    if (caller_obj.dataset.searchDestination != null) {
+        caller_attributes["destination"] = caller_obj.dataset.searchDestination;
+    }
+    return caller_attributes;
+}
+
 function srch_get_href_args(element) {
     /*
     Returns the data attributes of element e which are named "data-href-arg-*".
@@ -234,6 +245,7 @@ function srch_populate_results(data_packet) {
     * Given a data packet returned from the API, clear existing results and add in the new ones.
     * Raises a custom event to allow the page to react when searches complete.
     * */
+    console.log(data_packet);
     if (data_packet.data.length === 0) {
         srch_no_results();
         return;
@@ -312,9 +324,7 @@ function srch_timer_elapsed_func(caller_obj) {
     }
     if (caller_obj != null) {
         // In limited cases, the caller_obj is not specified.  Cannot call hasAttributes on null.
-        if (caller_obj.hasAttributes("id")) {
-            values_to_send["echo"] = {"id": caller_obj.id};
-        }
+        values_to_send["echo"] = srch_get_attributes_from_caller_obj(caller_obj);
     }
     let query_string = srch_convert_values_to_query_string(values_to_send)
     const xhttp = new XMLHttpRequest();

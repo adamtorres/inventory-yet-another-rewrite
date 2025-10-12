@@ -18,6 +18,8 @@
 {# TODO: OrderLineItemCreateView http://localhost:8000/inventory/order/5713/lineitem/testnew #}
 <form method="post" id="order-line-item-create-form">
     {% csrf_token %}
+    {{ form.non_field_errors }}
+    <!-- form prefix: "{{ form.prefix }}" -->
     {% for field in form %}
         <div class="custom-field-wrapper">
             {% if not field.is_hidden %}

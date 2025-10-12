@@ -10,7 +10,7 @@ function model_picker_onclick(e) {
     let closest = e.target.closest('.search_result_clicky');
     // e.target == might be the <span> which was clicked?
     // closest == should be the <a> containing the clicked <span>
-    console.log("model_picker_onclick")
+    console.log("model_picker_onclick");
     console.log(e.target);
     console.log(closest);
     if (closest && document.getElementById("search_results_div").contains(closest)) {
@@ -56,8 +56,6 @@ function model_picker_setup_events() {
     document.addEventListener(srch_post_populate_results_name, model_picker_show_dropdown);
 }
 
-(function() {
-    // onload based on https://stackoverflow.com/a/9899701
-    // TODO: Will automatically calling the setup events cause issues?  Does this style of 'onload' behave differently in a .js as it does in the main .html?
+ready(() => {
     model_picker_setup_events();
-})();
+});
