@@ -16,10 +16,9 @@ class ModelPickerWidget(forms.widgets.TextInput):
             'js/model_picker_widget.js',
         ]
 
-    def __init__(self, attrs=None, *args, **kwargs):
-        attrs = attrs or {}
-        self.placeholder = kwargs.get("placeholder", self.placeholder)
-        super().__init__(attrs)
+    def __init__(self, attrs=None, *args, placeholder=None, **kwargs):
+        self.placeholder = placeholder or self.placeholder
+        super().__init__(attrs or {})
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)

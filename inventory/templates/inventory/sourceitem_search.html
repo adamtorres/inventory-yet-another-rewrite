@@ -276,32 +276,39 @@ function get_source_item_url(source_item_id) {
 }
 
 srch_url = "{% url "inventory:api_sourceitem" %}";
-
-result_style_ids = {
+possible_result_ids = {
     "div": {
-        "container": "results_in_div",
-        "results": "search_results_div",
-        "template": "search_result_template_div",
-        "no_results_template": "search_no_result_template_div",
+        "container_id": "results_in_div",
+        "result_element_id": "search_results_div",
+        "template_id": "search_result_template_div",
+        "no_results_template_id": "search_no_result_template_div",
     },
     "ul": {
-        "container": "results_in_ul",
-        "results": "search_results_ul",
-        "template": "search_result_template_ul",
-        "no_results_template": "search_no_result_template_ul",
+        "container_id": "results_in_ul",
+        "result_element_id": "search_results_ul",
+        "template_id": "search_result_template_ul",
+        "no_results_template_id": "search_no_result_template_ul",
     },
     "table": {
-        "container": "results_in_table",
-        "results": "search_results_table",
-        "template": "search_result_template_tablerow",
-        "no_results_template": "search_no_result_template_tablerow",
+        "container_id": "results_in_table",
+        "result_element_id": "search_results_table",
+        "template_id": "search_result_template_tablerow",
+        "no_results_template_id": "search_no_result_template_tablerow",
     },
     "table-multiline": {
-        "container": "results_in_table_multiline",
-        "results": "search_results_table_ml",
-        "template": ["search_result_template_tablerow_ml", "search_result_template_tablerow_ml2"],
-        "no_results_template": "search_no_result_template_tablerow_ml",
+        "container_id": "results_in_table_multiline",
+        "result_element_id": "search_results_table_ml",
+        "template_id": ["search_result_template_tablerow_ml", "search_result_template_tablerow_ml2"],
+        "no_results_template_id": "search_no_result_template_table_ml",
     },
+}
+result_ids = [
+]
+
+function hide_all_results() {
+    for (const result_style_key in possible_result_ids) {
+        document.getElementById(possible_result_ids[result_style_key]["container_id"]).style.display = "none";
+    }
 }
 function setup_events() {
     for (const element of document.querySelectorAll("[name=result_style_selector]")) {
@@ -311,16 +318,15 @@ function setup_events() {
     }
 }
 function update_result_style() {
-    active_result_styles = [];
+    srch_remove_all_results();
+    hide_all_results();
+    result_ids = [];
     for (const element of document.querySelectorAll("[name=result_style_selector]")) {
         if (element.checked) {
-            active_result_styles.push(element.value);
+            let _result_style = possible_result_ids[element.value];
+            result_ids.push({..._result_style});
             {#console.log(`active element: "${element.name}" "${element.id}" "${element.value}"`);#}
-            document.getElementById(result_style_ids[element.value]["container"]).style.display = "";
-        } else {
-            {#console.log(`disabled element: "${element.name}" "${element.id}" "${element.value}"`);#}
-            document.getElementById(result_style_ids[element.value]["container"]).style.display = "none";
-            srch_remove_all_results(element.value);
+            document.getElementById(_result_style["container_id"]).style.display = "";
         }
     }
     srch_start_timer();

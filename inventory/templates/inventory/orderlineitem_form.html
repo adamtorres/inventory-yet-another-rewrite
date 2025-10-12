@@ -95,15 +95,13 @@ ready(popup_create_setup);
 
 srch_form_id = "order-line-item-create-form";
 srch_url = "{% url "inventory:api_sourceitem" %}";
-result_style_ids = {
-    "div": {
-        // "container": "results_in_div",  // TODO: result_style_ids["div"]["container"] Does not appear used.
-        "results": "search_results_div",  // TODO: this is set as "{{ widget.attrs.id }}-search-results-div"
-        "template": "search_result_template_div",  // static - assuming only one type of search is done on the page.
-        "no_results_template": "search_no_result_template_div",  // also static.
-    },
-}
-active_result_styles = ["div"];
+result_ids = [
+    {
+        "result_element_id": "search_results_div",  // TODO: this is set as "{{ widget.attrs.id }}-search-results-div"
+        "template_id": "search_result_template_div",
+        "no_results_template_id": "search_no_result_template_div",
+    }
+]
 
 popup_properties = "height=500,width=800,resizable=yes,scrollbars=yes";
 function format_source_item(e) {
