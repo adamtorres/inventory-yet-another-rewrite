@@ -51,8 +51,15 @@
 
 {% block content %}
 <form id="search_form">
+
 <div class="dropdown">
-<input class="dropbtn" type="text" id="search_wider" data-search-field="wider_search" data-search-destination="search_results_div" placeholder="name or code">
+<input class="dropbtn" type="text" id="search_wider" placeholder="name or code"
+       data-search-field="wider_search">
+<input class="dropbtn" type="text" id="specific_search_wider" placeholder="specific name or code"
+       data-search-field="wider_search"
+       data-search-result-element-id="search_results_div"
+       data-search-template-id="specific_search_result_template_div"
+       data-search-no-results-template-id="specific_search_no_result_template_div">
 <div class="dropdown-content" id="search_results_div"></div>
 </div>
 <label for="x_id">id</label><input type="text" id="x_id">
@@ -110,6 +117,40 @@
     </div>
 </div>
 </div>
+
+<div id="specific_results_in_div" style="">
+<div id="specific_templates" style="display: none;">
+    <div class="search_result" id="specific_search_result_template_div">
+        <a class="search_result_clicky">
+            <span data-copy-to="x_id" data-field="id">__id__</span>
+            <span data-copy-to="x_source" data-field="source">__source__</span>
+            <span data-copy-to="x_item_category" data-field="item_category">__item_category__</span>
+            <span data-copy-to="x_item_description" data-field="item_description" style="display: none;">__item_description__</span>
+            <span data-copy-to="x_item_name" data-field="item_name">__item_name__</span>
+            <span data-copy-to="x_brand" data-field="brand" style="display: none;">__brand__</span>
+            <span data-copy-to="x_source_category" data-field="source_category" style="display: none;">__source_category__</span>
+            <span data-copy-to="x_unit_size_unit" data-field="unit_size_unit">__unit_size_unit__</span>
+            <span data-copy-to="x_unit_amount" data-field="unit_amount">__unit_amount__</span>
+            <span data-copy-to="x_unit_amount_text" data-field="unit_amount_text">__unit_amount_text__</span>
+            <span data-copy-to="x_subunit_size_unit" data-field="subunit_size_unit">__subunit_size_unit__</span>
+            <span data-copy-to="x_subunit_amount" data-field="subunit_amount">__subunit_amount__</span>
+            <span data-copy-to="x_subunit_amount_text" data-field="subunit_amount_text">__subunit_amount_text__</span>
+            <span data-copy-to="x_active" data-field="active" style="display: none;">__active__</span>
+            <span data-copy-to="x_quantity" data-field="quantity">__quantity__</span>
+            <span data-copy-to="x_allow_split_pack" data-field="allow_split_pack" style="display: none;">__allow_split_pack__</span>
+            <span data-copy-to="x_cryptic_name" data-field="cryptic_name" style="display: none;">__cryptic_name__</span>
+            <span data-copy-to="x_expanded_name" data-field="expanded_name" style="display: none;">__expanded_name__</span>
+            <span data-copy-to="x_common_name" data-field="common_name" style="display: none;">__common_name__</span>
+            <span data-copy-to="x_item_number" data-field="item_number">__item_number__</span>
+            <span data-copy-to="x_extra_number" data-field="extra_number" style="display: none;">__extra_number__</span>
+        </a>
+    </div>
+    <div id="specific_search_no_result_template_div">
+        Specific Nope.
+    </div>
+</div>
+</div>
+
 <hr />
 {% endblock %}
 
@@ -158,6 +199,8 @@ function setup_events() {
     document.addEventListener(srch_result_onclick_name, base_onclick);
     document.getElementById("search_wider").addEventListener('focusout', delayed_hide_dropdown);
     document.getElementById("search_wider").addEventListener('focusin', show_dropdown);
+    document.getElementById("specific_search_wider").addEventListener('focusout', delayed_hide_dropdown);
+    document.getElementById("specific_search_wider").addEventListener('focusin', show_dropdown);
     document.addEventListener(srch_post_populate_results_name, show_dropdown);
 }
 

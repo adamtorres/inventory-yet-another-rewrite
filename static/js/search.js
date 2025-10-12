@@ -42,38 +42,24 @@ function srch_add_result(item_to_add) {
     for (const _result_style of result_ids) {
         const template_elements = srch_get_result_element_template(_result_style);
         for (const template_element of template_elements) {
-            let new_result = template_element.cloneNode(true);
-            for (const element of new_result.querySelectorAll("[data-field]")) {
-                element.innerHTML = item_to_add[element.dataset.field];
-            }
-            for (const element of new_result.querySelectorAll("[data-href-fn]")) {
-                // Sets the href for any element providing a function to convert the id into a url.
-                const href_args = srch_get_href_args(element);
-                if (Object.keys(href_args).length === 0) {
-                    // The non-data-href-arg- way of assuming the only needed value is the "id".
-                    element.href = window[element.dataset.hrefFn](item_to_add["id"]);
-                } else {
-                    // Calling page uses data-href-arg-CUSTOM to specify values to pass to data-href-fn.
-                    for (const href_arg_key of Object.keys(href_args)) {
-                        // Swapping the name of the field with the value from the current item.
-                        href_args[href_arg_key] = item_to_add[href_args[href_arg_key]];
-                    }
-                    element.href = window[element.dataset.hrefFn](href_args);
-                }
-            }
-            if (item_to_add.hasOwnProperty("id")) {
-                new_result.dataset.id = item_to_add["id"];
-            }
-            new_result.removeAttribute("id");
-            srch_get_result_element(_result_style).appendChild(new_result);
-            new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
-            for (const element of new_result.getElementsByClassName("search_result_clicky")) {
-                // elements are created and removed.  Using CustomEvent so the page has something permanent to listen for.
-                element.addEventListener("click", (event) => {
-                    element.dispatchEvent(new CustomEvent(srch_result_onclick_name, {bubbles: true}));
-                }, {signal: srch_abort_controller.signal});
-            }
+            let result_element = srch_get_result_element(_result_style);
+            let new_result = srch_create_new_result_from_template(item_to_add, template_element);
+            srch_add_result_to_specific_element(new_result, result_element);
         }
+    }
+}
+
+function srch_add_result_to_specific_element(new_result, result_element) {
+    /*
+    * Handles the appending of the new result to the result element and attaching any event listeners.
+    * */
+    result_element.appendChild(new_result);
+    new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
+    for (const element of new_result.getElementsByClassName("search_result_clicky")) {
+        // elements are created and removed.  Using CustomEvent so the page has something permanent to listen for.
+        element.addEventListener("click", (event) => {
+            element.dispatchEvent(new CustomEvent(srch_result_onclick_name, {bubbles: true}));
+        }, {signal: srch_abort_controller.signal});
     }
 }
 
@@ -92,6 +78,37 @@ function srch_convert_values_to_query_string(values_to_send) {
     return params.toString();
 }
 
+function srch_create_new_result_from_template(item_to_add, template_element) {
+    /*
+    * Given a dict and a template element, creates a new element pile with the given data.  This element pile is not
+    * added to the DOM and doesn't change the visibility.
+    * */
+    let new_result = template_element.cloneNode(true);
+    for (const element of new_result.querySelectorAll("[data-field]")) {
+        element.innerHTML = item_to_add[element.dataset.field];
+    }
+    for (const element of new_result.querySelectorAll("[data-href-fn]")) {
+        // Sets the href for any element providing a function to convert the id into a url.
+        const href_args = srch_get_href_args(element);
+        if (Object.keys(href_args).length === 0) {
+            // The non-data-href-arg- way of assuming the only needed value is the "id".
+            element.href = window[element.dataset.hrefFn](item_to_add["id"]);
+        } else {
+            // Calling page uses data-href-arg-CUSTOM to specify values to pass to data-href-fn.
+            for (const href_arg_key of Object.keys(href_args)) {
+                // Swapping the name of the field with the value from the current item.
+                href_args[href_arg_key] = item_to_add[href_args[href_arg_key]];
+            }
+            element.href = window[element.dataset.hrefFn](href_args);
+        }
+    }
+    if (item_to_add.hasOwnProperty("id")) {
+        new_result.dataset.id = item_to_add["id"];
+    }
+    new_result.removeAttribute("id");
+    return new_result;
+}
+
 function srch_filter_keydown(e) {
     /*
     * Filters the keydown event to a specific set of keys.
@@ -108,9 +125,7 @@ function srch_get_attributes_from_caller_obj(caller_obj) {
     if (caller_obj.hasAttributes("id")) {
         caller_attributes["id"] = caller_obj.id;
     }
-    if (caller_obj.dataset.searchDestination != null) {
-        caller_attributes["destination"] = caller_obj.dataset.searchDestination;
-    }
+    Object.assign(caller_attributes, srch_get_search_attributes(caller_obj));
     return caller_attributes;
 }
 
@@ -142,9 +157,15 @@ function srch_get_no_result_element_template(_result_style) {
 function srch_get_result_element(_result_style) {
     /*
     * Returns the element that will be emptied and filled with search results.
+    *
+    * :param _result_style: either an entry from result_ids or a string with the desired element id.
     * */
     // TODO: This needs to handle form-named fields.  "{{ widget.attrs.id }}-search-results-div"
-    return document.getElementById(_result_style["result_element_id"]);
+    if (isString(_result_style)) {
+        return document.getElementById(_result_style);
+    } else {
+        return document.getElementById(_result_style["result_element_id"]);
+    }
 }
 
 function srch_get_result_element_template(_result_style) {
@@ -163,6 +184,27 @@ function srch_get_result_element_template(_result_style) {
         return _srch_result_element_template;
     }
     return [document.getElementById(_result_style["template_id"])];
+}
+
+function srch_get_search_attributes(element) {
+    /*
+    * Returns a dict with the "data-search-*" attributes on the element excluding the "data-search-field".
+    * */
+    let search_attributes = {}
+    for (const key in element.dataset) {
+        if (!key.startsWith("search")) {
+            // we only care about the search attributes here.
+            continue;
+        }
+        if (key === "searchField") {
+            // don't need the API search field in the return.
+            continue
+        }
+        // the keys are the name of the data-search- key minus "search"
+        let new_key = camelToSnakeCase(key).slice(7);
+        search_attributes[new_key] = element.dataset[key];
+    }
+    return search_attributes;
 }
 
 function srch_get_search_elements() {
@@ -196,6 +238,20 @@ function srch_input_focusout() {
     * When an input loses focus, clear the timer so the search does not happen.
     * */
     window.clearTimeout(srch_keypress_timer);
+}
+
+function srch_is_specific(data_packet) {
+    /*
+    * Returns true only if the data_packet has all attributes needed to be specific in where to put results and what
+    * they look like.
+    * */
+    if (data_packet.hasOwnProperty("echo")) {
+        return (
+            data_packet["echo"].hasOwnProperty("result_element_id")
+            && data_packet["echo"].hasOwnProperty("template_id")
+            && data_packet["echo"].hasOwnProperty("no_results_template_id"));
+    }
+    return false;
 }
 
 function srch_key_is_not_visible(e) {
@@ -234,10 +290,15 @@ function srch_no_results() {
     srch_remove_all_results();
     for (const _result_style of result_ids) {
         // result_element_id, template_id, no_results_template_id
-        let new_result = srch_get_no_result_element_template(_result_style).cloneNode(true);
-        srch_get_result_element(_result_style).appendChild(new_result);
-        new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
+        srch_no_results_to_specific(
+            srch_get_result_element(_result_style), srch_get_no_result_element_template(_result_style));
     }
+}
+
+function srch_no_results_to_specific(result_element, no_result_template_element) {
+    let new_result = no_result_template_element.cloneNode(true);
+    result_element.appendChild(new_result);
+    new_result.style.display = "";  // "unsetting" display so it inherits rather than forcing 'block' or 'inline-block'
 }
 
 function srch_populate_results(data_packet) {
@@ -246,6 +307,19 @@ function srch_populate_results(data_packet) {
     * Raises a custom event to allow the page to react when searches complete.
     * */
     console.log(data_packet);
+    if (srch_is_specific(data_packet)) {
+        console.log("Specific");
+        srch_populate_results_to_specific(data_packet);
+    }
+    else {
+        console.log("Default");
+        srch_populate_results_to_default(data_packet);
+    }
+    srch_post_popultate_results.detail = data_packet.echo;
+    document.dispatchEvent(srch_post_popultate_results);
+}
+
+function srch_populate_results_to_default(data_packet) {
     if (data_packet.data.length === 0) {
         srch_no_results();
         return;
@@ -254,8 +328,22 @@ function srch_populate_results(data_packet) {
     for (const item of data_packet.data) {
         srch_add_result(item);
     }
-    srch_post_popultate_results.detail = data_packet.echo;
-    document.dispatchEvent(srch_post_popultate_results);
+}
+
+function srch_populate_results_to_specific(data_packet) {
+    let result_element = document.getElementById(data_packet["echo"]["result_element_id"]);
+    let template_element = document.getElementById(data_packet["echo"]["template_id"]);
+    let no_results_template_element = document.getElementById(data_packet["echo"]["no_results_template_id"]);
+
+    if (data_packet.data.length === 0) {
+        srch_no_results_to_specific(result_element, no_results_template_element);
+        return;
+    }
+    srch_remove_all_results_from_specific(result_element);
+    for (const item of data_packet.data) {
+        let new_result = srch_create_new_result_from_template(item, template_element);
+        srch_add_result_to_specific_element(new_result, result_element);
+    }
 }
 
 function srch_remove_all_results() {
@@ -269,13 +357,20 @@ function srch_remove_all_results() {
     srch_abort_controller = new AbortController();
 
     for (const _result_style of result_ids) {
-        let _srch_results_element = srch_get_result_element(_result_style);
-        if (_srch_results_element.firstChild === null) {
-            return;
-        }
-        while (_srch_results_element.firstChild) {
-            _srch_results_element.removeChild(_srch_results_element.firstChild);
-        }
+        let result_element = srch_get_result_element(_result_style);
+        srch_remove_all_results_from_specific(result_element)
+    }
+}
+
+function srch_remove_all_results_from_specific(result_element) {
+    /*
+    * Removes all child elements from the given element.
+    * */
+    if (result_element.firstChild === null) {
+        return;
+    }
+    while (result_element.firstChild) {
+        result_element.removeChild(result_element.firstChild);
     }
 }
 
