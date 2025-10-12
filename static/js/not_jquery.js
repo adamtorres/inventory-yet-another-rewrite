@@ -19,6 +19,10 @@ function altAddEventListener(el, eventName, eventHandler, selector) {
   }
 }
 
+// Converts a camelCaseString to snake_case_string.
+// Would like to add some customizations to handle "ID" and possibly arbitrary initialisms.
+const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+
 function generateElements(html) {
   const template = document.createElement('template');
   template.innerHTML = html.trim();
@@ -39,6 +43,9 @@ function isNumeric(num) {
     return Number.isFinite(+num);
   return false;
 }
+
+// Simple test if the val_to_test is a string or not.
+const isString = val_to_test => typeof val_to_test === 'string' || val_to_test instanceof String;
 
 function ready(fn) {
   if (document.readyState !== 'loading') {
