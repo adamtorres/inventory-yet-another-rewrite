@@ -6,17 +6,8 @@ function model_picker_copy_to(el) {
 }
 
 function model_picker_onclick(e) {
-    // What was this supposed to fix?
-    let closest = e.target.closest('.search_result_clicky');
-    // e.target == might be the <span> which was clicked?
-    // closest == should be the <a> containing the clicked <span>
-    console.log("model_picker_onclick");
-    console.log(e.target);
-    console.log(closest);
-    if (closest && document.getElementById("search_results_div").contains(closest)) {
-        model_picker_copy_to(closest);
-        model_picker_hide_dropdown();
-    }
+    model_picker_copy_to(e.target);
+    model_picker_hide_dropdown();
 }
 
 function model_picker_delayed_hide_dropdown(e) {
@@ -24,16 +15,12 @@ function model_picker_delayed_hide_dropdown(e) {
 }
 
 function model_picker_hide_dropdown(e) {
-    console.log(`model_picker_hide_dropdown(e):`)
-    console.log(e);
     // e.target is the specific dropdown which triggered the hide
     // need to find that specific dropdown's dropdown-content to hide.  Cannot assume [0].
     document.getElementsByClassName("dropdown-content")[0].style.display = "";
 }
 
 function model_picker_show_dropdown(e) {
-    console.log(`model_picker_show_dropdown(e):`)
-    console.log(e);
     // e.target is the specific dropdown which triggered the show
     // need to find that specific dropdown's dropdown-content to show.  Cannot assume [0].
     document.getElementsByClassName("dropdown-content")[0].style.display = "block";

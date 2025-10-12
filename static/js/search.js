@@ -18,7 +18,7 @@ let srch_abort_controller = new AbortController();
 
 // an array of element ids to use as templates for new items and the destination for those new items.
 var result_ids = [
-    {
+/*  {
         // An element which will be completely emptied and filled as the searches happen.
         "result_element_id": "search_results_div",
 
@@ -30,7 +30,7 @@ var result_ids = [
         // A full template with content which represents no search results.  This will be copied into
         // "search_results_div" as needed.
         "no_results_template_id": "search_no_result_template_div",
-    }
+    } */
 ]
 
 function srch_add_result(item_to_add) {
@@ -306,13 +306,10 @@ function srch_populate_results(data_packet) {
     * Given a data packet returned from the API, clear existing results and add in the new ones.
     * Raises a custom event to allow the page to react when searches complete.
     * */
-    console.log(data_packet);
     if (srch_is_specific(data_packet)) {
-        console.log("Specific");
         srch_populate_results_to_specific(data_packet);
     }
     else {
-        console.log("Default");
         srch_populate_results_to_default(data_packet);
     }
     srch_post_popultate_results.detail = data_packet.echo;

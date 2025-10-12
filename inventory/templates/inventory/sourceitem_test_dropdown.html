@@ -1,213 +1,148 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block title %}Inventory : Source Item Search{% endblock %}
 
 {% block styles %}
-<style>
-.dropbtn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-}
+    <style>
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
 
-.dropdown {
-  position: relative;
-}
+        .dropdown {
+            position: relative;
+        }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 200px;
-  max-height: 10em;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    overflow: scroll;
-}
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 200px;
+            max-height: 10em;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            overflow: scroll;
+        }
 
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
 
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
 
-.dropdown:hover .dropdown-content {
-  /* display: block; */
-}
+        .dropdown:hover .dropdown-content {
+            /* display: block; */
+        }
 
-.dropdown:hover .dropbtn {
-  background-color: #3e8e41;
-}
-</style>
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<form id="search_form">
+    <form id="from_form_class">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="custom-field-wrapper">
+                {% if not field.is_hidden %}
+                    {{ field.label_tag }}
+                {% endif %}
+                {% if field.id_for_label == "id_search_wider" %}
+                    {# Need to tell the model_picker widget where to find the templates #}
+                    {{ field|attr:"data-search-template-id:specific_search_result_template_div"|attr:"data-search-no-results-template-id:specific_search_no_result_template_div" }}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                    <span class="helptext" id="{{ field.id_for_label }}_helptext">{{ field.help_text }}</span>
+                {% endif %}
+                {% for error in field.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </form>
 
-<div class="dropdown">
-<input class="dropbtn" type="text" id="search_wider" placeholder="name or code"
-       data-search-field="wider_search">
-<input class="dropbtn" type="text" id="specific_search_wider" placeholder="specific name or code"
-       data-search-field="wider_search"
-       data-search-result-element-id="search_results_div"
-       data-search-template-id="specific_search_result_template_div"
-       data-search-no-results-template-id="specific_search_no_result_template_div">
-<div class="dropdown-content" id="search_results_div"></div>
-</div>
-<label for="x_id">id</label><input type="text" id="x_id">
-<label for="x_source">source</label><input type="text" id="x_source">
-<label for="x_item_category">item_category</label><input type="text" id="x_item_category">
-<label for="x_item_description">item_description</label><input type="text" id="x_item_description">
-<label for="x_item_name">item_name</label><input type="text" id="x_item_name">
-<label for="x_brand">brand</label><input type="text" id="x_brand">
-<label for="x_source_category">source_category</label><input type="text" id="x_source_category">
-<label for="x_unit_size_unit">unit_size_unit</label><input type="text" id="x_unit_size_unit">
-<label for="x_unit_amount">unit_amount</label><input type="text" id="x_unit_amount">
-<label for="x_unit_amount_text">unit_amount_text</label><input type="text" id="x_unit_amount_text">
-<label for="x_subunit_size_unit">subunit_size_unit</label><input type="text" id="x_subunit_size_unit">
-<label for="x_subunit_amount">subunit_amount</label><input type="text" id="x_subunit_amount">
-<label for="x_subunit_amount_text">subunit_amount_text</label><input type="text" id="x_subunit_amount_text">
-<label for="x_active">active</label><input type="text" id="x_active">
-<label for="x_quantity">quantity</label><input type="text" id="x_quantity">
-<label for="x_allow_split_pack">allow_split_pack</label><input type="text" id="x_allow_split_pack">
-<label for="x_cryptic_name">cryptic_name</label><input type="text" id="x_cryptic_name">
-<label for="x_expanded_name">expanded_name</label><input type="text" id="x_expanded_name">
-<label for="x_common_name">common_name</label><input type="text" id="x_common_name">
-<label for="x_item_number">item_number</label><input type="text" id="x_item_number">
-<label for="x_extra_number">extra_number</label><input type="text" id="x_extra_number">
-</form>
+    <br/>
+    <hr/><br/>
 
-<div id="results_in_div" style="">
-<div id="templates" style="display: none;">
-    <div class="search_result" id="search_result_template_div">
-        <a class="search_result_clicky">
-            <span data-copy-to="x_id" data-field="id">__id__</span>
-            <span data-copy-to="x_source" data-field="source">__source__</span>
-            <span data-copy-to="x_item_category" data-field="item_category">__item_category__</span>
-            <span data-copy-to="x_item_description" data-field="item_description">__item_description__</span>
-            <span data-copy-to="x_item_name" data-field="item_name">__item_name__</span>
-            <span data-copy-to="x_brand" data-field="brand">__brand__</span>
-            <span data-copy-to="x_source_category" data-field="source_category">__source_category__</span>
-            <span data-copy-to="x_unit_size_unit" data-field="unit_size_unit">__unit_size_unit__</span>
-            <span data-copy-to="x_unit_amount" data-field="unit_amount">__unit_amount__</span>
-            <span data-copy-to="x_unit_amount_text" data-field="unit_amount_text">__unit_amount_text__</span>
-            <span data-copy-to="x_subunit_size_unit" data-field="subunit_size_unit">__subunit_size_unit__</span>
-            <span data-copy-to="x_subunit_amount" data-field="subunit_amount">__subunit_amount__</span>
-            <span data-copy-to="x_subunit_amount_text" data-field="subunit_amount_text">__subunit_amount_text__</span>
-            <span data-copy-to="x_active" data-field="active">__active__</span>
-            <span data-copy-to="x_quantity" data-field="quantity">__quantity__</span>
-            <span data-copy-to="x_allow_split_pack" data-field="allow_split_pack">__allow_split_pack__</span>
-            <span data-copy-to="x_cryptic_name" data-field="cryptic_name">__cryptic_name__</span>
-            <span data-copy-to="x_expanded_name" data-field="expanded_name">__expanded_name__</span>
-            <span data-copy-to="x_common_name" data-field="common_name">__common_name__</span>
-            <span data-copy-to="x_item_number" data-field="item_number">__item_number__</span>
-            <span data-copy-to="x_extra_number" data-field="extra_number">__extra_number__</span>
-        </a>
+    <div id="pile_of_inputs">
+        <label for="x_id">id</label><input type="text" id="x_id">
+        <label for="x_source">source</label><input type="text" id="x_source">
+        <label for="x_item_category">item_category</label><input type="text" id="x_item_category">
+        <label for="x_item_description">item_description</label><input type="text" id="x_item_description">
+        <label for="x_item_name">item_name</label><input type="text" id="x_item_name">
+        <label for="x_brand">brand</label><input type="text" id="x_brand">
+        <label for="x_source_category">source_category</label><input type="text" id="x_source_category">
+        <label for="x_unit_size_unit">unit_size_unit</label><input type="text" id="x_unit_size_unit">
+        <label for="x_unit_amount">unit_amount</label><input type="text" id="x_unit_amount">
+        <label for="x_unit_amount_text">unit_amount_text</label><input type="text" id="x_unit_amount_text">
+        <label for="x_subunit_size_unit">subunit_size_unit</label><input type="text" id="x_subunit_size_unit">
+        <label for="x_subunit_amount">subunit_amount</label><input type="text" id="x_subunit_amount">
+        <label for="x_subunit_amount_text">subunit_amount_text</label><input type="text" id="x_subunit_amount_text">
+        <label for="x_active">active</label><input type="text" id="x_active">
+        <label for="x_quantity">quantity</label><input type="text" id="x_quantity">
+        <label for="x_allow_split_pack">allow_split_pack</label><input type="text" id="x_allow_split_pack">
+        <label for="x_cryptic_name">cryptic_name</label><input type="text" id="x_cryptic_name">
+        <label for="x_expanded_name">expanded_name</label><input type="text" id="x_expanded_name">
+        <label for="x_common_name">common_name</label><input type="text" id="x_common_name">
+        <label for="x_item_number">item_number</label><input type="text" id="x_item_number">
+        <label for="x_extra_number">extra_number</label><input type="text" id="x_extra_number">
     </div>
-    <div id="search_no_result_template_div">
-        Nope.
-    </div>
-</div>
-</div>
 
-<div id="specific_results_in_div" style="">
-<div id="specific_templates" style="display: none;">
-    <div class="search_result" id="specific_search_result_template_div">
-        <a class="search_result_clicky">
-            <span data-copy-to="x_id" data-field="id">__id__</span>
-            <span data-copy-to="x_source" data-field="source">__source__</span>
-            <span data-copy-to="x_item_category" data-field="item_category">__item_category__</span>
-            <span data-copy-to="x_item_description" data-field="item_description" style="display: none;">__item_description__</span>
-            <span data-copy-to="x_item_name" data-field="item_name">__item_name__</span>
-            <span data-copy-to="x_brand" data-field="brand" style="display: none;">__brand__</span>
-            <span data-copy-to="x_source_category" data-field="source_category" style="display: none;">__source_category__</span>
-            <span data-copy-to="x_unit_size_unit" data-field="unit_size_unit">__unit_size_unit__</span>
-            <span data-copy-to="x_unit_amount" data-field="unit_amount">__unit_amount__</span>
-            <span data-copy-to="x_unit_amount_text" data-field="unit_amount_text">__unit_amount_text__</span>
-            <span data-copy-to="x_subunit_size_unit" data-field="subunit_size_unit">__subunit_size_unit__</span>
-            <span data-copy-to="x_subunit_amount" data-field="subunit_amount">__subunit_amount__</span>
-            <span data-copy-to="x_subunit_amount_text" data-field="subunit_amount_text">__subunit_amount_text__</span>
-            <span data-copy-to="x_active" data-field="active" style="display: none;">__active__</span>
-            <span data-copy-to="x_quantity" data-field="quantity">__quantity__</span>
-            <span data-copy-to="x_allow_split_pack" data-field="allow_split_pack" style="display: none;">__allow_split_pack__</span>
-            <span data-copy-to="x_cryptic_name" data-field="cryptic_name" style="display: none;">__cryptic_name__</span>
-            <span data-copy-to="x_expanded_name" data-field="expanded_name" style="display: none;">__expanded_name__</span>
-            <span data-copy-to="x_common_name" data-field="common_name" style="display: none;">__common_name__</span>
-            <span data-copy-to="x_item_number" data-field="item_number">__item_number__</span>
-            <span data-copy-to="x_extra_number" data-field="extra_number" style="display: none;">__extra_number__</span>
-        </a>
+    <div id="specific_results_in_div" style="">
+        <div id="specific_templates" style="display: none;">
+            <div class="search_result" id="specific_search_result_template_div">
+                <a class="search_result_clicky">
+                    <span data-copy-to="x_id" data-field="id">__id__</span>
+                    <span data-copy-to="x_source" data-field="source">__source__</span>
+                    <span data-copy-to="x_item_category" data-field="item_category">__item_category__</span>
+                    <span data-copy-to="x_item_description" data-field="item_description" style="display: none;">__item_description__</span>
+                    <span data-copy-to="x_item_name" data-field="item_name">__item_name__</span>
+                    <span data-copy-to="x_brand" data-field="brand" style="display: none;">__brand__</span>
+                    <span data-copy-to="x_source_category" data-field="source_category" style="display: none;">__source_category__</span>
+                    <span data-copy-to="x_unit_size_unit" data-field="unit_size_unit">__unit_size_unit__</span>
+                    <span data-copy-to="x_unit_amount" data-field="unit_amount">__unit_amount__</span>
+                    <span data-copy-to="x_unit_amount_text" data-field="unit_amount_text">__unit_amount_text__</span>
+                    <span data-copy-to="x_subunit_size_unit" data-field="subunit_size_unit">__subunit_size_unit__</span>
+                    <span data-copy-to="x_subunit_amount" data-field="subunit_amount">__subunit_amount__</span>
+                    <span data-copy-to="x_subunit_amount_text" data-field="subunit_amount_text">__subunit_amount_text__</span>
+                    <span data-copy-to="x_active" data-field="active" style="display: none;">__active__</span>
+                    <span data-copy-to="x_quantity" data-field="quantity">__quantity__</span>
+                    <span data-copy-to="x_allow_split_pack" data-field="allow_split_pack" style="display: none;">__allow_split_pack__</span>
+                    <span data-copy-to="x_cryptic_name" data-field="cryptic_name" style="display: none;">__cryptic_name__</span>
+                    <span data-copy-to="x_expanded_name" data-field="expanded_name" style="display: none;">__expanded_name__</span>
+                    <span data-copy-to="x_common_name" data-field="common_name" style="display: none;">__common_name__</span>
+                    <span data-copy-to="x_item_number" data-field="item_number">__item_number__</span>
+                    <span data-copy-to="x_extra_number" data-field="extra_number" style="display: none;">__extra_number__</span>
+                </a>
+            </div>
+            <div id="specific_search_no_result_template_div">
+                Specific Nope.
+            </div>
+        </div>
     </div>
-    <div id="specific_search_no_result_template_div">
-        Specific Nope.
-    </div>
-</div>
-</div>
 
-<hr />
+    <hr/>
 {% endblock %}
 
 {% block body_scripts %}
-<script src="{% static "js/not_jquery.js" %}"></script>
-<script src="{% static "js/search.js" %}"></script>
-<script>
-srch_url = "{% url "inventory:api_sourceitem" %}";
-
-result_ids = [
-    {
-        "result_element_id": "search_results_div",
-        "template_id": "search_result_template_div",
-        "no_results_template_id": "search_no_result_template_div",
-    }
-]
-
-function copy_to(el) {
-    // Copy the selected item's information to the specified fields.
-    for (const element of el.querySelectorAll("[data-copy-to]")) {
-        document.getElementById(element.dataset.copyTo).value = element.innerText;
-    }
-}
-
-function base_onclick(e) {
-    let closest = e.target.closest('.search_result_clicky');
-    if (closest && document.getElementById("search_results_div").contains(closest)) {
-        copy_to(closest);
-        hide_dropdown();
-    }
-}
-
-function delayed_hide_dropdown() {
-    setTimeout(hide_dropdown, 500);
-}
-
-function hide_dropdown() {
-    document.getElementsByClassName("dropdown-content")[0].style.display = "";
-}
-
-function show_dropdown() {
-    document.getElementsByClassName("dropdown-content")[0].style.display = "block";
-}
-
-function setup_events() {
-    document.addEventListener(srch_result_onclick_name, base_onclick);
-    document.getElementById("search_wider").addEventListener('focusout', delayed_hide_dropdown);
-    document.getElementById("search_wider").addEventListener('focusin', show_dropdown);
-    document.getElementById("specific_search_wider").addEventListener('focusout', delayed_hide_dropdown);
-    document.getElementById("specific_search_wider").addEventListener('focusin', show_dropdown);
-    document.addEventListener(srch_post_populate_results_name, show_dropdown);
-}
-
-(function() {
-    // onload based on https://stackoverflow.com/a/9899701
-    setup_events();
-})();
-</script>
-
+    <script src="{% static "js/not_jquery.js" %}"></script>
+    {{ form.media.js }}
+    <script>
+        srch_url = "{% url "inventory:api_sourceitem" %}";
+        srch_form_id = "from_form_class";
+    </script>
 {% endblock %}

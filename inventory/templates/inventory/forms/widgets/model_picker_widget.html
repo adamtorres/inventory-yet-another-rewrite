@@ -1,8 +1,12 @@
 <div class="dropdown">
     <input
-        type="hidden" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}
-        {% include "django/forms/widgets/attrs.html" %}>
+        type="hidden" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}>
 
-    <input class="dropbtn model_picker" type="text" id="{{ widget.attrs.id }}-search-wider" data-search-field="wider_search" placeholder="{{ widget.attrs.placeholder }}">
+    <input class="dropbtn model_picker" type="text" id="{{ widget.attrs.id }}-search-wider"
+           data-search-field="wider_search" placeholder="{{ widget.attrs.placeholder }}"
+           data-search-result-element-id="{{ widget.attrs.id }}-search-results-div"
+{#           data-search-template-id=""#}
+{#           data-search-no-results-template-id=""#}
+           {% include "django/forms/widgets/attrs.html" %}>
     <div class="dropdown-content" id="{{ widget.attrs.id }}-search-results-div"></div>
 </div>
