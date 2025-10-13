@@ -1,9 +1,13 @@
 import datetime
+import logging
 
 from django.db import models
 from django.db.models import functions
 
 from . import utils
+
+
+logger = logging.getLogger(__name__)
 
 
 class OrderLineItemManager(models.Manager):
@@ -131,24 +135,31 @@ class OrderLineItem(models.Model):
 
     @property
     def per_unit_price(self):
+        def log(msg):
+            # Just a simple way to turn off this logging for now.
+            # logger.critical(msg)
+            pass
+
         try:
             # pack = 6x #10 cans.  quantity = 6, unit_amount = 1, subunit_amount = None
             # pack = 1x 50lb APF.  quantity = 1, unit_amount = 50, subunit_amount = None
             # pack = 6x 5lb tubs of pb.  quantity = 6, unit_amount = 5, subunit_amount = None
             # pack = 6x 8pk pudding cups.  quantity 6, unit_amount = 8, subunit_amount = 3oz
             tmp_val = self.per_pack_price / self.source_item.quantity
-            print(f"OLI.per_unit_price: tmp_val({tmp_val}) = per_pack_price({self.per_pack_price}) / source_item.quantity({self.source_item.quantity})")
+            log(
+                f"OLI.per_unit_price: tmp_val({tmp_val}) = per_pack_price({self.per_pack_price}) / "
+                f"source_item.quantity({self.source_item.quantity})")
             if not self.source_item.unit_amount:
-                print(f"OLI.per_unit_price: no unit_amount. Using tmp_val = '{tmp_val}'")
+                log(f"OLI.per_unit_price: no unit_amount. Using tmp_val = '{tmp_val}'")
                 return tmp_val
-            print(
+            log(
                 f"OLI.per_unit_price: tmp_val({tmp_val / self.source_item.unit_amount}) = tmp_val({tmp_val}) / "
                 f"source_item.unit_amount({self.source_item.unit_amount})")
             tmp_val /= self.source_item.unit_amount
             if not self.source_item.subunit_amount:
-                print(f"OLI.per_unit_price: no subunit_amount. Using tmp_val = '{tmp_val}'")
+                log(f"OLI.per_unit_price: no subunit_amount. Using tmp_val = '{tmp_val}'")
                 return tmp_val
-            print(
+            log(
                 f"OLI.per_unit_price: subunit_amount available.  Using {tmp_val / self.source_item.subunit_amount} = "
                 f"tmp_val({tmp_val}) / source_item.subunit_amount({self.source_item.subunit_amount})")
             return tmp_val / self.source_item.subunit_amount
