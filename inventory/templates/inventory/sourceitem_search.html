@@ -325,7 +325,6 @@ function update_result_style() {
         if (element.checked) {
             let _result_style = possible_result_ids[element.value];
             result_ids.push({..._result_style});
-            {#console.log(`active element: "${element.name}" "${element.id}" "${element.value}"`);#}
             document.getElementById(_result_style["container_id"]).style.display = "";
         }
     }

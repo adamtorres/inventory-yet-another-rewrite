@@ -5,7 +5,6 @@
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Order Line Item{% endblock %}
 
 {% block styles %}
-    <!-- hi -->
 {{ form.media.css }}
 {% endblock %}
 
@@ -23,14 +22,12 @@
     {% endfor %}
     <input type="hidden" id="search-source-pk" data-search-field="source" value="{{ source_pk }}">
     {{ form.non_field_errors }}
-    <!-- form prefix: "{{ form.prefix }}" -->
     {% for field in form %}
         <div class="custom-field-wrapper">
             {% if not field.is_hidden %}
                 {{ field.label_tag }}
             {% endif %}
             {% if field.id_for_label == "id_source_item" %}
-                {# Need to tell the model_picker widget where to find the templates #}
                 {{ field|attr:"data-search-template-id:search_result_template_div"|attr:"data-search-no-results-template-id:search_no_result_template_div"|attr:"data-selected-template-id:selected_template_div" }}
             {% else %}
                 {{ field }}
@@ -93,17 +90,25 @@
         Nope.
     </div>
     <div id="selected_template_div">
+        <span data-id="item_number"></span>
+        /
+        <span data-id="extra_number"></span>
+        |
         <span data-id="item_name"></span>
-        <span data-id="unit_size_unit"></span>
+        |
         <span data-id="unit_amount"></span>
         <span data-id="unit_amount_text"></span>
-        <span data-id="subunit_size_unit"></span>
+        <span data-id="unit_size_unit"></span>
+        |
         <span data-id="subunit_amount"></span>
         <span data-id="subunit_amount_text"></span>
+        <span data-id="subunit_size_unit"></span>
+        |
         <span data-id="cryptic_name"></span>
+        ,
         <span data-id="expanded_name"></span>
+        ,
         <span data-id="common_name"></span>
-        <span data-id="item_number"></span>
     </div>
 </div>
 </div>
