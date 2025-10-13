@@ -75,3 +75,6 @@ async function handle_popup_close(e) {
             generateElements(`<option value="${e[refresh_id_field]}"${is_selected}>${visible_string}</option>`)[0]);
     });
 }
+ready(() => {
+    popup_create_setup();
+});

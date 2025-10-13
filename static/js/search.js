@@ -58,7 +58,7 @@ function srch_add_result_to_specific_element(new_result, result_element) {
     for (const element of new_result.getElementsByClassName("search_result_clicky")) {
         // elements are created and removed.  Using CustomEvent so the page has something permanent to listen for.
         element.addEventListener("click", (event) => {
-            element.dispatchEvent(new CustomEvent(srch_result_onclick_name, {bubbles: true}));
+            element.dispatchEvent(new CustomEvent(srch_result_onclick_name, {bubbles: true, detail: {result_element_id: result_element.id}}));
         }, {signal: srch_abort_controller.signal});
     }
 }
@@ -192,8 +192,8 @@ function srch_get_search_attributes(element) {
     * */
     let search_attributes = {}
     for (const key in element.dataset) {
-        if (!key.startsWith("search")) {
-            // we only care about the search attributes here.
+        if (!(key.startsWith("search") || key.startsWith("selected"))) {
+            // we only care about the 'search' and 'selected' attributes here.
             continue;
         }
         if (key === "searchField") {
@@ -201,7 +201,10 @@ function srch_get_search_attributes(element) {
             continue
         }
         // the keys are the name of the data-search- key minus "search"
-        let new_key = camelToSnakeCase(key).slice(7);
+        let new_key = camelToSnakeCase(key);
+        if (new_key.startsWith("search")) {
+            new_key = new_key.slice(7);
+        }
         search_attributes[new_key] = element.dataset[key];
     }
     return search_attributes;
