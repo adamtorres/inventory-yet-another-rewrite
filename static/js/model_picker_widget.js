@@ -2,17 +2,40 @@ function model_picker_copy_to(el) {
     // Copy the selected item's information to the specified fields.
     for (const element of el.querySelectorAll("[data-copy-to]")) {
         // find elements that exactly match the copyTo id.  Need to catch in case no element found.
-        document.getElementById(element.dataset.copyTo).value = element.innerText;
-        // find elements which have a prepended field name; "id_source_item-item_name"
-        // id_source_item is the hidden <input> in the model picker widget.
-        // item_name is the id specified in copyTo
-
+        let copy_to_element = document.getElementById(element.dataset.copyTo);
+        if (copy_to_element) {
+            copy_to_element.value = element.innerText;
+        } else {
+            console.log(`Did not find "${element.dataset.copyTo}".`);
+            // TODO: find elements which have a prepended field name; "id_source_item-item_name"
+            // id_source_item is the hidden <input> in the model picker widget.
+            // item_name is the id specified in copyTo
+        }
     }
 }
 
+function model_picker_copy_to_selected(e) {
+    let selected_element = e.detail.widget_element.querySelector(".dropdown-selected");
+    if (selected_element) {
+        // iterate over data-id in selected_element and find matching in e.target's data-field
+        let source_item_data = model_picker_get_item_data(e.target);
+        for (const di of selected_element.querySelectorAll("[data-id]")) {
+            di.innerHTML = source_item_data[di.dataset.id];
+        }
+    }
+}
+
+function model_picker_get_item_data(element) {
+    let source_item_data = {}
+    for (const df of element.querySelectorAll("[data-field]")) {
+        source_item_data[df.dataset.field] = df.innerHTML;
+    }
+    return source_item_data;
+}
+
 function model_picker_onclick(e) {
-    // might just call this once.  model_picker_refresh_selected(e);
     model_picker_copy_to(e.target);
+    model_picker_copy_to_selected(e);
     model_picker_hide_dropdown();
 }
 

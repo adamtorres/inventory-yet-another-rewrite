@@ -58,7 +58,10 @@ function srch_add_result_to_specific_element(new_result, result_element) {
     for (const element of new_result.getElementsByClassName("search_result_clicky")) {
         // elements are created and removed.  Using CustomEvent so the page has something permanent to listen for.
         element.addEventListener("click", (event) => {
-            element.dispatchEvent(new CustomEvent(srch_result_onclick_name, {bubbles: true, detail: {result_element_id: result_element.id}}));
+            element.dispatchEvent(new CustomEvent(srch_result_onclick_name, {bubbles: true, detail: {
+                result_element_id: result_element.id,
+                widget_element: result_element.closest(".dropdown")
+            }}));
         }, {signal: srch_abort_controller.signal});
     }
 }
@@ -160,7 +163,6 @@ function srch_get_result_element(_result_style) {
     *
     * :param _result_style: either an entry from result_ids or a string with the desired element id.
     * */
-    // TODO: This needs to handle form-named fields.  "{{ widget.attrs.id }}-search-results-div"
     if (isString(_result_style)) {
         return document.getElementById(_result_style);
     } else {
