@@ -12,11 +12,6 @@ class OrderLineItemCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     model = inv_models.OrderLineItem
     form_class = inv_forms.OrderLineItemForm
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["source_pk"] = inv_models.Order.objects.get(id=self.kwargs['order_pk']).source.id
-        return kwargs
-
     def get_initial(self):
         initial = super().get_initial()
         initial['order'] = self.kwargs['order_pk']

@@ -33,10 +33,6 @@ class OrderLineItemForm(forms.ModelForm):
             "per_pack_weights", "total_weight", "notes", "damaged", "rejected", "rejected_reason",
         ]
 
-    def __init__(self, *args, source_pk: int = None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['source_item'].widget.attrs["source_pk"] = source_pk
-
     # def clean_material_cost_per_pack(self):
     #     return self.cleaned_data['material_cost_per_pack'] or 0.0
 

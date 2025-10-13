@@ -19,8 +19,9 @@
 <form method="post" id="order-line-item-create-form">
     {% csrf_token %}
     {% for hidden in form.hidden_fields %}
-    {{ hidden }}
+        {{ hidden }}
     {% endfor %}
+    <input type="hidden" id="search-source-pk" data-search-field="source" value="{{ source_pk }}">
     {{ form.non_field_errors }}
     <!-- form prefix: "{{ form.prefix }}" -->
     {% for field in form %}

@@ -1,6 +1,5 @@
 <div class="dropdown">
     <input class="hidden_model_picker" type="hidden" name="{{ widget.name }}" id="{{ widget.attrs.id }}" {% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}>
-    <input type="hidden" id="{{ widget.attrs.id }}-search-source-pk" data-search-field="source" value="{{ widget.attrs.source_pk }}">
     <input class="dropbtn model_picker" type="text" id="{{ widget.attrs.id }}-search-wider"
            data-search-field="wider_search" placeholder="{{ widget.attrs.placeholder }}"
            data-search-result-element-id="{{ widget.attrs.id }}-search-results-div"
