@@ -16,7 +16,7 @@ class OrderLineItemForm(forms.ModelForm):
     template_name_div = "inventory/forms/order_line_item_form_div.html"
     order = forms.ModelChoiceField(queryset=inv_models.Order.objects.all(), widget=forms.HiddenInput)
     source_item = forms.ModelChoiceField(queryset=inv_models.SourceItem.objects.all(), widget=inv_widgets.ModelPickerWidget)
-    line_item_number = forms.IntegerField()
+    line_item_number = forms.IntegerField(widget=forms.HiddenInput)
     quantity_ordered = forms.IntegerField()
     quantity_delivered = forms.IntegerField()
     remote_stock = forms.BooleanField(required=False)

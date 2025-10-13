@@ -83,3 +83,9 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.source} - {self.delivered_date} - {self.order_number}"
+
+    def get_next_line_item_number(self):
+        return (
+            self.line_items.all().aggregate(max_line_item_number=models.Max("line_item_number"))['max_line_item_number']
+            or 0
+        ) + 1

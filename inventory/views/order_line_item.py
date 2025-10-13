@@ -20,6 +20,8 @@ class OrderLineItemCreateView(u_mixins.UserAccessMixin, generic.CreateView):
         initial = super().get_initial()
         initial['order'] = self.kwargs['order_pk']
         initial['tax'] = 0
+        order = inv_models.Order.objects.get(id=self.kwargs['order_pk'])
+        initial['line_item_number'] = order.get_next_line_item_number()
         return initial
 
     def get_context_data(self, **kwargs):
