@@ -1,14 +1,7 @@
-import decimal
-import logging
-from email.policy import default
-
 from django import forms
 
 from inventory import models as inv_models
 from inventory.forms import widgets as inv_widgets
-
-
-logger = logging.getLogger(__name__)
 
 
 class OrderLineItemForm(forms.ModelForm):
@@ -39,6 +32,10 @@ class OrderLineItemForm(forms.ModelForm):
             "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price",
             "per_pack_weights", "total_weight", "notes", "damaged", "rejected", "rejected_reason",
         ]
+
+    def __init__(self, *args, source_pk: int = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['source_item'].widget.attrs["source_pk"] = source_pk
 
     # def clean_material_cost_per_pack(self):
     #     return self.cleaned_data['material_cost_per_pack'] or 0.0

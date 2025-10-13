@@ -16,7 +16,6 @@
 {% endblock %}
 
 {% block content %}
-{# TODO: OrderLineItemCreateView http://localhost:8000/inventory/order/5713/lineitem/new #}
 <form method="post" id="order-line-item-create-form">
     {% csrf_token %}
     {% for hidden in form.hidden_fields %}
