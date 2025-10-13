@@ -1,8 +1,7 @@
 import logging
 
 from django import urls
-from django.contrib.auth import mixins
-from django.contrib.auth import views
+from django.contrib.auth import mixins, views
 from django import shortcuts
 
 

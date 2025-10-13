@@ -283,6 +283,7 @@
 {% endblock %}
 
 {% block body_scripts %}
+<script src="{% static "js/not_jquery.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
 <script>
 function get_order_url(href_args) {
@@ -298,16 +299,13 @@ function get_orderlineitem_url(order_and_lineitem_id) {
 }
 
 srch_url = "{% url "inventory:api_orderlineitem" %}";
-active_result_styles = ["div"];
-result_style_ids = {
-    "div": {
-        "container": "results_in_div",
-        "results": "search_results_div",
-        {#"template": "search_result_template_div",#}
-        "template": "search_result_template_flex",
-        "no_results_template": "search_no_result_template_div",
-    },
-}
+result_ids = [
+    {
+        "result_element_id": "search_results_div",
+        "template_id": "search_result_template_flex",
+        "no_results_template_id": "search_no_result_template_div",
+    }
+]
 </script>
 
 {% endblock %}

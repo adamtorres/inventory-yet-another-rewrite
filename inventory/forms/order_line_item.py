@@ -1,17 +1,15 @@
-import decimal
-import logging
-from email.policy import default
-
 from django import forms
 
 from inventory import models as inv_models
+from inventory.forms import widgets as inv_widgets
 
 
 class OrderLineItemForm(forms.ModelForm):
     template_name_table = "inventory/forms/order_line_item_form_table.html"
     template_name_div = "inventory/forms/order_line_item_form_div.html"
-    source_item = forms.ModelChoiceField(inv_models.SourceItem.objects.all())
-    line_item_number = forms.IntegerField()
+    order = forms.ModelChoiceField(queryset=inv_models.Order.objects.all(), widget=forms.HiddenInput)
+    source_item = forms.ModelChoiceField(queryset=inv_models.SourceItem.objects.all(), widget=inv_widgets.ModelPickerWidget)
+    line_item_number = forms.IntegerField(widget=forms.HiddenInput)
     quantity_ordered = forms.IntegerField()
     quantity_delivered = forms.IntegerField()
     remote_stock = forms.BooleanField(required=False)
@@ -30,7 +28,7 @@ class OrderLineItemForm(forms.ModelForm):
     class Meta:
         model = inv_models.OrderLineItem
         fields = [
-            "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
+            "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
             "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price",
             "per_pack_weights", "total_weight", "notes", "damaged", "rejected", "rejected_reason",
         ]
@@ -39,8 +37,8 @@ class OrderLineItemForm(forms.ModelForm):
     #     return self.cleaned_data['material_cost_per_pack'] or 0.0
 
     def save(self, commit=True):
-        # use self.cleaned_data['quantity']
-        # set self.instance.quantity
+        # TODO: Work out some way to get the price.  Needs to work with simple quantity*per_pack and weight*per_weight.
+        # self.instance.extended_price = self.cleaned_data["quantity_delivered"] * self.cleaned_data["per_pack_price"]
         return super().save(commit=commit)
 
 

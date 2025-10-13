@@ -10,14 +10,14 @@ from user import mixins as u_mixins
 
 class OrderLineItemCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     model = inv_models.OrderLineItem
-    fields = [
-        "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
-        "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price", "per_pack_weights",
-        "total_weight", "notes", "damaged", "rejected", "rejected_reason",]
+    form_class = inv_forms.OrderLineItemForm
 
     def get_initial(self):
         initial = super().get_initial()
         initial['order'] = self.kwargs['order_pk']
+        initial['tax'] = 0
+        order = inv_models.Order.objects.get(id=self.kwargs['order_pk'])
+        initial['line_item_number'] = order.get_next_line_item_number()
         return initial
 
     def get_context_data(self, **kwargs):
@@ -29,7 +29,7 @@ class OrderLineItemCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     def get_success_url(self):
         if "save_and_add_another" in self.request.POST:
             return urls.reverse("inventory:orderlineitem_create", args=(self.object.order.pk,))
-        return urls.reverse("inventory:orderlineitem_detail", args=(self.object.order.pk, self.object.id,))
+        return urls.reverse("inventory:order_detail", args=(self.object.order.pk,))
 
 
 class OrderLineItemDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
@@ -49,7 +49,8 @@ class OrderLineItemDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["order"] = self.object.order
-        context["import_id"] = json.loads(self.object.raw_import_data)["id"]
+        if self.object.raw_import_data:
+            context["import_id"] = json.loads(self.object.raw_import_data)["id"]
         return context
 
 

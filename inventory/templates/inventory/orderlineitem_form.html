@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Order Line Item{% endblock %}
+
+{% block styles %}
+{{ form.media.css }}
+{% endblock %}
 
 {% block breadcrumb %}
     <div><a href="{% url "inventory:order_search" %}">Order Search</a></div>
@@ -10,12 +15,23 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
+<form method="post" id="order-line-item-create-form">
     {% csrf_token %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    <input type="hidden" id="search-source-pk" data-search-field="source" value="{{ source_pk }}">
+    {{ form.non_field_errors }}
     {% for field in form %}
         <div class="custom-field-wrapper">
-            {{ field.label_tag }}
-            {{ field }}
+            {% if not field.is_hidden %}
+                {{ field.label_tag }}
+            {% endif %}
+            {% if field.id_for_label == "id_source_item" %}
+                {{ field|attr:"data-search-template-id:search_result_template_div"|attr:"data-search-no-results-template-id:search_no_result_template_div"|attr:"data-selected-template-id:selected_template_div" }}
+            {% else %}
+                {{ field }}
+            {% endif %}
             {% if field.id_for_label == "id_source_item" %}
                 <a class="my-pop-up" href="{% url "inventory:sourceitem_create" %}"
                    data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_sourceitem" %}?source={{ source_pk }}"
@@ -43,14 +59,69 @@
 <div>
     <a href="{% url "inventory:order_detail" pk=order_pk %}">Cancel and go back to order</a>
 </div>
+<div id="results_in_div" style="">
+<div id="templates" style="display: none;">
+    <div class="search_result" id="search_result_template_div">
+        <a class="search_result_clicky">
+            <span data-copy-to="id_source_item" data-field="id">__id__</span>
+            <span data-field="source">__source__</span>
+            <span data-field="item_category">__item_category__</span>
+            <span data-field="item_description">__item_description__</span>
+            <span data-field="item_name">__item_name__</span>
+            <span data-field="brand">__brand__</span>
+            <span data-field="source_category">__source_category__</span>
+            <span data-field="unit_size_unit">__unit_size_unit__</span>
+            <span data-field="unit_amount">__unit_amount__</span>
+            <span data-field="unit_amount_text">__unit_amount_text__</span>
+            <span data-field="subunit_size_unit">__subunit_size_unit__</span>
+            <span data-field="subunit_amount">__subunit_amount__</span>
+            <span data-field="subunit_amount_text">__subunit_amount_text__</span>
+            <span data-field="active">__active__</span>
+            <span data-field="quantity">__quantity__</span>
+            <span data-field="allow_split_pack">__allow_split_pack__</span>
+            <span data-field="cryptic_name">__cryptic_name__</span>
+            <span data-field="expanded_name">__expanded_name__</span>
+            <span data-field="common_name">__common_name__</span>
+            <span data-field="item_number">__item_number__</span>
+            <span data-field="extra_number">__extra_number__</span>
+        </a>
+    </div>
+    <div id="search_no_result_template_div">
+        Nope.
+    </div>
+    <div id="selected_template_div">
+        <span data-id="item_number"></span>
+        /
+        <span data-id="extra_number"></span>
+        |
+        <span data-id="item_name"></span>
+        |
+        <span data-id="unit_amount"></span>
+        <span data-id="unit_amount_text"></span>
+        <span data-id="unit_size_unit"></span>
+        |
+        <span data-id="subunit_amount"></span>
+        <span data-id="subunit_amount_text"></span>
+        <span data-id="subunit_size_unit"></span>
+        |
+        <span data-id="cryptic_name"></span>
+        ,
+        <span data-id="expanded_name"></span>
+        ,
+        <span data-id="common_name"></span>
+    </div>
+</div>
+</div>
 {% endblock %}
 
 {% block body_scripts %}
 <script src="{% static "js/not_jquery.js" %}"></script>
 <script src="{% static "js/popup_create.js" %}"></script>
+{{ form.media.js }}
 <script>
-// `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
-ready(popup_create_setup);
+srch_form_id = "order-line-item-create-form";
+srch_url = "{% url "inventory:api_sourceitem" %}";
+
 popup_properties = "height=500,width=800,resizable=yes,scrollbars=yes";
 function format_source_item(e) {
     let formatted = "";

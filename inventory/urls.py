@@ -76,6 +76,7 @@ urlpatterns = [
     urls.path("source_item/<int:pk>/edit", i_views.SourceItemUpdateView.as_view(), name="sourceitem_update"),
     urls.path("source_item/new", i_views.SourceItemCreateView.as_view(), name="sourceitem_create"),
     urls.path("source_item/search", i_views.SourceItemSearchView.as_view(), name="sourceitem_search"),
+    urls.path("source_item/test-drop-down", i_views.SourceItemTestDropDownView.as_view(), name="sourceitem_testdropdown"),
 
     urls.path("stats", i_views.StatsView.as_view(), name="stats"),
 

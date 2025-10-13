@@ -1,7 +1,7 @@
 from django import urls
 from django.views import generic
 
-from .. import mixins as inv_mixins, models as inv_models, serializers as inv_serializers
+from .. import forms as inv_forms, mixins as inv_mixins, models as inv_models, serializers as inv_serializers
 from ..models import utils as model_utils
 from . import utils as inv_utils
 from user import mixins as u_mixins
@@ -60,6 +60,12 @@ class SourceItemSearchView(u_mixins.UserAccessMixin, generic.TemplateView):
     model = inv_models.SourceItem
 
 
+class SourceItemTestDropDownView(u_mixins.UserAccessMixin, generic.FormView):
+    template_name = "inventory/sourceitem_test_dropdown.html"
+    model = inv_models.SourceItem
+    form_class = inv_forms.SourceItemTestDropDownForm
+
+
 class APISourceItemView(inv_utils.APISearchView):
     model = inv_models.SourceItem
     serializer = inv_serializers.APISourceItemSerializer
@@ -75,4 +81,5 @@ class APISourceItemView(inv_utils.APISearchView):
             "subunit_amount", "subunit_amount_text", "subunit_size__unit"],
         'source': ["source__name", "source__id"],
         'category': ["source_category", "item__category__name"],
+        'wider_search': ["item__name", "cryptic_name", "expanded_name", "common_name", "item_number", "extra_number"]
     }

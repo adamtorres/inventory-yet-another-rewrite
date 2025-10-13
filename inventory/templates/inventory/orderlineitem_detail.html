@@ -36,8 +36,11 @@
     <div>damaged: {{ object.damaged }}</div>
     <div>rejected: {{ object.rejected }}</div>
     <div>rejected_reason: {{ object.rejected_reason }}</div>
-    <div><a href="http://localhost:9000/admin/inventory/sourceitem/{{ import_id }}/change/">Link to previous site</a>
+    {% if import_id %}
+    <div>
+        <a href="http://localhost:9000/admin/inventory/sourceitem/{{ import_id }}/change/">Link to previous site</a>
     </div>
+    {% endif %}
     <ul>
         <li><a href="{% url "inventory:orderlineitem_update" order_pk=object.order.pk pk=object.pk %}">Edit</a></li>
         <li><a href="{% url "inventory:orderlineitem_delete" order_pk=object.order.pk pk=object.pk %}">Delete</a></li>
