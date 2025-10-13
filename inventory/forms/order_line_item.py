@@ -37,8 +37,8 @@ class OrderLineItemForm(forms.ModelForm):
     #     return self.cleaned_data['material_cost_per_pack'] or 0.0
 
     def save(self, commit=True):
-        # use self.cleaned_data['quantity']
-        # set self.instance.quantity
+        # TODO: Work out some way to get the price.  Needs to work with simple quantity*per_pack and weight*per_weight.
+        # self.instance.extended_price = self.cleaned_data["quantity_delivered"] * self.cleaned_data["per_pack_price"]
         return super().save(commit=commit)
 
 
