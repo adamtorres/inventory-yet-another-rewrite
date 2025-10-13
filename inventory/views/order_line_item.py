@@ -19,6 +19,7 @@ class OrderLineItemCreateView(u_mixins.UserAccessMixin, generic.CreateView):
     def get_initial(self):
         initial = super().get_initial()
         initial['order'] = self.kwargs['order_pk']
+        initial['tax'] = 0
         return initial
 
     def get_context_data(self, **kwargs):
@@ -50,7 +51,8 @@ class OrderLineItemDetailView(u_mixins.UserAccessMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["order"] = self.object.order
-        context["import_id"] = json.loads(self.object.raw_import_data)["id"]
+        if self.object.raw_import_data:
+            context["import_id"] = json.loads(self.object.raw_import_data)["id"]
         return context
 
 

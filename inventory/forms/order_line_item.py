@@ -8,11 +8,14 @@ from inventory import models as inv_models
 from inventory.forms import widgets as inv_widgets
 
 
+logger = logging.getLogger(__name__)
+
+
 class OrderLineItemForm(forms.ModelForm):
     template_name_table = "inventory/forms/order_line_item_form_table.html"
     template_name_div = "inventory/forms/order_line_item_form_div.html"
-    order = forms.IntegerField(widget=forms.HiddenInput)
-    source_item = forms.IntegerField(widget=inv_widgets.ModelPickerWidget)
+    order = forms.ModelChoiceField(queryset=inv_models.Order.objects.all(), widget=forms.HiddenInput)
+    source_item = forms.ModelChoiceField(queryset=inv_models.SourceItem.objects.all(), widget=inv_widgets.ModelPickerWidget)
     line_item_number = forms.IntegerField()
     quantity_ordered = forms.IntegerField()
     quantity_delivered = forms.IntegerField()
@@ -32,7 +35,7 @@ class OrderLineItemForm(forms.ModelForm):
     class Meta:
         model = inv_models.OrderLineItem
         fields = [
-            "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
+            "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
             "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price",
             "per_pack_weights", "total_weight", "notes", "damaged", "rejected", "rejected_reason",
         ]

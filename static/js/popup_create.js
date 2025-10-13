@@ -53,6 +53,7 @@ function popup_event(e) {
     win.focus();
 }
 async function handle_popup_close(e) {
+    if (getType(refresh_because_of_popup) !== 'htmlselectelement') return;
     if (e.origin !== expected_origin) return;
     let new_id = JSON.parse(e.data);
     const response = await fetch(refresh_popup_url);

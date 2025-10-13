@@ -19,6 +19,9 @@
 {# TODO: OrderLineItemCreateView http://localhost:8000/inventory/order/5713/lineitem/new #}
 <form method="post" id="order-line-item-create-form">
     {% csrf_token %}
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
     {{ form.non_field_errors }}
     <!-- form prefix: "{{ form.prefix }}" -->
     {% for field in form %}
@@ -29,7 +32,6 @@
             {% if field.id_for_label == "id_source_item" %}
                 {# Need to tell the model_picker widget where to find the templates #}
                 {{ field|attr:"data-search-template-id:search_result_template_div"|attr:"data-search-no-results-template-id:search_no_result_template_div"|attr:"data-selected-template-id:selected_template_div" }}
-                <div></div>
             {% else %}
                 {{ field }}
             {% endif %}
@@ -91,18 +93,17 @@
         Nope.
     </div>
     <div id="selected_template_div">
-        <span data-id="source_item">__source_item__</span>
-        <span data-id="item_name">__item_name__</span>
-        <span data-id="unit_size_unit">__unit_size_unit__</span>
-        <span data-id="unit_amount">__unit_amount__</span>
-        <span data-id="unit_amount_text">__unit_amount_text__</span>
-        <span data-id="subunit_size_unit">__subunit_size_unit__</span>
-        <span data-id="subunit_amount">__subunit_amount__</span>
-        <span data-id="subunit_amount_text">__subunit_amount_text__</span>
-        <span data-id="cryptic_name">__cryptic_name__</span>
-        <span data-id="expanded_name">__expanded_name__</span>
-        <span data-id="common_name">__common_name__</span>
-        <span data-id="item_number">__item_number__</span>
+        <span data-id="item_name"></span>
+        <span data-id="unit_size_unit"></span>
+        <span data-id="unit_amount"></span>
+        <span data-id="unit_amount_text"></span>
+        <span data-id="subunit_size_unit"></span>
+        <span data-id="subunit_amount"></span>
+        <span data-id="subunit_amount_text"></span>
+        <span data-id="cryptic_name"></span>
+        <span data-id="expanded_name"></span>
+        <span data-id="common_name"></span>
+        <span data-id="item_number"></span>
     </div>
 </div>
 </div>
