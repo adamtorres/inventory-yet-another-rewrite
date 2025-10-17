@@ -43,7 +43,8 @@ class RecentlyEnteredOrderList(OrderListView):
         qs = super().get_queryset()
         if not hasattr(self, "recent_days"):
             self.recent_days = int(inv_models.Setting.objects.get_value("recently_created", "days", default=7))
-        return qs.filter(created__gt=timezone.now() - datetime.timedelta(days=self.recent_days))
+        utc_midnight = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        return qs.filter(created__gt=utc_midnight - datetime.timedelta(days=self.recent_days))
 
 
 class OrderSearchView(u_mixins.UserAccessMixin, generic.TemplateView):
