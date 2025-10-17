@@ -8,6 +8,11 @@
 {% endblock %}
 
 {% block content %}
+{% if recent_days %}
+<div>
+Orders created in the last {{ recent_days }} days.
+</div>
+{% endif %}
 <ul>
 {% if is_paginated %}
 {% for order in page_obj %}

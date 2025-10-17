@@ -1,4 +1,7 @@
+import datetime
+
 from django import urls
+from django.utils import timezone
 from django.views import generic
 
 from .. import models as inv_models, serializers as inv_serializers
@@ -28,6 +31,19 @@ class OrderListView(u_mixins.UserAccessMixin, generic.ListView):
     model = inv_models.Order
     ordering = ["-delivered_date", "source__name"]
     paginate_by = 20
+
+
+class RecentlyEnteredOrderList(OrderListView):
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["recent_days"] = self.recent_days
+        return context
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if not hasattr(self, "recent_days"):
+            self.recent_days = int(inv_models.Setting.objects.get_value("recently_created", "days", default=7))
+        return qs.filter(created__gt=timezone.now() - datetime.timedelta(days=self.recent_days))
 
 
 class OrderSearchView(u_mixins.UserAccessMixin, generic.TemplateView):
