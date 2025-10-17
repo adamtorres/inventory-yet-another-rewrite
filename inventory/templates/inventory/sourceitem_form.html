@@ -72,19 +72,23 @@
 <div id="templates" style="display: none;">
     <div class="search_result" id="search_result_template_div">
         <a class="search_result_clicky">
-            <span data-copy-to="id_item" data-field="id">__id__</span>
+            <span style="display: none;" data-copy-to="id_item" data-field="id">__id__</span>
             <span data-field="category">__category__</span>
-            <span data-field="description">__description__</span>
+            |
             <span data-field="name">__name__</span>
+            |
+            <span data-field="description">__description__</span>
         </a>
     </div>
     <div id="search_no_result_template_div">
         Nope.
     </div>
     <div id="selected_template_div">
-        <span data-id="name"></span>
-        <span data-id="description"></span>
         <span data-id="category"></span>
+        |
+        <span data-id="name"></span>
+        |
+        <span data-id="description"></span>
     </div>
 </div>
 {% endblock %}
