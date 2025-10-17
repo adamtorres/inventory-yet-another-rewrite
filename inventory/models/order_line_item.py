@@ -124,6 +124,8 @@ class OrderLineItem(models.Model):
 
     raw_import_data = models.JSONField(
         null=True, blank=True, help_text="Raw JSON data that contributed to this object's creation.")
+    created = models.DateTimeField(auto_now_add=True, null=False, blank=False, editable=False)
+    modified = models.DateTimeField(auto_now=True, null=False, blank=False, editable=False)
 
     objects = OrderLineItemManager()
 
