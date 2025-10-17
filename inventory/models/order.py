@@ -78,6 +78,8 @@ class Order(models.Model):
     notes = models.TextField(
         help_text="Is there anything noteworthy about this order but not a specific item?", blank=True, default="")
     # TODO: Add calculated fields for totals - definitely $ but item count?
+    created = models.DateTimeField(auto_now_add=True, null=False, blank=False, editable=False)
+    modified = models.DateTimeField(auto_now=True, null=False, blank=False, editable=False)
 
     objects = OrderManager()
 

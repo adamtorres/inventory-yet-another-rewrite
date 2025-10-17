@@ -4,12 +4,23 @@ import dateparser
 from django.db import models
 
 
+_NOT_SET = object()
+
+
 class SettingManager(models.Manager):
     def get_group(self, group_name):
+        # Retrieves an entire group as a dict.
         return {s.name: s.value for s in self.filter(group=group_name).order_by("name")}
 
-    def get_value(self, group, name):
-        return self.get(group=group, name=name).value
+    def get_value(self, group, name, default=_NOT_SET):
+        # Retrieves the value specified by group and name.  If the setting does not exist, returns the specified
+        # default.  If no default specified, raises DoesNotExist.
+        try:
+            return self.get(group=group, name=name).value
+        except Setting.DoesNotExist:
+            if default == _NOT_SET:
+                raise
+            return default
 
     def get_report_date_range(self):
         value = self.get_value("report", "date_range")

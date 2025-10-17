@@ -39,6 +39,7 @@ urlpatterns = [
     urls.path("item/search", i_views.ItemSearchView.as_view(), name="item_search"),
 
     urls.path("orders/", i_views.OrderListView.as_view(), name="order_list"),
+    urls.path("orders/recently_entered", i_views.RecentlyEnteredOrderList.as_view(), name="order_list_recently_entered"),
     urls.path("order/<int:pk>", i_views.OrderDetailView.as_view(), name="order_detail"),
     urls.path("order/<int:pk>/delete", i_views.OrderDeleteView.as_view(), name="order_delete"),
     urls.path("order/<int:pk>/edit", i_views.OrderUpdateView.as_view(), name="order_update"),

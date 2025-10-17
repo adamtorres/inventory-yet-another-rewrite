@@ -10,7 +10,8 @@ from .item import (
     ItemUpdateView, ItemListCurrentView, ItemListView, ItemDetailView, ItemDeleteView, ItemCreateView, ItemSearchView,
     APIItemView, APISelectedItemDetailView)
 from .order import (
-    OrderUpdateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView, OrderSearchView, APIOrderView)
+    OrderUpdateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView, OrderSearchView, APIOrderView,
+    RecentlyEnteredOrderList)
 from .order_line_item import (
     OrderLineItemUpdateView, OrderLineItemDetailView, OrderLineItemDeleteView, OrderLineItemCreateView,
     OrderLineItemFormsetView, OrderLineItemSearchView, APIOrderLineItemView)
