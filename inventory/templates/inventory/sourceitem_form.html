@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block title %}Inventory : {% if object.id %}Edit{% else %}New{% endif %} Source Item{% endblock %}
 
 {% block styles %}
+{{ form.media.css }}
 <style>
 .custom-field-wrapper {
     margin-top: 0.75em;
@@ -21,12 +23,16 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
+<form method="post" id="source_item_form">
     {% csrf_token %}
     {% for field in form %}
         <div class="custom-field-wrapper">
             {{ field.label_tag }}
-            {{ field }}
+            {% if field.id_for_label == "id_item" %}
+                {{ field|attr:"data-search-template-id:search_result_template_div"|attr:"data-search-no-results-template-id:search_no_result_template_div"|attr:"data-selected-template-id:selected_template_div" }}
+            {% else %}
+                {{ field }}
+            {% endif %}
             {% if not popup and field.id_for_label in "id_unit_size,id_subunit_size" %}
                 <a class="my-pop-up" href="{% url "inventory:unitsize_create" %}"
                    data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_unitsize" %}"
@@ -63,13 +69,35 @@
     <a href="{% url "inventory:sourceitem_list" %}">Cancel and go back to list</a>
 </div>
 {% endif %}
+<div id="templates" style="display: none;">
+    <div class="search_result" id="search_result_template_div">
+        <a class="search_result_clicky">
+            <span data-copy-to="id_item" data-field="id">__id__</span>
+            <span data-field="category">__category__</span>
+            <span data-field="description">__description__</span>
+            <span data-field="name">__name__</span>
+        </a>
+    </div>
+    <div id="search_no_result_template_div">
+        Nope.
+    </div>
+    <div id="selected_template_div">
+        <span data-id="name"></span>
+        <span data-id="description"></span>
+        <span data-id="category"></span>
+    </div>
+</div>
 {% endblock %}
 
 {% block body_scripts %}
 <script src="{% static "js/not_jquery.js" %}"></script>
 <script src="{% static "js/popup_create.js" %}"></script>
+{{ form.media.js }}
 <script>
 // `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
+srch_form_id = "source_item_form";
+srch_url = "{% url "inventory:api_item" %}";
+
 ready(popup_create_setup);
 function format_item(e) {
     return `(${e["category"]}) ${e["name"]}`;
