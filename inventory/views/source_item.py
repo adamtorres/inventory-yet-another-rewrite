@@ -9,10 +9,17 @@ from user import mixins as u_mixins
 
 class SourceItemCreateView(u_mixins.UserAccessMixin, inv_mixins.PopupCreateMixin, generic.CreateView):
     model = inv_models.SourceItem
-    fields = [
-        "source", "item_number", "extra_number", "cryptic_name", "expanded_name", "common_name",
-        "item", "brand", "source_category", "unit_size", "unit_amount", "unit_amount_text", "subunit_size",
-        "subunit_amount", "subunit_amount_text", "active", "quantity", "allow_split_pack"]
+    form_class = inv_forms.SourceItemForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.GET.get("source_pk"):
+            try:
+                initial["source"] = int(self.request.GET.get("source_pk"))
+            except ValueError:
+                # Silently ignore the caller sending a bad int.
+                pass
+        return initial
 
     def get_success_url(self):
         return urls.reverse("inventory:sourceitem_detail", args=(self.object.id,))

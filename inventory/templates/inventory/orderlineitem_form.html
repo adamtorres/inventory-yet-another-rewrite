@@ -33,7 +33,7 @@
                 {{ field }}
             {% endif %}
             {% if field.id_for_label == "id_source_item" %}
-                <a class="my-pop-up" href="{% url "inventory:sourceitem_create" %}"
+                <a class="my-pop-up" href="{% url "inventory:sourceitem_create" %}?source_pk={{ source_pk }}"
                    data-control="{{ field.id_for_label }}" data-refresh-url="{% url "inventory:api_sourceitem" %}?source={{ source_pk }}"
                    data-refresh-visible-fn="format_source_item">
                     <img src="{% static "admin/img/icon-addlink.svg" %}" alt="" width="18" height="18">

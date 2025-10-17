@@ -22,7 +22,7 @@ class ItemDeleteView(u_mixins.UserAccessMixin, generic.DeleteView):
     model = inv_models.Item
 
     def get_success_url(self):
-        return urls.reverse("inventory:item_list")
+        return urls.reverse("inventory:item_search")
 
 
 class ItemDetailView(u_mixins.UserAccessMixin, generic.DetailView):
@@ -107,6 +107,9 @@ class APIItemView(inv_utils.APISearchView):
             "name", "source_items__cryptic_name", "source_items__expanded_name", "source_items__common_name"],
         'category': ["category__name"],
         'category_id': ["category__id"],
+        'wider_search': [
+            "name", "source_items__cryptic_name", "source_items__expanded_name", "source_items__common_name"
+        ],
     }
 
 
