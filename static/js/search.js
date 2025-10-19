@@ -1,6 +1,12 @@
 let srch_keypress_timer;
 var srch_url = "url for the json API";
 
+// page-defined value to send to the search api so it could change the sorting of results.
+var srch_order_by = null;
+
+// page-defined function to call to get additional query_string arguments.  Expects a dict as return.
+var srch_extra_query_string_fn = null;
+
 // id of the form to look for INPUT search elements.
 var srch_form_id = "search_form";
 
@@ -78,6 +84,10 @@ function srch_convert_values_to_query_string(values_to_send) {
     if (values_to_send.hasOwnProperty("echo")) {
         params.append("echo", JSON.stringify(values_to_send.echo));
     }
+    if (srch_order_by) {
+        params.append("order_by", srch_order_by);
+    }
+    // TODO: anything else that isn't covered by the above is likely from srch_extra_query_string_fn and needs handled.
     return params.toString();
 }
 
@@ -422,6 +432,9 @@ function srch_timer_elapsed_func(caller_obj) {
     if (caller_obj != null) {
         // In limited cases, the caller_obj is not specified.  Cannot call hasAttributes on null.
         values_to_send["echo"] = srch_get_attributes_from_caller_obj(caller_obj);
+    }
+    if (typeof srch_extra_query_string_fn === 'function') {
+        Object.assign(values_to_send, srch_extra_query_string_fn());
     }
     let query_string = srch_convert_values_to_query_string(values_to_send)
     const xhttp = new XMLHttpRequest();

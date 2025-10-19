@@ -47,8 +47,8 @@
             {% endfor %}
         </div>
     {% endfor %}
-    <input type="submit" value="Save">
     <input type="submit" value="Save and add another" name="save_and_add_another">
+    <input type="submit" value="Save">
 </form>
 
 {% if object.id %}
@@ -63,27 +63,28 @@
 <div id="templates" style="display: none;">
     <div class="search_result" id="search_result_template_div">
         <a class="search_result_clicky">
-            <span data-copy-to="id_source_item" data-field="id">__id__</span>
-            <span data-field="source">__source__</span>
-            <span data-field="item_category">__item_category__</span>
-            <span data-field="item_description">__item_description__</span>
-            <span data-field="item_name">__item_name__</span>
-            <span data-field="brand">__brand__</span>
-            <span data-field="source_category">__source_category__</span>
-            <span data-field="unit_size_unit">__unit_size_unit__</span>
-            <span data-field="unit_amount">__unit_amount__</span>
-            <span data-field="unit_amount_text">__unit_amount_text__</span>
-            <span data-field="subunit_size_unit">__subunit_size_unit__</span>
-            <span data-field="subunit_amount">__subunit_amount__</span>
-            <span data-field="subunit_amount_text">__subunit_amount_text__</span>
-            <span data-field="active">__active__</span>
-            <span data-field="quantity">__quantity__</span>
-            <span data-field="allow_split_pack">__allow_split_pack__</span>
-            <span data-field="cryptic_name">__cryptic_name__</span>
-            <span data-field="expanded_name">__expanded_name__</span>
-            <span data-field="common_name">__common_name__</span>
-            <span data-field="item_number">__item_number__</span>
-            <span data-field="extra_number">__extra_number__</span>
+            <span data-field="last_delivered_date">__last_delivered_date__</span>
+            | <span data-copy-to="id_source_item" data-field="id" style="display: none;">__id__</span>
+            | <span data-field="source" style="display: none;">__source__</span>
+            | <span data-field="item_category">__item_category__</span>
+            | <span data-field="item_description" style="display: none;">__item_description__</span>
+            | <span data-field="item_name">__item_name__</span>
+            | <span data-field="brand" style="display: none;">__brand__</span>
+            | <span data-field="source_category" style="display: none;">__source_category__</span>
+            | <span data-field="unit_size_unit">__unit_size_unit__</span>
+            | <span data-field="unit_amount">__unit_amount__</span>
+            | <span data-field="unit_amount_text">__unit_amount_text__</span>
+            | <span data-field="subunit_size_unit">__subunit_size_unit__</span>
+            | <span data-field="subunit_amount">__subunit_amount__</span>
+            | <span data-field="subunit_amount_text">__subunit_amount_text__</span>
+            | <span data-field="active">__active__</span>
+            | <span data-field="quantity">__quantity__</span>
+            | <span data-field="allow_split_pack">__allow_split_pack__</span>
+            | <span data-field="cryptic_name">__cryptic_name__</span>
+            | <span data-field="expanded_name">__expanded_name__</span>
+            | <span data-field="common_name">__common_name__</span>
+            | <span data-field="item_number">__item_number__</span>
+            | <span data-field="extra_number">__extra_number__</span>
         </a>
     </div>
     <div id="search_no_result_template_div">
@@ -121,6 +122,7 @@
 <script>
 srch_form_id = "order-line-item-create-form";
 srch_url = "{% url "inventory:api_sourceitem" %}";
+srch_order_by = "by_last_delivered_date";
 
 popup_properties = "height=500,width=800,resizable=yes,scrollbars=yes";
 function format_source_item(e) {
@@ -138,5 +140,8 @@ function format_source_item(e) {
     }
     return formatted;
 }
+ready(() => {
+    getNextTabStop(document.getElementById("order-line-item-create-form")).focus();
+})
 </script>
 {% endblock %}

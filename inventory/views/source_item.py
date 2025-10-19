@@ -1,4 +1,5 @@
 from django import urls
+from django.db import models
 from django.views import generic
 
 from .. import forms as inv_forms, mixins as inv_mixins, models as inv_models, serializers as inv_serializers
@@ -77,8 +78,12 @@ class APISourceItemView(inv_utils.APISearchView):
     model = inv_models.SourceItem
     serializer = inv_serializers.APISourceItemSerializer
     order_fields = ["item__name", "expanded_name", "cryptic_name"]
-    prefetch_fields = ['source', 'item', 'item__category']
+    prefetch_fields = ['source', 'item', 'item__category', 'unit_size']
     # select_related_fields = ['source', 'item', 'item__category']
+    order_fields_dict = {
+        'default': ["item__name", "expanded_name", "cryptic_name"],
+        'by_last_delivered_date': ["-last_delivered_date", "item__name", "expanded_name", "cryptic_name"],
+    }
 
     search_terms = {
         'name': ["item__name", "cryptic_name", "expanded_name", "common_name"],
@@ -90,3 +95,11 @@ class APISourceItemView(inv_utils.APISearchView):
         'category': ["source_category", "item__category__name"],
         'wider_search': ["item__name", "cryptic_name", "expanded_name", "common_name", "item_number", "extra_number"]
     }
+
+    def get_queryset(self):
+        """
+        Tacks on the last delivered date for the SourceItem to but used in order_fields.
+        :return: a QuerySet
+        """
+        qs = super().get_queryset()
+        return qs.annotate(last_delivered_date=models.Max("line_items__order__delivered_date"))

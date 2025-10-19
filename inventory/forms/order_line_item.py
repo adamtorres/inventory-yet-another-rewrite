@@ -1,3 +1,4 @@
+import decimal
 from django import forms
 
 from inventory import models as inv_models
@@ -37,8 +38,15 @@ class OrderLineItemForm(forms.ModelForm):
     #     return self.cleaned_data['material_cost_per_pack'] or 0.0
 
     def save(self, commit=True):
-        # TODO: Work out some way to get the price.  Needs to work with simple quantity*per_pack and weight*per_weight.
-        # self.instance.extended_price = self.cleaned_data["quantity_delivered"] * self.cleaned_data["per_pack_price"]
+        if self.instance.quantity_delivered == 0:
+            self.instance.extended_price = 0
+            self.instance.per_pack_price = 0
+        if self.cleaned_data["per_pack_weights"] and self.cleaned_data["per_weight_price"]:
+            self.instance.total_weight = sum([decimal.Decimal(str(f)) for f in self.instance.per_pack_weights])
+            self.instance.extended_price = self.instance.total_weight * self.instance.per_weight_price
+            self.instance.per_pack_price = self.instance.extended_price / self.instance.quantity_delivered
+        if self.instance.extended_price is None:
+            self.instance.extended_price = self.cleaned_data["quantity_delivered"] * self.cleaned_data["per_pack_price"]
         return super().save(commit=commit)
 
 

@@ -17,6 +17,7 @@ class APISearchView(views.APIView):
     select_related_fields = []
     search_terms = {}
     order_fields = []
+    order_fields_dict = {}
 
     def build_search_filter(self, search_terms):
         """
@@ -107,7 +108,10 @@ class APISearchView(views.APIView):
         # qs on that.
         qs_ids = qs.values("id").distinct()
         qs = self.get_queryset().filter(id__in=qs_ids)
-        if self.order_fields:
+        order_by_key = request.GET.get("order_by", "default") or "default"
+        if order_by_key and self.order_fields_dict and order_by_key in self.order_fields_dict:
+            qs = qs.order_by(*self.order_fields_dict[order_by_key])
+        elif self.order_fields:
             qs = qs.order_by(*self.order_fields)
         qs = self.limit_result(qs, request)
         data = self.serializer(qs, many=True).data

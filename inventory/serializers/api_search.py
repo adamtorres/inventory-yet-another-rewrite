@@ -124,6 +124,7 @@ class APISourceItemSerializer(serializers.ModelSerializer):
     item_description = serializers.SerializerMethodField()
     unit_size_unit = serializers.SerializerMethodField()
     subunit_size_unit = serializers.SerializerMethodField()
+    last_delivered_date = serializers.SerializerMethodField()
 
     class Meta:
         model = inv_models.SourceItem
@@ -132,7 +133,7 @@ class APISourceItemSerializer(serializers.ModelSerializer):
             "unit_size_unit", "unit_amount", "unit_amount_text",
             "subunit_size_unit", "subunit_amount", "subunit_amount_text",
             "active", "quantity", "allow_split_pack", "cryptic_name", "expanded_name", "common_name", "item_number",
-            "extra_number"]
+            "extra_number", "last_delivered_date"]
 
     def get_item_category(self, obj):
         return obj.item.category.name
@@ -142,6 +143,9 @@ class APISourceItemSerializer(serializers.ModelSerializer):
 
     def get_item_name(self, obj):
         return obj.item.name
+
+    def get_last_delivered_date(self, obj):
+        return getattr(obj, "last_delivered_date", None)
 
     def get_source(self, obj):
         return obj.source.name
