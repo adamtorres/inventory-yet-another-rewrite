@@ -140,5 +140,8 @@ function format_source_item(e) {
     }
     return formatted;
 }
+ready(() => {
+    getNextTabStop(document.getElementById("order-line-item-create-form")).focus();
+})
 </script>
 {% endblock %}
