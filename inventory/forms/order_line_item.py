@@ -38,6 +38,9 @@ class OrderLineItemForm(forms.ModelForm):
     #     return self.cleaned_data['material_cost_per_pack'] or 0.0
 
     def save(self, commit=True):
+        if self.instance.quantity_delivered == 0:
+            self.instance.extended_price = 0
+            self.instance.per_pack_price = 0
         if self.cleaned_data["per_pack_weights"] and self.cleaned_data["per_weight_price"]:
             self.instance.total_weight = sum([decimal.Decimal(str(f)) for f in self.instance.per_pack_weights])
             self.instance.extended_price = self.instance.total_weight * self.instance.per_weight_price
