@@ -128,12 +128,8 @@ function model_picker_refresh_selected() {
 function model_picker_reset_required_attributes() {
     // Django sets the required flag on the visible input element.  It should be on the hidden element.
     const form = document.getElementById(srch_form_id);
-    for (const mp_element of form.querySelectorAll(".model_picker")) {
-        mp_element.required = false;
-    }
-    for (const hmp_element of form.querySelectorAll(".hidden_model_picker")) {
-        hmp_element.required = true;
-    }
+    Array.from(form.querySelectorAll(".model_picker")).map((e) => e.required = false);
+    Array.from(form.querySelectorAll(".hidden_model_picker")).map((e) => e.required = true);
 }
 
 function model_picker_show_dropdown(e) {
