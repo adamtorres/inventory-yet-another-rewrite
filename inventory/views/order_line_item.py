@@ -61,14 +61,18 @@ class OrderLineItemSearchView(u_mixins.UserAccessMixin, generic.TemplateView):
 
 class OrderLineItemUpdateView(u_mixins.UserAccessMixin, generic.UpdateView):
     model = inv_models.OrderLineItem
-    fields = [
-        "order", "source_item", "line_item_number", "quantity_ordered", "quantity_delivered", "remote_stock",
-        "expect_backorder_delivery", "per_pack_price", "extended_price", "tax", "per_weight_price", "per_pack_weights",
-        "total_weight", "notes", "damaged", "rejected", "rejected_reason",]
+    form_class = inv_forms.OrderLineItemForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['order'] = self.kwargs['order_pk']
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["order_pk"] = self.kwargs['order_pk']
+        context["source_pk"] = inv_models.Order.objects.get(id=self.kwargs['order_pk']).source.id
+        context["source_item"] = self.object.source_item
         return context
 
     def get_success_url(self):

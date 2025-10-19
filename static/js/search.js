@@ -180,6 +180,25 @@ function srch_get_result_element(_result_style) {
     }
 }
 
+function srch_get_result_elements() {
+    /*
+    * Finds all result elements by looking for the data attributes on the search fields.
+    * Returns an Array of objects each with a result element and associated templates.
+    * */
+    // Should this be limited to the elements found by srch_get_search_elements()?
+    let mps_with_result_elements = document.querySelectorAll(
+        "[data-search-result-element-id][data-search-no-results-template-id][data-search-template-id]")
+    let result_elements = [];
+    for (const mp_element of mps_with_result_elements) {
+        result_elements.push({
+            "result_element": document.getElementById(mp_element.dataset.searchResultElementId),
+            "no_results_template_element": document.getElementById(mp_element.dataset.searchNoResultsTemplateId),
+            "template_element": document.getElementById(mp_element.dataset.searchTemplateId),
+        });
+    }
+    return result_elements
+}
+
 function srch_get_result_element_template(_result_style) {
     /*
     * Gets an element specified by `result_ids[#]["template"]`. This template is of an individual item to be added to
@@ -302,11 +321,9 @@ function srch_no_results() {
     * For each result style defined in result_ids, this removes any existing results and clones the "no results"
     * template into it.
     * */
-    srch_remove_all_results();
-    for (const _result_style of result_ids) {
-        // result_element_id, template_id, no_results_template_id
-        srch_no_results_to_specific(
-            srch_get_result_element(_result_style), srch_get_no_result_element_template(_result_style));
+    for (const element_group of srch_get_result_elements()) {
+        srch_remove_all_results_from_specific(element_group["result_element"]);
+        srch_no_results_to_specific(element_group["result_element"], element_group["no_results_template_element"]);
     }
 }
 
@@ -347,11 +364,11 @@ function srch_populate_results_to_specific(data_packet) {
     let template_element = document.getElementById(data_packet["echo"]["template_id"]);
     let no_results_template_element = document.getElementById(data_packet["echo"]["no_results_template_id"]);
 
+    srch_remove_all_results_from_specific(result_element);
     if (data_packet.data.length === 0) {
         srch_no_results_to_specific(result_element, no_results_template_element);
         return;
     }
-    srch_remove_all_results_from_specific(result_element);
     for (const item of data_packet.data) {
         let new_result = srch_create_new_result_from_template(item, template_element);
         srch_add_result_to_specific_element(new_result, result_element);
@@ -368,9 +385,8 @@ function srch_remove_all_results() {
     srch_abort_controller.abort();
     srch_abort_controller = new AbortController();
 
-    for (const _result_style of result_ids) {
-        let result_element = srch_get_result_element(_result_style);
-        srch_remove_all_results_from_specific(result_element)
+    for (const element_group of srch_get_result_elements()) {
+        srch_remove_all_results_from_specific(element_group["result_element"]);
     }
 }
 

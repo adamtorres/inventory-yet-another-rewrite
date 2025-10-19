@@ -14,11 +14,13 @@ function model_picker_copy_to(el) {
     }
 }
 
-function model_picker_copy_to_selected(e) {
-    let selected_element = e.detail.widget_element.querySelector(".dropdown-selected");
+function model_picker_copy_to_selected(source_element, selected_element) {
+    // copies data from source_element to selected_element.
+    // source_element == a.search_result_clicky.  <a> tag that contains the <spans> which have
+    // OR, this is the dict created from the <a> tag.  This is to handle initial forms which haven't done a search.
     if (selected_element) {
         // iterate over data-id in selected_element and find matching in e.target's data-field
-        let source_item_data = model_picker_get_item_data(e.target);
+        let source_item_data = model_picker_get_item_data(source_element);
         for (const di of selected_element.querySelectorAll("[data-id]")) {
             di.innerHTML = source_item_data[di.dataset.id];
         }
@@ -55,6 +57,7 @@ function model_picker_get_form_prefix(mp_top_level) {
 }
 
 function model_picker_get_item_data(element) {
+    // element is a.search_result_clicky
     let source_item_data = {}
     for (const df of element.querySelectorAll("[data-field]")) {
         source_item_data[df.dataset.field] = df.innerHTML;
@@ -62,7 +65,17 @@ function model_picker_get_item_data(element) {
     return source_item_data;
 }
 
-function model_picket_get_top_level(e) {
+function model_picker_get_selected_element(widget_element = null) {
+    // widget_element is the outer-most <div> for the control.  Nothing of the control should be outside so this is a
+    // safe place to start .querySelector calls.
+    if (widget_element) {
+        return widget_element.querySelector(".dropdown-selected");
+    }
+    let first_widget = document.getElementById(srch_form_id).querySelector(".dropdown");
+    return first_widget.querySelector(".dropdown-selected");
+}
+
+function model_picker_get_top_level(e) {
     /*
     * Get the top-level form field parent of the element `e`.  This is the containing div in the widget.  Not an INPUT
     * element.
@@ -72,9 +85,9 @@ function model_picket_get_top_level(e) {
 function model_picker_onclick(e) {
     // e.target is a.search_result_clicky
     model_picker_copy_to(e.target);
-    model_picker_copy_to_selected(e);
+    model_picker_copy_to_selected(e.target, model_picker_get_selected_element(e.detail.widget_element));
     model_picker_hide_dropdown();
-    getNextTabStop(model_picket_get_top_level(e.target).querySelector(".model_picker")).focus();
+    getNextTabStop(model_picker_get_top_level(e.target).querySelector(".model_picker")).focus();
 }
 
 function model_picker_delayed_hide_dropdown(e) {
@@ -97,8 +110,7 @@ function model_picker_refresh_selected() {
     */
     const form = document.getElementById(srch_form_id);
     for (const mp_element of form.querySelectorAll(".model_picker")) {
-        console.log(mp_element);
-        let mp_top_level = model_picket_get_top_level(mp_element);
+        let mp_top_level = model_picker_get_top_level(mp_element);
         let hidden_mp_element = mp_top_level.querySelector(".hidden_model_picker");
         let selected_div = document.getElementById(mp_element.dataset.selectedDiv);
         let selected_template = document.getElementById(mp_element.dataset.selectedTemplateId);
@@ -110,6 +122,17 @@ function model_picker_refresh_selected() {
         }
         // unwraps the template container from the actual template.  Just doing this so there isn't a useless layer.
         new_result.replaceWith(...new_result.childNodes);
+    }
+}
+
+function model_picker_reset_required_attributes() {
+    // Django sets the required flag on the visible input element.  It should be on the hidden element.
+    const form = document.getElementById(srch_form_id);
+    for (const mp_element of form.querySelectorAll(".model_picker")) {
+        mp_element.required = false;
+    }
+    for (const hmp_element of form.querySelectorAll(".hidden_model_picker")) {
+        hmp_element.required = true;
     }
 }
 
@@ -138,5 +161,6 @@ function model_picker_setup_events() {
 
 ready(() => {
     model_picker_setup_events();
+    model_picker_reset_required_attributes();
     model_picker_refresh_selected();
 });
