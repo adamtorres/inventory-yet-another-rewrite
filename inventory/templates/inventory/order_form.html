@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form method="post">
+<form method="post" id="order-create-form">
     {% csrf_token %}
     {% for field in form %}
         <div class="custom-field-wrapper">
@@ -47,9 +47,12 @@
 <script src="{% static "js/popup_create.js" %}"></script>
 <script>
 // `ready(...)` is in not_jquery.js and is a replacement for jQuery's `$(document).ready(...)`.
-ready(popup_create_setup);
 function format_source(e) {
     return `${e["name"]} (${e["customer_number"]})`;
 }
+ready(() => {
+    popup_create_setup();
+    getNextTabStop(document.getElementById("order-create-form")).focus();
+})
 </script>
 {% endblock %}
