@@ -118,6 +118,18 @@ $(selector).each(function (i, el) {});
 document.querySelectorAll(selector).forEach((el, i) => {});
 ```
 
+Find elements based on a partial string.
+^ matches the start
+* matches any position
+$ matches the end
+```javascript
+// starts with "poll-".
+document.querySelector('[id^="poll-"]').id;
+
+// starts with "user-" and ends with "-image".
+document.querySelector('[id^=user-][id$=-image]').id;
+```
+
 ```javascript
 $(el).empty();
 // vs

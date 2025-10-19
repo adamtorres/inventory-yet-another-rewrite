@@ -25,6 +25,35 @@ function model_picker_copy_to_selected(e) {
     }
 }
 
+function model_picker_get_form_prefix(mp_top_level) {
+    /*
+    * Given the top-level element of a ModePicker widget, find the hidden input field and figure out the form_prefix, if
+    * any.
+    * */
+    /*
+    Formset:
+    class="hidden_model_picker" id="id_line_items-0-source_item" name="line_items-0-source_item"
+    class="dropbtn model_picker" id="id_line_items-0-source_item-search-wider"
+    Want: "id_line_items-0-"
+
+    Form w/o prefix:
+    class="hidden_model_picker" id="id_source_item" name="source_item"
+    class="dropbtn model_picker" id="id_source_item-search-wider"
+    Want: ""
+
+    Mixed - and _ in the prefix.  Unlikely to happen but should handle it.
+    Form w/ prefix "billy-bob_thornton":
+    class="hidden_model_picker" id="id_billy-bob_thornton-source_item" name="billy-bob_thornton-source_item"
+    class="dropbtn model_picker" id="id_billy-bob_thornton-source_item-search-wider"
+    Want: "billy-bob_thornton"
+     */
+    if (isFormset(mp_top_level)) {
+        throw new Error("NotImplementedError: Using ModePickerWidget in a formset is not supported at this time.");
+    }
+    let hidden_mp = mp_top_level.querySelector(".hidden_model_picker");
+    // TODO: incomplete.  left here as a starting point if I ever need to get the form_prefix dynamically.
+}
+
 function model_picker_get_item_data(element) {
     let source_item_data = {}
     for (const df of element.querySelectorAll("[data-field]")) {
@@ -33,10 +62,19 @@ function model_picker_get_item_data(element) {
     return source_item_data;
 }
 
+function model_picket_get_top_level(e) {
+    /*
+    * Get the top-level form field parent of the element `e`.  This is the containing div in the widget.  Not an INPUT
+    * element.
+    * */
+    return e.closest(".dropdown");
+}
 function model_picker_onclick(e) {
+    // e.target is a.search_result_clicky
     model_picker_copy_to(e.target);
     model_picker_copy_to_selected(e);
     model_picker_hide_dropdown();
+    getNextTabStop(model_picket_get_top_level(e.target).querySelector(".model_picker")).focus();
 }
 
 function model_picker_delayed_hide_dropdown(e) {
@@ -50,7 +88,6 @@ function model_picker_hide_dropdown(e) {
 }
 
 function model_picker_refresh_selected() {
-    console.log("model_picker_refresh_selected");
     /*
     const result_element = document.getElementById(e.detail.result_element_id);
     const container = result_element.closest(".dropdown");
@@ -61,7 +98,8 @@ function model_picker_refresh_selected() {
     const form = document.getElementById(srch_form_id);
     for (const mp_element of form.querySelectorAll(".model_picker")) {
         console.log(mp_element);
-        let hidden_mp_element = mp_element.closest(".dropdown").querySelector(".hidden_model_picker");
+        let mp_top_level = model_picket_get_top_level(mp_element);
+        let hidden_mp_element = mp_top_level.querySelector(".hidden_model_picker");
         let selected_div = document.getElementById(mp_element.dataset.selectedDiv);
         let selected_template = document.getElementById(mp_element.dataset.selectedTemplateId);
         let new_result = selected_template.cloneNode(true);
