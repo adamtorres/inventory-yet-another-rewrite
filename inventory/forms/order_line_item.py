@@ -39,14 +39,18 @@ class OrderLineItemForm(forms.ModelForm):
 
     def save(self, commit=True):
         if self.instance.quantity_delivered == 0:
+            # calc_type = "none"
             self.instance.extended_price = 0
-            self.instance.per_pack_price = 0
-        if self.cleaned_data["per_pack_weights"] and self.cleaned_data["per_weight_price"]:
+            self.instance.per_pack_price = self.instance.per_pack_price or 0
+        elif self.cleaned_data["per_pack_weights"] and self.cleaned_data["per_weight_price"]:
+            # calc_type = "by weight"
             self.instance.total_weight = sum([decimal.Decimal(str(f)) for f in self.instance.per_pack_weights])
             self.instance.extended_price = self.instance.total_weight * self.instance.per_weight_price
             self.instance.per_pack_price = self.instance.extended_price / self.instance.quantity_delivered
-        if self.instance.extended_price is None:
+        elif self.cleaned_data["quantity_delivered"] and self.cleaned_data["per_pack_price"]:
+            # calc_type = "by pack"
             self.instance.extended_price = self.cleaned_data["quantity_delivered"] * self.cleaned_data["per_pack_price"]
+        # self["quantity_delivered"].initial to see the previous value.
         return super().save(commit=commit)
 
 
