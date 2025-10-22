@@ -9,6 +9,7 @@ from . import views
 urlpatterns = [
     path('certainly/not/admin/', admin.site.urls),
     path('inventory/', urls.include('inventory.urls', namespace="inventory")),
+    path('market/', urls.include('market.urls', namespace="market")),
     path('meal_planning/', urls.include('meal_planning.urls', namespace="meal_planning")),
     path('usage/', urls.include('usage.urls', namespace="usage")),
     path('user/', urls.include('user.urls', namespace="user")),

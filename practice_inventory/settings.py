@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'djfractions',
     'inventory.apps.InventoryConfig',
+    "market.apps.MarketConfig",
     'meal_planning.apps.MealPlanningConfig',
     'user.apps.UserConfig',
     'usage.apps.UsageConfig',
