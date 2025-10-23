@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Market : Category List{% endblock %}
+
+{% block content %}
+<ul>
+{% for category in category_list %}
+    <li><a href="{% url "market:category_detail" pk=category.pk %}">{{ category.name }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "market:category_create" %}">New Category</a></li>
+<li><a href="{% url "market:homepage" %}">Market Homepage</a></li>
+</ul>
+{% endblock %}

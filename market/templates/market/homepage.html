@@ -9,9 +9,9 @@
 {% endblock %}
 
 {% block content %}
-<div>Hello World!</div>
 <ul>
-    <li>Hello</li>
+    <li><a href="{% url "market:category_list" %}">Category List</a></li>
+    <li><a href="{% url "market:tag_list" %}">Tag List</a></li>
 </ul>
 {% endblock %}
 

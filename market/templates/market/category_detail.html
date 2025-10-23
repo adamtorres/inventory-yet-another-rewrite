@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Market : Category{% endblock %}
+
+{% block breadcrumb %}
+    <div><a href="{% url "market:category_list" %}">Category list</a></div>
+{% endblock %}
+
+{% block content %}
+Name: {{ object.name }}
+<ul>
+{#    <li><a href="{% url "market:item_list" %}?category_id={{ object.pk }}">Item List</a></li>#}
+    <li><a href="{% url "market:category_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "market:category_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "market:category_list" %}">Category List</a></li>
+</ul>
+{% endblock %}

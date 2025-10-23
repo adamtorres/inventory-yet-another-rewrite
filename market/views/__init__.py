@@ -1,8 +1,7 @@
-from django import urls
 from django.views import generic
 
-from .. import models as mkt_models
-
+from .category import CategoryCreateView, CategoryDeleteView, CategoryDetailView, CategoryUpdateView, CategoryListView
+from .tag import TagCreateView, TagListView, TagDeleteView, TagDetailView, TagUpdateView
 
 class MarketHomepageView(generic.TemplateView):
     template_name = "market/homepage.html"

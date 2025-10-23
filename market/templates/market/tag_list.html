@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Market : Tag List{% endblock %}
+
+{% block content %}
+<ul>
+{% for tag in tag_list %}
+    <li><a href="{% url "market:tag_detail" pk=tag.pk %}">{{ tag.value }}</a></li>
+{% endfor %}
+</ul>
+<ul>
+<li><a href="{% url "market:tag_create" %}">New Tag</a></li>
+<li><a href="{% url "market:homepage" %}">Market Homepage</a></li>
+</ul>
+{% endblock %}
