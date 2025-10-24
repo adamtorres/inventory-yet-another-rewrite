@@ -20,6 +20,16 @@ urlpatterns = [
     urls.path("item/<int:pk>/edit", mkt_views.ItemUpdateView.as_view(), name="item_update"),
     urls.path("item/new", mkt_views.ItemCreateView.as_view(), name="item_create"),
 
+    urls.path("orders/", mkt_views.OrderListView.as_view(), name="order_list"),
+    urls.path("order/<int:pk>", mkt_views.OrderDetailView.as_view(), name="order_detail"),
+    urls.path("order/<int:pk>/edit", mkt_views.OrderUpdateView.as_view(), name="order_update"),
+    urls.path(
+        "order/<int:pk>/printable_invoice", mkt_views.OrderPrintableInvoiceView.as_view(),
+        name="order_printable_invoice"),
+    urls.path("order/<int:pk>/modify", mkt_views.OrderModifyByActionView.as_view(), name="order_modify"),
+    urls.path("order/new", mkt_views.OrderCreateView.as_view(), name="order_create"),
+    urls.path("order/<int:pk>/line_items", mkt_views.OrderLineItemEditView.as_view(), name="order_line_item_edit"),
+
     urls.path("tags/", mkt_views.TagListView.as_view(), name="tag_list"),
     urls.path("tag/<int:pk>", mkt_views.TagDetailView.as_view(), name="tag_detail"),
     urls.path("tag/<int:pk>/delete", mkt_views.TagDeleteView.as_view(), name="tag_delete"),
