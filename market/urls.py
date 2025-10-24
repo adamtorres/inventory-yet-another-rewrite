@@ -14,6 +14,12 @@ urlpatterns = [
     urls.path("category/<int:pk>/edit", mkt_views.CategoryUpdateView.as_view(), name="category_update"),
     urls.path("category/new", mkt_views.CategoryCreateView.as_view(), name="category_create"),
 
+    urls.path("items/", mkt_views.ItemListView.as_view(), name="item_list"),
+    urls.path("item/<int:pk>", mkt_views.ItemDetailView.as_view(), name="item_detail"),
+    urls.path("item/<int:pk>/delete", mkt_views.ItemDeleteView.as_view(), name="item_delete"),
+    urls.path("item/<int:pk>/edit", mkt_views.ItemUpdateView.as_view(), name="item_update"),
+    urls.path("item/new", mkt_views.ItemCreateView.as_view(), name="item_create"),
+
     urls.path("tags/", mkt_views.TagListView.as_view(), name="tag_list"),
     urls.path("tag/<int:pk>", mkt_views.TagDetailView.as_view(), name="tag_detail"),
     urls.path("tag/<int:pk>/delete", mkt_views.TagDeleteView.as_view(), name="tag_delete"),

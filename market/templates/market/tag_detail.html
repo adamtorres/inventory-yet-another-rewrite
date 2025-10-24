@@ -1,11 +1,7 @@
-{% extends "base.html" %}
+{% extends "market/base.html" %}
 {% load static %}
 
 {% block title %}Market : Tag{% endblock %}
-
-{% block breadcrumb %}
-    <div><a href="{% url "market:tag_list" %}">Tag list</a></div>
-{% endblock %}
 
 {% block content %}
 Value: {{ object.value }}
