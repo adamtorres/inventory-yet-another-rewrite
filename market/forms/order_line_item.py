@@ -17,13 +17,10 @@ class OrderLineItemForm(forms.ModelForm):
     packs = forms.IntegerField(required=False, label="Qty of Packs")
     pack_quantity = forms.IntegerField(initial=12)
     sale_price_per_pack = forms.DecimalField(max_digits=9, decimal_places=4, required=False)
-    material_cost_per_pack = forms.DecimalField(max_digits=9, decimal_places=4, required=False)
 
     class Meta:
         model = mkt_models.OrderLineItem
-        fields = [
-            'line_item_position', 'item',  'quantity', 'packs', 'pack_quantity', 'sale_price_per_pack',
-            'material_cost_per_pack']
+        fields = ['line_item_position', 'item',  'quantity', 'packs', 'pack_quantity', 'sale_price_per_pack',]
 
     def clean_material_cost_per_pack(self):
         return self.cleaned_data['material_cost_per_pack'] or 0.0
@@ -37,8 +34,8 @@ class OrderLineItemForm(forms.ModelForm):
     def save(self, commit=True):
         self.cleaned_data['quantity'] = (
                 self.cleaned_data['packs'] * self.cleaned_data['pack_quantity'] + self.cleaned_data['quantity'])
-        self.cleaned_data['material_cost_per_pack'] = decimal.Decimal(
-                self.cleaned_data['item'].material_cost_per_item * self.cleaned_data['pack_quantity'])
+        # self.cleaned_data['material_cost_per_pack'] = decimal.Decimal(
+        #         self.cleaned_data['item'].material_cost_per_item * self.cleaned_data['pack_quantity'])
         self.instance.quantity = self.cleaned_data['quantity']
         return super().save(commit=commit)
 

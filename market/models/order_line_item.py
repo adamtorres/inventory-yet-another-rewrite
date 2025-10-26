@@ -16,7 +16,7 @@ class OrderLineItem(models.Model):
     quantity = models.IntegerField()
     pack_quantity = models.IntegerField(help_text="count per bag/plate.", default=12)
     sale_price_per_pack = models.DecimalField(max_digits=9, decimal_places=4)
-    sale_price = models.DecimalField(max_digits=9, decimal_places=4)
+    sale_price = models.DecimalField(max_digits=9, decimal_places=4, default=0)
     material_cost_per_pack = models.DecimalField(max_digits=9, decimal_places=4, blank=True, default=0, help_text="cost of materials for a single pack.")
     material_cost = models.DecimalField(max_digits=9, decimal_places=4, blank=True, default=0, help_text="cost of materials for the order.")
 

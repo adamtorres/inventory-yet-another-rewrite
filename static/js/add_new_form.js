@@ -5,64 +5,101 @@ var formset_container_id = "set this to the id of the table or list that contain
 var copy_from_previous = "list of fields to copy from previous form";
 
 function add_new_form(focus_suffix="") {
-    let formset_container = $(`#${formset_container_id}`);
-    let empty_obj = formset_container.find('#empty-form').clone();
-    empty_obj.attr('id', null);
-
-    let total_forms = $(`#id_${form_name}-TOTAL_FORMS`);
-
-    let total_forms_value = parseInt(total_forms.val());
-    empty_obj.attr('data-form-number', total_forms_value);
-    let focus_after_add_id = "";
-    empty_obj.find('input, label, select, textarea, div, ul').each(function() {
-        let to_edit_attributes = ['id', 'name', 'for', 'aria-labelledby']
-        if ((this.type === 'number') && (this.id.endsWith(`-${line_item_position_id}`))) {
-            this.value = total_forms_value + 1;
-        }
-        for(let i in to_edit_attributes){
-            let attribute = to_edit_attributes[i]
-
-            let old_value = $(this).attr(attribute)
-            if(old_value){
-                let new_value = old_value.replace(/__prefix__/g, total_forms_value)
-                $(this).attr(attribute, new_value)
-            }
-            if (focus_suffix !== "") {
-                if (this.id.endsWith(focus_suffix)){
-                    focus_after_add_id = this.id;
-                }
-            }
-        }
-    })
-
-    total_forms.val(total_forms_value + 1)
-    empty_obj.removeClass('empty-form');
-    empty_obj.show()
-    /* TODO: make work with list and table "> tbody:last-child" for table */
-    formset_container.append(empty_obj);
-    if (total_forms_value > 0) {
-        console.log(`Copy fields from previous form. ${copy_from_previous}`);
-        let prev_form_num = total_forms_value - 1;
-        for(let i in copy_from_previous){
-            let field = copy_from_previous[i];
-            let prev_key = `id_${form_name}-${prev_form_num}-${field}`;
-            let cur_key = `id_${form_name}-${total_forms_value}-${field}`;
-            let prev_field = $(`#${prev_key}`);
-            let cur_field = $(`#${cur_key}`);
-            console.log(prev_field);
-            console.log(cur_field);
-            console.log(`Copy ${field} / ${prev_key} / '${prev_field.val()}' to '${cur_key}'`);
-            cur_field.val(prev_field.val());
-        }
-    }
-
-    if ((focus_suffix !== "") && (focus_after_add_id)) {
-        document.getElementById(focus_after_add_id).focus()
-    }
-    $('html, body').stop().animate({'scrollTop':$(`#${focus_after_add_id}`).offset().top}, 100);
+    let new_form = create_new_form(focus_suffix);
+    append_new_form(new_form);
+    let total_forms_element = get_total_forms_element();
+    let total_forms_value = get_total_forms_value(total_forms_element);
+    total_forms_element.value = total_forms_value + 1;
+    focus_after_add(new_form, focus_suffix);
+    copy_values_from_previous(total_forms_element.value);
 }
 
-$('.add-new-form').click(function(e) {
-    e.preventDefault();
+function append_new_form(new_form) {
+    let formset_container = get_formset_container();
+    formset_container.appendChild(new_form);
+    new_form.style.display = "";
+}
+
+function clone_empty_form() {
+    let empty_form = get_formset_container().querySelector("#empty-form").cloneNode(true);
+    empty_form.removeAttribute("id");
+    return empty_form;
+}
+
+function copy_values_from_previous(total_forms_value) {
+    if (total_forms_value === 0) {
+        return;
+    }
+    if (getType(copy_from_previous) !== "array") {
+        return;
+    }
+    let prev_form_num = total_forms_value - 1;
+    for (const field of copy_from_previous) {
+        let prev_key = `id_${form_name}-${prev_form_num}-${field}`;
+        let cur_key = `id_${form_name}-${total_forms_value}-${field}`;
+        document.getElementById(cur_key).value = document.getElementById(prev_key).value;
+    }
+}
+
+function create_new_form(focus_suffix="") {
+    let new_form = clone_empty_form();
+    let total_forms_element = get_total_forms_element();
+    let total_forms_value = get_total_forms_value(total_forms_element);
+    new_form.setAttribute("data-form-number", total_forms_value);
+    for (const el of new_form.querySelectorAll('input, label, select, textarea, div, ul')) {
+        modify_element(el, total_forms_value);
+    }
+    new_form.classList.remove("empty-form");
+    return new_form;
+}
+
+function focus_after_add(new_form, focus_suffix) {
+    if (focus_suffix === "") {
+        return;
+    }
+    let focus_after_add_id = "";
+    for (const el of new_form.querySelectorAll('input, label, select, textarea, div, ul')) {
+        if (el.id.endsWith(focus_suffix)){
+            focus_after_add_id = el.id;
+        }
+    }
+    console.log(`focus_after_add, focus_suffix="${focus_suffix}", focus_after_add_id="${focus_after_add_id}"`);
+    if (focus_after_add_id !== "") {
+        document.getElementById(focus_after_add_id).focus();
+    }
+}
+
+function get_formset_container(){
+    return document.getElementById(formset_container_id);
+}
+
+function get_total_forms_element() {
+    return document.getElementById(`id_${form_name}-TOTAL_FORMS`);
+}
+
+function get_total_forms_value(total_forms_element) {
+    return parseInt(total_forms_element.value);
+}
+
+function modify_element(el, form_number) {
+    console.log(el);
+    let to_edit_attributes = ['id', 'name', 'for', 'aria-labelledby']
+    if ((el.type === 'number') && (el.id.endsWith(`-${line_item_position_id}`))) {
+        el.value = form_number + 1;
+    }
+    for (const attribute of to_edit_attributes) {
+        if (el.hasAttribute(attribute)) {
+            let old_value = el.getAttribute(attribute);
+            let new_value = old_value.replace(/__prefix__/g, form_number);
+            el.setAttribute(attribute, new_value);
+        }
+    }
+}
+
+function add_new_form_link_onclick(e) {
+    console.log("add_new_form_link_onclick");
+    console.log(e);
+    // e.preventDefault();
     add_new_form(after_add_focus_suffix);
-});
+    return false; // prevents the browser from following link?  I thought that is what e.preventDefault() was for.
+}

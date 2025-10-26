@@ -36,7 +36,7 @@
         {% endfor %}
         </tbody>
     </table>
-    <div class="col w-25 text-center"><a class='btn btn-info add-new-form w-75' href='#'>+ Add new item</a></div>
+    <div class=""><a class='add-new-form' href='#'>+ Add new item</a></div>
     <input type="submit" value="Save">
 </form>
 
@@ -46,6 +46,7 @@
 {% endblock %}
 
 {% block body_scripts %}
+<script src="{% static "js/not_jquery.js" %}"></script>
 <script src="{% static 'js/add_new_form.js' %}"></script>
 <script type="text/javascript">
 function item_selected(e) {
@@ -56,15 +57,13 @@ function item_selected(e) {
     let suggested_sale_price_per_pack_tag = current_row.find('.sale_price_per_pack_col input[type=number]');
     suggested_sale_price_per_pack_tag.val(suggested_sale_price_per_pack);
 }
-$( document ).ready(function() {
-    {#autocomplete_url = "{% url 'inc_autocomplete_items' %}";#}
-    form_name = "line_items";
-    after_add_focus_suffix = "-item";
-    formset_container_id = "formset-table-body";
-    {#autocomplete_fields = ["identifier", "name", "pack_quantity", "unit_size"];#}
-    {#autocomplete_display_field = "name";#}
-    $(document).on('change', '#formset-table tbody tr select', item_selected);
-})
+form_name = "line_items";
+after_add_focus_suffix = "-item";
+formset_container_id = "formset-table-body";
+ready(()=>{
+    document.querySelector("a.add-new-form").addEventListener('click', add_new_form_link_onclick);
+    {#$(document).on('change', '#formset-table tbody tr select', item_selected);#}
+});
 </script>
 
 {% endblock %}
