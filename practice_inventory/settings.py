@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'meal_planning.apps.MealPlanningConfig',
     'user.apps.UserConfig',
     'usage.apps.UsageConfig',
+    "simple_temperature.apps.SimpleTemperatureConfig",
     'rest_framework',
     'widget_tweaks',
 ]

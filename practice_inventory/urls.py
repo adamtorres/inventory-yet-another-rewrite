@@ -19,6 +19,8 @@ urlpatterns = [
     path('htmlcss/responsive_css', views.ResponsiveCSSView.as_view(), name="responsive_css"),
     path('htmlcss/semantic', views.SemanticHTMLView.as_view(), name="semantic_html"),
 
+    path('simple_temperature/', urls.include('simple_temperature.urls', namespace="simple_temperature")),
+
     path('', generic.RedirectView.as_view(
         pattern_name="inventory:homepage", permanent=False), name="homepage"),
     # Redirect a path-less url to a specific page without it being permanent.
