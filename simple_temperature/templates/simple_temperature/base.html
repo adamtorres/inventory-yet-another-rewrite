@@ -1,42 +1,19 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="data:,">
-
-    <title>{% block title %}Page title{% endblock %}</title>
+{% block title %}Temperatures{% endblock %}
+{% block styles %}
     <style>
-    #top-nav>div {
-        display: inline-block;
-        padding-left: 1em;
-        padding-right: 1em;
-    }
+        #top-nav > div {
+            display: inline-block;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
     </style>
-    {% block styles %}
-    {% endblock %}
-
-    {% block head_scripts %}
-    {% endblock %}
-</head>
-<body>
-<main>
-        <div id="top-nav">
-            <div><a href="#">Logout</a></div>
-            |
-            <div><a href="#">Sign up</a></div>
-            |
-            {% block breadcrumb %}
-            {% endblock %}
-        </div>
-        <div id="main-content" class="">
-            {% block content %}
-                {# main content #}
-            {% endblock %}
-        </div>
-</main>
-{% block body_scripts %}
 {% endblock %}
-</body>
-</html>
+{% block breadcrumb %}
+    <div><a href="{% url "simple_temperature:homepage" %}">Temperature</a></div>
+    |
+{% endblock %}
+{% block content %}
+    Main Content
+{% endblock %}

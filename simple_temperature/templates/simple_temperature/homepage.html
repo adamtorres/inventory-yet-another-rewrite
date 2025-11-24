@@ -9,9 +9,10 @@
 {% endblock %}
 
 {% block content %}
-<div>Hello World!</div>
 <ul>
-        <li>Hello</li>
+        <li><a href="{% url "simple_temperature:left_off_at" %}">API left_off_at</a></li>
+        <li><a href="{% url "simple_temperature:temperatures" %}">API temperatures</a></li>
+        <li><a href="{% url "simple_temperature:temperature_graph" %}">temperature_graph</a></li>
 </ul>
 {% endblock %}
 

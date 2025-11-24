@@ -1,0 +1,142 @@
+{% extends "simple_temperature/base.html" %}
+
+{% load static %}
+
+{% block title %}SimpleTemperature : Graph{% endblock %}
+
+{% block content %}
+    <div>
+        <span id="chart-title">Placeholder</span>
+        <div class="chart-container" style="position: relative; height:80vh; width:90vw">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+    <div>
+    {% for series in graph_data|slice:"1:" %}
+    <div><input type="checkbox" name="visible-series" id="chk-{{ series.name|slugify }}" value="{{ series.name|slugify }}" checked><label for="chk-{{ series.name|slugify }}">{{ series.name }}</label></div>
+    {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block body_scripts %}
+    <script src="{% static "third-party/js/chart.js" %}"></script>
+    <script>
+        let global_chart = null;
+        function garbage_chart() {
+            // data is an object with parallel lists.
+            let data = {
+                // list of values to use on the y axis
+                {% for series in graph_data|slice:"1:" %}
+                    "{{ series.name|slugify }}": [{% for temperature in series.data %}{{ temperature|default_if_none:"" }}, {% endfor %}],
+                {% endfor %}
+                // list of labels for the x axis
+                "datetimes": [{% for event_datetime in graph_data.0.data %}"{{ event_datetime }}", {% endfor %}],
+                // list used to control the color - other chart uses source so this doesn't have a lot of variance
+                "color key": [{% for temperature in last_24_hours %}"{{ temperature.location_name }}", {% endfor %}]
+            };
+
+            document.getElementById("chart-title").innerText = `Temperatures for: {% for series in graph_data|slice:"1:" %}{{ series.name }}, {% endfor %}`;
+            let point_background_colors = [];
+            const ctx = document.getElementById('myChart');
+            global_chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data['datetimes'],
+                    datasets: [
+                        {% for series in graph_data|slice:"1:" %}
+                            {
+                                custom_id: '{{ series.name|slugify }}',
+                                label: '{{ series.name }}',
+                                data: data['{{ series.name|slugify }}'],
+                                borderWidth: 1,
+                                pointRadius: 2,
+                                pointHoverRadius: 5,
+                                pointBackgroundColor: point_background_colors,
+                                barBackgroundColor: point_background_colors,
+                                pointBorderColor: point_background_colors,
+                                barBorderColor: point_background_colors,
+                            },
+                        {% endfor %}
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterBody: function (context) {
+                                    return [context[0].dataset.label];
+                                },
+                                label: function (context) {
+                                    return `${context.formattedValue}°F`;
+                                }
+
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            })
+            ;
+            for (let i = 0; i < global_chart.data.datasets[0].data.length; i++) {
+                if (data["color key"][i] === "color value 1") {
+                    point_background_colors.push("#90cd8a");
+                } else if (data["color key"][i] === "color value 2") {
+                    point_background_colors.push("#f58368");
+                } else if (data["color key"][i] === "color value 3") {
+                    point_background_colors.push("#6883f5");
+                } else {
+                    point_background_colors.push("#000");
+                }
+            }
+            global_chart.update();
+
+        }
+
+        function update_chart() {
+            let series_states = which_series_are_visible();
+            for (const ds of global_chart.data.datasets) {
+                if (series_states.visible.includes(ds.custom_id)) {
+                    ds.hidden = false;
+                } else {
+                    ds.hidden = true;
+                }
+            }
+            global_chart.update();
+        }
+
+        function which_series_are_visible(e) {
+            // Returns an object which specifies which series are visible and which are not.
+            let visible = [];
+            let invisible = [];
+
+            for (const el of document.querySelectorAll("[name='visible-series']")) {
+                if (el.checked) {
+                    visible.push(el.value);
+                } else {
+                    invisible.push(el.value);
+                }
+            }
+            return {"visible": visible, "invisible": invisible};
+        }
+
+        ready(() => {
+            document.addEventListener("change", (event) => {
+                if (event.target.closest("[name='visible-series']")) {
+                    update_chart.call(event.target, event);
+                }
+            });
+
+            garbage_chart();
+        });
+    </script>
+
+{% endblock %}
