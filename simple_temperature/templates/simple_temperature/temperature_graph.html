@@ -12,6 +12,7 @@
         </div>
     </div>
     <div>
+    <div id="show-none">Show none</div>
     {% for series in graph_data|slice:"1:" %}
     <div><input type="checkbox" name="visible-series" id="chk-{{ series.name|slugify }}" value="{{ series.name|slugify }}" checked><label for="chk-{{ series.name|slugify }}">{{ series.name }}</label></div>
     {% endfor %}
@@ -113,6 +114,13 @@
             global_chart.update();
         }
 
+        function show_none() {
+            for (const el of document.querySelectorAll("[name='visible-series']")) {
+                el.checked = false;
+            }
+            update_chart();
+        }
+
         function which_series_are_visible(e) {
             // Returns an object which specifies which series are visible and which are not.
             let visible = [];
@@ -134,7 +142,7 @@
                     update_chart.call(event.target, event);
                 }
             });
-
+            document.getElementById("show-none").addEventListener("click", show_none);
             garbage_chart();
         });
     </script>

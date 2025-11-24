@@ -47,7 +47,15 @@ class Temperature(models.Model):
     objects = TemperatureManager()
 
     def __str__(self):
-        return f"{self.event_datetime}"
+        location_names = sorted(self.location_readings.keys())
+        readings = []
+        for ln in location_names:
+            try:
+                val = f"{round(decimal.Decimal(self.location_readings[ln]), 0)}F"
+            except decimal.InvalidOperation:
+                val = "n/a"
+            readings.append(f"{ln}: {val}")
+        return f"{self.event_datetime}| {", ".join(readings)}"
 
     @classmethod
     def get_all_locations(cls):
