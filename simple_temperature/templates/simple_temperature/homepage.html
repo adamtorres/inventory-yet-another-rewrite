@@ -1,0 +1,18 @@
+{% extends "simple_temperature/base.html" %}
+
+{% load static %}
+
+{% block title %}SimpleTemperature : Home{% endblock %}
+
+{% block breadcrumb %}
+    <!-- Divs showing a trail in the current app -->
+{% endblock %}
+
+{% block content %}
+<ul>
+        <li><a href="{% url "simple_temperature:left_off_at" %}">API left_off_at</a></li>
+        <li><a href="{% url "simple_temperature:temperatures" %}">API temperatures</a></li>
+        <li><a href="{% url "simple_temperature:temperature_graph" %}">temperature_graph</a></li>
+</ul>
+{% endblock %}
+

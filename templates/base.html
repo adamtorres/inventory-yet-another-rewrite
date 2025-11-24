@@ -21,6 +21,8 @@
 <body>
 <main>
         <div id="top-nav">
+            <div><a href="{% url "homepage" %}">Home</a></div>
+            |
             <div>
                 <form method="post" action="{% url "user:logout" %}">
                     {% csrf_token %}
@@ -40,6 +42,14 @@
                 <a href="{% url "usage:homepage" %}">Usage</a>
             </div>
             |
+            <div>
+                <a href="{% url "market:homepage" %}">Market</a>
+            </div>
+            |
+            <div>
+                <a href="{% url "simple_temperature:homepage" %}">Temperature</a>
+            </div>
+            |
             {% block breadcrumb %}
             {% endblock %}
         </div>
@@ -49,6 +59,8 @@
             {% endblock %}
         </div>
 </main>
+<script src="{% static "js/not_jquery.js" %}"></script>
+
 {% block body_scripts %}
 {% endblock %}
 </body>

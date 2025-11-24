@@ -1,0 +1,17 @@
+{% extends "market/base.html" %}
+
+{% load static %}
+
+{% block title %}
+Market
+{% endblock %}
+
+{% block content %}
+<ul>
+    <li><a href="{% url "market:category_list" %}">Category List</a></li>
+    <li><a href="{% url "market:tag_list" %}">Tag List</a></li>
+    <li><a href="{% url "market:item_list" %}">Item List</a></li>
+    <li><a href="{% url "market:order_list" %}">Order List</a></li>
+</ul>
+{% endblock %}
+

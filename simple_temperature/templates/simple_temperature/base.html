@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Temperatures{% endblock %}
+{% block styles %}
+    <style>
+        #top-nav > div {
+            display: inline-block;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+    </style>
+{% endblock %}
+{% block breadcrumb %}
+    <div><a href="{% url "simple_temperature:homepage" %}">Temperature</a></div>
+    |
+{% endblock %}
+{% block content %}
+    Main Content
+{% endblock %}

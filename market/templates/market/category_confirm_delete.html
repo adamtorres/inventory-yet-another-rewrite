@@ -1,0 +1,17 @@
+{% extends "market/base.html" %}
+{% load static %}
+
+{% block title %}Market : Delete Category{% endblock %}
+
+{% block breadcrumb %}
+    <div><a href="{% url "market:category_list" %}">Category list</a></div>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to delete "{{ object.name }}"?</p>
+    <input type="submit" value="Confirm">
+</form>
+<a href="{% url "market:category_detail" pk=object.id %}">Cancel</a>
+{% endblock %}

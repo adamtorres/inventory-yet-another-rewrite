@@ -1,0 +1,14 @@
+{% extends "market/base.html" %}
+{% load static %}
+
+{% block title %}Market : Tag{% endblock %}
+
+{% block content %}
+Value: {{ object.value }}
+<ul>
+{#    <li><a href="{% url "market:item_list" %}?tag_id={{ object.pk }}">Item List</a></li>#}
+    <li><a href="{% url "market:tag_update" pk=object.pk %}">Edit</a></li>
+    <li><a href="{% url "market:tag_delete" pk=object.pk %}">Delete</a></li>
+    <li><a href="{% url "market:tag_list" %}">Tag List</a></li>
+</ul>
+{% endblock %}

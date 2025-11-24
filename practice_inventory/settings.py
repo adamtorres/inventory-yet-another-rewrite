@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'django_extensions',
     'djfractions',
     'inventory.apps.InventoryConfig',
+    "market.apps.MarketConfig",
     'meal_planning.apps.MealPlanningConfig',
     'user.apps.UserConfig',
     'usage.apps.UsageConfig',
+    "simple_temperature.apps.SimpleTemperatureConfig",
     'rest_framework',
     'widget_tweaks',
 ]
@@ -190,7 +192,7 @@ RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = 0
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 100
 }
 
 SITE_ID = 1
