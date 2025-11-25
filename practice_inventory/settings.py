@@ -182,9 +182,10 @@ STATICFILES_DIRS = (BASE_DIR / 'static', )
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SHELL_PLUS_IMPORTS = [
-    # 'from some_app import some_module as renamed_module',
-    # 'import some_app',
     'from inventory import models as inv_models',
+    'from market import models as mkt_models',
+    'from meal_planning import models as mp_models',
+    'from simple_temperature import models as st_models',
 ]
 SHELL_PLUS_PYGMENTS_ENABLED = True
 SHELL_PLUS_PRINT_SQL_TRUNCATE = 0
